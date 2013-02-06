@@ -7,7 +7,9 @@ import java.awt.image.BufferStrategy;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import pudgewars.input.InputHandler;
+import pudgewars.input.MouseHandler;
+import pudgewars.input.KeyHandler;
+import pudgewars.input.Keys;
 
 public class Window extends Canvas {
 	private static final long serialVersionUID = 1L;
@@ -15,14 +17,16 @@ public class Window extends Canvas {
 	public static int WIDTH = Game.TILE_SIZE * Game.TILE_WIDTH;
 	public static int HEIGHT = Game.TILE_SIZE * Game.TILE_HEIGHT;
 
+	public static int SCALE = 2;
+	public static int ACTUAL_WIDTH = WIDTH * SCALE;
+	public static int ACTUAL_HEIGHT = HEIGHT * SCALE;
+
 	public static int CENTER_X = WIDTH / 2;
 	public static int CENTER_Y = HEIGHT / 2;
 
 	// Drawing to the Window
 	public static JFrame container;
 	public static BufferStrategy strategy;
-
-	public static InputHandler inputter = new InputHandler();
 
 	public static Game g;
 
@@ -32,7 +36,7 @@ public class Window extends Canvas {
 		container.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panel = (JPanel) container.getContentPane();
-		Dimension d = new Dimension(WIDTH, HEIGHT);
+		Dimension d = new Dimension(ACTUAL_WIDTH, ACTUAL_HEIGHT);
 		panel.setPreferredSize(d);
 		panel.setMaximumSize(d);
 		panel.setMinimumSize(d);
@@ -40,7 +44,7 @@ public class Window extends Canvas {
 		panel.setLayout(null);
 
 		// Sets the bounds of our Canvas
-		setBounds(0, 0, WIDTH, HEIGHT);
+		setBounds(0, 0, ACTUAL_WIDTH, ACTUAL_HEIGHT);
 		panel.add(this);
 
 		// Makes the Window visible
@@ -51,13 +55,17 @@ public class Window extends Canvas {
 		createBufferStrategy(2);
 		strategy = getBufferStrategy();
 
-		this.addKeyListener(inputter);
-		this.addMouseListener(inputter);
-		this.addMouseMotionListener(inputter);
+		Keys k = new Keys();
+		KeyHandler keyHandle = new KeyHandler(k);
+		MouseHandler m = new MouseHandler();
+
+		this.addKeyListener(keyHandle);
+		this.addMouseListener(m);
+		this.addMouseMotionListener(m);
 
 		requestFocus();
 
-		g = new Game();
+		g = new Game(k, m);
 	}
 
 	// ----Main Method----

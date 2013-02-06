@@ -1,72 +1,68 @@
 package pudgewars.util;
+
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
-
-
-public class Animation 
-{
+public class Animation {
 	private ArrayList<OneScene> scenes;
-	private int sceneIndex; //The index for the scene in your ArrayList
-	
+	private int sceneIndex; // The index for the scene in your ArrayList
+
 	private boolean playing;
 	private boolean stopAfterMovie;
-	
-	//Having 2 different variables so that you can compare the two
-	private long movieTime; //How long your animation has been running since it was last called
-	private long totalTime;
-	
-	public Animation() 	{
-		//Refreshing all the variables
+
+	// Having 2 different variables so that you can compare the two
+	private double movieTime; // How long your animation has been running since it was last called
+	private double totalTime;
+
+	public Animation() {
+		// Refreshing all the variables
 		scenes = new ArrayList<OneScene>();
 		totalTime = 0;
 		start();
 	}
-	
-	//-Parameters: Image i = The image loaded, long t = the time that the image remains on the screen
-	//-Method: Adds a scene to the ArrayList
-	//-"synchronised": this method must run first, before all threads can continue to run
-	public synchronized void add(Image i, long t) {
+
+	// -Parameters: Image i = The image loaded, long t = the time that the image remains on the screen
+	// -Method: Adds a scene to the ArrayList
+	// -"synchronised": this method must run first, before all threads can continue to run
+	public synchronized void add(Image i, double t) {
 		i = ImageHandler.makeColorTransparent((BufferedImage) i, null);
-		
-		//Sets the length of the animation based on the total amount of [t]s per scene
+
+		// Sets the length of the animation based on the total amount of [t]s per scene
 		totalTime += t;
-		
-		//Each picture will be one object, OneScene.
+
+		// Each picture will be one object, OneScene.
 		scenes.add(new OneScene(i, totalTime));
 	}
-	
-	//Method: Starts the animation from the beginning
-	//-"synchronised": this method must run first, before all threads can continue to run
-	public synchronized void start()
-	{
-		//You start at the beginning of your animation, resets everything to 0.
+
+	// Method: Starts the animation from the beginning
+	// -"synchronised": this method must run first, before all threads can continue to run
+	public synchronized void start() {
+		// You start at the beginning of your animation, resets everything to 0.
 		movieTime = 0;
 		sceneIndex = 0;
 	}
-	
-	//Method: Changes the scene
-	//Parameters: long timePassed = the time that passed from the last update
-	public synchronized void update(long timePassed) {
-		if(scenes.size() > 1 && playing)
-		{
-			//movieTime is the total amount of time passed since the beginning
-			//movieTime is the sum of all the timePassed variables
-			movieTime += timePassed;
-			
-			//If the movieTime is going on for too long, restart the animation.
-			if(movieTime >= totalTime) {
+
+	// Method: Changes the scene
+	// Parameters: long timePassed = the time that passed from the last update
+	public synchronized void update() {
+		if (scenes.size() > 1 && playing) {
+			// movieTime is the total amount of time passed since the beginning
+			// movieTime is the sum of all the timePassed variables
+			movieTime += Time.getTickInterval();
+
+			// If the movieTime is going on for too long, restart the animation.
+			if (movieTime >= totalTime) {
 				if (!stopAfterMovie) {
 					start();
 				}
 			}
-			
-			//Whenever you get a picture, run for a certain amount of time then change the scene.
-			//-Sets the sceneIndex
+
+			// Whenever you get a picture, run for a certain amount of time then change the scene.
+			// -Sets the sceneIndex
 			while (movieTime > getScene(sceneIndex).endTime) {
 				sceneIndex++;
-				
+
 				if (sceneIndex >= scenes.size()) {
 					sceneIndex = scenes.size() - 1;
 					break;
@@ -74,52 +70,50 @@ public class Animation
 			}
 		}
 	}
-	
+
 	public void startAnimation() {
 		playing = true;
 	}
-	
+
 	public void stopAnimation() {
 		start();
 		playing = false;
 	}
-	
+
 	public void play() {
 		playing = (playing) ? false : true;
 	}
-	
-	//Method: Gets the animation's current scene(aka. image)
+
+	// Method: Gets the animation's current scene(aka. image)
 	public synchronized Image getImage() {
-//		System.out.println(sceneIndex);
+		// System.out.println(sceneIndex);
 		if (scenes.size() == 0) {
 			return null;
 		} else {
 			return getScene(sceneIndex).pic;
 		}
 	}
-	
-	//Parameters: int x = the scene's index	
+
+	// Parameters: int x = the scene's index
 	private OneScene getScene(int x) {
 		return (OneScene) scenes.get(x);
 	}
-	
+
 	public void setStopAfterMovie(boolean stopAfterMovie) {
 		this.stopAfterMovie = stopAfterMovie;
 	}
-	
-	public long getTotalTime() {
+
+	public double getTotalTime() {
 		return totalTime;
 	}
-	
-//-----------PRIVATE INNER CLASS---------------
-	
-	private class OneScene
-	{
+
+	// -----------PRIVATE INNER CLASS---------------
+
+	private class OneScene {
 		Image pic;
-		long endTime;
-		
-		public OneScene(Image pic, long endTime)
-		{
+		double endTime;
+
+		public OneScene(Image pic, double endTime) {
 			this.pic = pic;
 			this.endTime = endTime;
 		}

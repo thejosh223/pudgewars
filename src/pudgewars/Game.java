@@ -1,47 +1,56 @@
 package pudgewars;
 
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
-import java.awt.event.KeyEvent;
-import java.awt.geom.Point2D;
-import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 
 import pudgewars.entities.Entity;
 import pudgewars.entities.PudgeEntity;
+import pudgewars.input.Keys;
+import pudgewars.input.MouseButton;
+import pudgewars.input.MouseHandler;
 import pudgewars.level.Map;
 import pudgewars.util.Time;
+import pudgewars.util.Vector2;
 
 public class Game {
 	public static final int TILE_SIZE = 16;
-	public static final int TILE_WIDTH = 16;
-	public static final int TILE_HEIGHT = 12;
-
-	public final static double SCROLL_SPEED = 8;
+	public static final int TILE_WIDTH = 20;
+	public static final int TILE_HEIGHT = 15;
 
 	private boolean gameRunning;
 	public static ArrayList<Entity> entities;
 	public static Map map;
+	public static Screen s;
+	public static Vector2 focus;
 
 	private PudgeEntity player;
 
-	public static Point2D focus;
+	/*
+	 * Input Classes
+	 */
+	public static Keys keyInput;
+	public static MouseHandler mouseInput;
 
 	// Constructor Method
-	public Game() {
+	public Game(Keys k, MouseHandler m) {
+		this.keyInput = k;
+		this.mouseInput = m;
+
 		init();
 		gameLoop();
 	}
 
 	public void init() {
 		map = new Map();
-		focus = new Point2D.Double(Map.MAP_WIDTH / 2, Map.MAP_HEIGHT / 2);
+		focus = new Vector2(Map.MAP_WIDTH / 2, Map.MAP_HEIGHT / 2);
 		gameRunning = true;
 
 		entities = new ArrayList<Entity>();
 		player = new PudgeEntity(4, 4);
 		entities.add(player);
 		entities.add(new PudgeEntity(4, 12));
+
+		s = new Screen(Window.WIDTH, Window.HEIGHT);
 	}
 
 	public void gameLoop() {
@@ -87,11 +96,10 @@ public class Game {
 			/*
 			 * Rendering
 			 */
-
-			if (ticked) {
-				render();
-				fps++;
-			}
+			// if (ticked) {
+			render();
+			fps++;
+			// }
 
 			try {
 				Thread.sleep(1);
@@ -106,84 +114,60 @@ public class Game {
 		 * UPDATES
 		 */
 
-		long time = (long) (Time.getTickInterval() * 1000);
-
 		// Entities/Player Update
 		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).update(time);
+			entities.get(i).update();
 		}
 
 		// World Update
-		map.update(time);
+		map.update();
 
-		controls(time);
+		controls();
 	}
 
 	private void render() {
-		Graphics2D g = (Graphics2D) Window.strategy.getDrawGraphics();
 		// Anti-Aliasing (THIS IS AWESOME.)
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		// g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		// World Drawing
-		map.draw(g, focus);
+		map.render();
 
 		// Entity/Player Drawing
 		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).draw(g);
+			entities.get(i).render();
 		}
 
-		// Clean up unused variables.
-		g.dispose();
-
 		// Flips the page between the two buffers
+		s.drawToGraphics((Graphics2D) Window.strategy.getDrawGraphics());
 		Window.strategy.show();
 	}
 
-	public final static int SCROLLBAR_SIZE = Game.TILE_SIZE / 2;
+	public void controls() {
+		keyInput.tick();
 
-	public void controls(long timePassed) {
-		double vx = 0;
-		double vy = 0;
-		// int yScroll = 0;
-		// int xScroll = 0;
-
-		if (Window.inputter.activePosition.y >= 0 && Window.inputter.activePosition.y < SCROLLBAR_SIZE || Window.inputter.up) {
-			vy = -SCROLL_SPEED;
-		} else if (Window.inputter.activePosition.y >= Window.HEIGHT - SCROLLBAR_SIZE && Window.inputter.activePosition.y < Window.HEIGHT || Window.inputter.down) {
-			vy = SCROLL_SPEED;
+		if (focus.x < Game.TILE_WIDTH / 2) {
+			focus.set(Game.TILE_WIDTH / 2, focus.y);
+		} else if (focus.x > Map.MAP_WIDTH - Game.TILE_WIDTH / 2) {
+			focus.set(Map.MAP_WIDTH - Game.TILE_WIDTH / 2, focus.y);
 		}
 
-		if (Window.inputter.activePosition.x >= 0 && Window.inputter.activePosition.x < SCROLLBAR_SIZE || Window.inputter.left) {
-			vx = -SCROLL_SPEED;
-		} else if (Window.inputter.activePosition.x >= Window.WIDTH - SCROLLBAR_SIZE && Window.inputter.activePosition.x < Window.WIDTH || Window.inputter.right) {
-			vx = SCROLL_SPEED;
+		if (focus.y < Game.TILE_HEIGHT / 2) {
+			focus.set(focus.x, Game.TILE_HEIGHT / 2);
+		} else if (focus.y > Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2) {
+			focus.set(focus.x, Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2);
 		}
 
-		focus.setLocation(focus.getX() + timePassed * vx / 1000, focus.getY() + timePassed * vy / 1000);
+		if (mouseInput.lastClicked[MouseButton.RIGHT] != null) {
+			Vector2 click = mouseInput.lastClicked[MouseButton.RIGHT];
+			player.setTarget(s.screenToWorldPoint(click));
 
-		if (focus.getX() < Game.TILE_WIDTH / 2) {
-			focus.setLocation(Game.TILE_WIDTH / 2, focus.getY());
-		} else if (focus.getX() > Map.MAP_WIDTH - Game.TILE_WIDTH / 2) {
-			focus.setLocation(Map.MAP_WIDTH - Game.TILE_WIDTH / 2, focus.getY());
+			mouseInput.lastClicked[MouseButton.RIGHT] = null;
 		}
+		if (mouseInput.lastClicked[MouseButton.LEFT] != null) {
+			Vector2 click = mouseInput.lastClicked[MouseButton.LEFT];
+			player.setHook(s.screenToWorldPoint(click));
 
-		if (focus.getY() < Game.TILE_HEIGHT / 2) {
-			focus.setLocation(focus.getX(), Game.TILE_HEIGHT / 2);
-		} else if (focus.getY() > Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2) {
-			focus.setLocation(focus.getX(), Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2);
-		}
-
-		if (Window.inputter.lastRightClicked != null) {
-			Point2D click = Window.inputter.lastRightClicked;
-			player.setTarget(click);
-
-			Window.inputter.lastRightClicked = null;
-		}
-		if (Window.inputter.lastLeftClicked != null) {
-			Point2D click = Window.inputter.lastLeftClicked;
-			player.setHook(click);
-
-			Window.inputter.lastLeftClicked = null;
+			mouseInput.lastClicked[MouseButton.LEFT] = null;
 		}
 	}
 }

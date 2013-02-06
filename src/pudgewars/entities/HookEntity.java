@@ -1,6 +1,5 @@
 package pudgewars.entities;
 
-import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.geom.Point2D;
@@ -9,12 +8,16 @@ import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.util.Animation;
 import pudgewars.util.ImageHandler;
+import pudgewars.util.Time;
+import pudgewars.util.Vector2;
 
 public class HookEntity extends Entity {
-	public final static double PIECE_DISTANCE = 0.4;
-	public final static float HOOK_SPEED = 6;
+	public final static double PIECE_DISTANCE = 0.8;
 	public final static double MAX_TRAVEL_DISTANCE = 8;
 	public final static double KILL_UNCERTAINTY = 0.1;
+
+	// Hook Speed
+	public final static float HOOK_SPEED = 6;
 	public final static float HOOK_REVERSE_SPEED = 2 * HOOK_SPEED;
 
 	private PudgeEntity owner;
@@ -27,7 +30,7 @@ public class HookEntity extends Entity {
 	private HookPieceEntity hookPiece;
 	private int damage;
 
-	public HookEntity(PudgeEntity e, Point2D target) {
+	public HookEntity(PudgeEntity e, Vector2 target) {
 		super(e.getX(), e.getY());
 		owner = e;
 		hooked = null;
@@ -46,7 +49,7 @@ public class HookEntity extends Entity {
 
 		// Movement Animation
 		// int hookMultiple = Game.SCALE - 1;
-		int movementInterval = 50;
+		double movementInterval = 0.05;
 		int noOfSprites = ImageHandler.get().getSplitImageColumns("tryhook", 16);
 
 		for (int i = 0; i < noOfSprites; i++) {
@@ -57,11 +60,11 @@ public class HookEntity extends Entity {
 
 	public final static double SLOW_DOWN_VECTOR = 0.5;
 
-	public void update(long timePassed) {
-		ani.update(timePassed);
+	public void update() {
+		ani.update();
 
-		double xDist = vx * timePassed / 1000;
-		double yDist = vy * timePassed / 1000;
+		double xDist = vx * Time.getTickInterval();
+		double yDist = vy * Time.getTickInterval();
 		double tx = x + xDist;
 		double ty = y + yDist;
 
@@ -110,19 +113,19 @@ public class HookEntity extends Entity {
 					hookPiece = e;
 				}
 			} else {
-				hookPiece.setDirection(new Point2D.Double(x, y));
+				hookPiece.setDirection(new Vector2(x, y));
 			}
 		} else {
 			if (Point.distance(x, y, owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
 				kill();
 			} else {
-				setDirection(new Point2D.Double(hookPiece.getX(), hookPiece.getY()));
+				setDirection(new Vector2(hookPiece.getX(), hookPiece.getY()));
 			}
 		}
 
 		HookPieceEntity temp = hookPiece;
 		while (temp != null) {
-			temp.update(timePassed);
+			temp.update();
 			temp = temp.getConnected();
 		}
 
@@ -144,13 +147,14 @@ public class HookEntity extends Entity {
 		return new boolean[] { false, false };
 	}
 
-	public void draw(Graphics2D g) {
+	public void render() {
 		Image img = ani.getImage();
-		g.drawImage(img, (int) (Window.CENTER_X - (Game.focus.getX() - x) * Game.TILE_SIZE - img.getWidth(null) / 2), (int) (Window.CENTER_Y - (Game.focus.getY() - y) * Game.TILE_SIZE - img.getHeight(null) / 2), null);
+		Game.s.g.drawImage(img, (int) (Window.CENTER_X - (Game.focus.x - x) * Game.TILE_SIZE - img.getWidth(null) / 2), //
+				(int) (Window.CENTER_Y - (Game.focus.y - y) * Game.TILE_SIZE - img.getHeight(null) / 2), null);
 
 		HookPieceEntity temp = hookPiece;
 		while (temp != null) {
-			temp.draw(g);
+			temp.render();
 			temp = temp.getConnected();
 		}
 	}
