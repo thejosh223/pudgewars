@@ -3,11 +3,16 @@ package pudgewars.entities;
 import java.awt.geom.Rectangle2D;
 
 import pudgewars.Game;
+import pudgewars.util.Physics;
+import pudgewars.util.Transform;
 import pudgewars.util.Vector2;
 
 public abstract class Entity {
-	protected double x;
-	protected double y;
+	public Transform transform;
+	public Physics rigidbody;
+
+	// protected double x;
+	// protected double y;
 	protected double vx;
 	protected double vy;
 	protected double ax;
@@ -18,8 +23,7 @@ public abstract class Entity {
 	protected double collisionWidth;
 
 	public Entity(double x, double y) {
-		this.x = x;
-		this.y = y;
+		transform = new Transform(this, new Vector2(x, y), 0, new Vector2(1, 1));
 	}
 
 	public abstract void update();
@@ -32,8 +36,8 @@ public abstract class Entity {
 
 	public boolean[] isWorldCollision(double tx, double ty) {
 		if (Game.map.isCollides(tx, ty, this)) {
-			boolean xCol = Game.map.isCollides(tx, y, this);
-			boolean yCol = Game.map.isCollides(x, ty, this);
+			boolean xCol = Game.map.isCollides(tx, transform.position.y, this);
+			boolean yCol = Game.map.isCollides(transform.position.x, ty, this);
 
 			return new boolean[] { xCol, yCol };
 		}
@@ -44,7 +48,10 @@ public abstract class Entity {
 		for (int i = 0; i < Game.entities.size(); i++) {
 			Entity e = Game.entities.get(i);
 			if (e != this) {
-				if (new Rectangle2D.Double(tx - this.collisionWidth / 2, ty - this.collisionHeight / 2, this.collisionWidth, this.collisionHeight).intersects(new Rectangle2D.Double(e.x - e.getCollisionWidth() / 2, e.y - e.getCollisionHeight() / 2, e.getCollisionWidth(), e.getCollisionHeight()))) {
+				if (new Rectangle2D.Double(tx - this.collisionWidth / 2, ty - this.collisionHeight / 2, //
+						this.collisionWidth, this.collisionHeight).intersects( //
+						new Rectangle2D.Double(e.transform.position.x - e.getCollisionWidth() / 2, e.transform.position.y - e.getCollisionHeight() / 2, //
+								e.getCollisionWidth(), e.getCollisionHeight()))) {
 					return e;
 				}
 			}
@@ -57,17 +64,17 @@ public abstract class Entity {
 	}
 
 	public void setDirection(Vector2 target, float speed) {
-		double angle = Math.atan2(this.x - target.x, this.y - target.y);
+		double angle = Math.atan2(transform.position.x - target.x, transform.position.y - target.y);
 		setVerticalMovement(-speed * Math.sin(angle));
 		setHorizontalMovement(-speed * Math.cos(angle));
 	}
 
 	public double getX() {
-		return x;
+		return transform.position.x;
 	}
 
 	public double getY() {
-		return y;
+		return transform.position.y;
 	}
 
 	public void setVerticalMovement(double vx) {
@@ -79,8 +86,7 @@ public abstract class Entity {
 	}
 
 	public void setPosition(double x, double y) {
-		this.x = x;
-		this.y = y;
+		transform.position.set(x, y);
 	}
 
 	public double getCollisionHeight() {

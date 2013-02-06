@@ -3,10 +3,13 @@ package pudgewars.entities;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.GradientPaint;
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.awt.geom.Arc2D;
 
 import pudgewars.Game;
 import pudgewars.Window;
+import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
@@ -18,6 +21,8 @@ public class PudgeEntity extends Entity {
 	protected boolean hooked;
 	protected int life;
 
+	protected Image img;
+
 	public PudgeEntity(double x, double y) {
 		super(x, y);
 
@@ -27,12 +32,16 @@ public class PudgeEntity extends Entity {
 		collisionHeight = 0.8;
 
 		speed = 3.8f;
+
+		img = ImageHandler.get().getImage("pudge");
 	}
 
 	public void update() {
+		transform.rotation += 0.08;
+
 		if (target != null) {
-			if (x >= target.x - MOVEMENT_UNCERTAINTY / 2 && x < target.x + MOVEMENT_UNCERTAINTY / 2 //
-					&& y >= target.y - MOVEMENT_UNCERTAINTY / 2 && y < target.y + MOVEMENT_UNCERTAINTY / 2) {
+			if (transform.position.x >= target.x - MOVEMENT_UNCERTAINTY / 2 && transform.position.x < target.x + MOVEMENT_UNCERTAINTY / 2 //
+					&& transform.position.y >= target.y - MOVEMENT_UNCERTAINTY / 2 && transform.position.y < target.y + MOVEMENT_UNCERTAINTY / 2) {
 
 				setVerticalMovement(0);
 				setHorizontalMovement(0);
@@ -45,8 +54,8 @@ public class PudgeEntity extends Entity {
 		vx += ax * Time.getTickInterval();
 		vy += ay * Time.getTickInterval();
 
-		double tx = x + vx * Time.getTickInterval();
-		double ty = y + vy * Time.getTickInterval();
+		double tx = transform.position.x + vx * Time.getTickInterval();
+		double ty = transform.position.y + vy * Time.getTickInterval();
 
 		/*
 		 * TODO:
@@ -58,27 +67,27 @@ public class PudgeEntity extends Entity {
 			// ty = y;
 		} else {
 			if (Game.map.isCollides(tx, ty, this)) {
-				boolean xCol = Game.map.isCollides(tx, y, this);
-				boolean yCol = Game.map.isCollides(x, ty, this);
+				boolean xCol = Game.map.isCollides(tx, transform.position.y, this);
+				boolean yCol = Game.map.isCollides(transform.position.x, ty, this);
 				if (xCol && !yCol) {
 					setHorizontalMovement(0);
-					tx = x;
+					tx = transform.position.x;
 				} else if (yCol && !xCol) {
 					setVerticalMovement(0);
-					ty = y;
+					ty = transform.position.y;
 				} else {
 					setHorizontalMovement(0);
 					setVerticalMovement(0);
 
-					ty = y;
-					tx = x;
+					ty = transform.position.y;
+					tx = transform.position.x;
 					target = null;
 				}
 			}
 		}
 
-		x = tx;
-		y = ty;
+		transform.position.x = tx;
+		transform.position.y = ty;
 
 		// Un-comment this to have some fun!
 		removeHook();
@@ -92,11 +101,22 @@ public class PudgeEntity extends Entity {
 	final static int FULL_LIFE_ARC = 180;
 
 	public void render() {
-		int x = (int) (Window.CENTER_X - (Game.focus.x - this.x) * Game.TILE_SIZE);
-		int y = (int) (Window.CENTER_Y - (Game.focus.y - this.y) * Game.TILE_SIZE);
+		int x = (int) (Window.CENTER_X - (Game.focus.x - this.transform.position.x) * Game.TILE_SIZE);
+		int y = (int) (Window.CENTER_Y - (Game.focus.y - this.transform.position.y) * Game.TILE_SIZE);
 
-		Game.s.g.setColor(Color.DARK_GRAY);
-		Game.s.g.fillOval((int) (x - (Game.TILE_SIZE * collisionWidth) / 2), (int) (y - (Game.TILE_SIZE * collisionHeight) / 2), (int) (Game.TILE_SIZE * collisionWidth), (int) (Game.TILE_SIZE * collisionHeight));
+		// Game.s.g.setColor(Color.DARK_GRAY);
+		// Game.s.g.fillOval((int) (x - (Game.TILE_SIZE * collisionWidth) / 2), (int) (y - (Game.TILE_SIZE * collisionHeight) / 2), (int) (Game.TILE_SIZE * collisionWidth), (int) (Game.TILE_SIZE * collisionHeight));
+		// Game.s.g.drawImage(img, (int) (x - (Game.TILE_SIZE * collisionWidth) / 2), //
+		// (int) (y - (Game.TILE_SIZE * collisionHeight) / 2), //
+		// (int) (Game.TILE_SIZE * collisionWidth), //
+		// (int) (Game.TILE_SIZE * collisionHeight), null);
+
+		AffineTransform a = new AffineTransform();
+		a.rotate(transform.rotation, x, y);
+		a.translate((int) (x - (Game.TILE_SIZE * collisionWidth) / 2), (int) (y - (Game.TILE_SIZE * collisionHeight) / 2));
+		a.scale(transform.scale.x, transform.scale.y);
+		Game.s.g.drawImage(img, a, null);
+
 		if (target != null) {
 			int tx = (int) (Window.CENTER_X - ((Game.focus.x - target.x) * Game.TILE_SIZE));
 			int ty = (int) (Window.CENTER_Y - ((Game.focus.y - target.y) * Game.TILE_SIZE));
@@ -118,7 +138,7 @@ public class PudgeEntity extends Entity {
 		Game.s.g.setStroke(LIFESTROKE);
 		Game.s.g.setPaint(new GradientPaint((float) (x - lifeEllipseWidth * 0.5), (float) (y - lifeEllipseHeight * 0.5), new Color(250, 0, 0, 175), (float) (x + lifeEllipseWidth * 0.5), (float) (y - lifeEllipseHeight * 0.5), new Color(0, 0, 250, 175)));
 
-		Game.s.g.draw(new Arc2D.Double(x - lifeEllipseWidth * 0.5, y - lifeEllipseHeight * 0.5, lifeEllipseWidth, lifeEllipseHeight, ARC_STARTANGLE, FULL_LIFE_ARC * this.getLife() / PudgeEntity.MAX_LIFE, Arc2D.OPEN));
+		// Game.s.g.draw(new Arc2D.Double(x - lifeEllipseWidth * 0.5, y - lifeEllipseHeight * 0.5, lifeEllipseWidth, lifeEllipseHeight, ARC_STARTANGLE, FULL_LIFE_ARC * this.getLife() / PudgeEntity.MAX_LIFE, Arc2D.OPEN));
 	}
 
 	public void setTarget(Vector2 target) {
@@ -141,13 +161,13 @@ public class PudgeEntity extends Entity {
 		Entity te = isEntityCollision(tx, ty);
 		if (te != null) {
 			if (te instanceof PudgeEntity) {
-				tx = x;
-				ty = y;
+				tx = transform.position.x;
+				ty = transform.position.y;
 				return;
 			}
 		}
-		x = tx;
-		y = ty;
+		transform.position.x = tx;
+		transform.position.y = ty;
 	}
 
 	public void collides(Entity e) {

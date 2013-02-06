@@ -1,6 +1,8 @@
 package pudgewars.util;
 
 public class Vector2 {
+	public final static Vector2 ZERO = new Vector2(0, 0);
+
 	public double x;
 	public double y;
 

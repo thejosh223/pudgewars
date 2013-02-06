@@ -1,7 +1,5 @@
 package pudgewars.level;
 
-import java.awt.Graphics2D;
-import java.awt.geom.Point2D;
 import java.util.Random;
 
 import pudgewars.Game;
@@ -26,9 +24,9 @@ public class Map {
 		for (int i = 0; i < map.length; i++) {
 			for (int o = 0; o < map[0].length; o++) {
 				if (o + 1 == (MAP_WIDTH - DIVISION_WIDTH) / 2) {
-					map[i][o] = Tile.T_Block;
+					map[i][o] = Tile.T_Mound;
 				} else if (o == (MAP_WIDTH + DIVISION_WIDTH) / 2) {
-					map[i][o] = Tile.T_Block;
+					map[i][o] = Tile.T_Mound;
 				} else if (i == 0 || o == 0 || i == MAP_HEIGHT - 1 || o == MAP_WIDTH - 1) {
 					map[i][o] = Tile.T_Block;
 				} else {

@@ -26,7 +26,7 @@ public class Screen {
 	public Screen(int width, int height) {
 		img = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
 		g = (Graphics2D) img.getGraphics();
-		g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		// g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		this.width = width;
 		this.height = height;

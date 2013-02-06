@@ -30,19 +30,19 @@ public class HookPieceEntity extends Entity {
 	public void update() {
 		double xDist = vx * Time.getTickInterval();
 		double yDist = vy * Time.getTickInterval();
-		double tx = x + xDist;
-		double ty = y + yDist;
-		x = tx;
-		y = ty;
+		double tx = transform.position.x + xDist;
+		double ty = transform.position.y + yDist;
+		transform.position.x = tx;
+		transform.position.y = ty;
 
 		if (!reversing) {
 			if (next == null) {
-				if (Point.distance(x, y, owner.getX(), owner.getY()) >= HookEntity.PIECE_DISTANCE) {
+				if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) >= HookEntity.PIECE_DISTANCE) {
 					HookPieceEntity e = new HookPieceEntity(owner, vx, vy, speed);
 					next = e;
 				}
 			} else {
-				next.setDirection(new Vector2(x, y));
+				next.setDirection(new Vector2(transform.position.x, transform.position.y));
 			}
 		} else {
 			if (next != null) {
@@ -51,7 +51,6 @@ public class HookPieceEntity extends Entity {
 						next.kill();
 						next = null;
 					} else {
-						// setDirection(new Vector2(next.getConnected().getX(), next.getConnected().getY()));
 						setDirection(new Vector2(next.getX(), next.getY()));
 					}
 				} else {
@@ -67,8 +66,8 @@ public class HookPieceEntity extends Entity {
 	}
 
 	public void render() {
-		Game.s.g.drawImage(img, (int) (Window.CENTER_X - (Game.focus.x - x) * Game.TILE_SIZE - img.getWidth(null) / 2), //
-				(int) (Window.CENTER_Y - (Game.focus.y - y) * Game.TILE_SIZE - img.getHeight(null) / 2), null);
+		Game.s.g.drawImage(img, (int) (Window.CENTER_X - (Game.focus.x - transform.position.x) * Game.TILE_SIZE - img.getWidth(null) / 2), //
+				(int) (Window.CENTER_Y - (Game.focus.y - transform.position.y) * Game.TILE_SIZE - img.getHeight(null) / 2), null);
 	}
 
 	public PudgeEntity getOwner() {

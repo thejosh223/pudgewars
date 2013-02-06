@@ -2,7 +2,7 @@ package pudgewars.entities;
 
 import java.awt.Image;
 import java.awt.Point;
-import java.awt.geom.Point2D;
+import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
 import pudgewars.Window;
@@ -22,7 +22,8 @@ public class HookEntity extends Entity {
 
 	private PudgeEntity owner;
 	private PudgeEntity hooked;
-	private Animation ani;
+	// private Animation ani;
+	private Image img;
 
 	private double travelled;
 	private double maxTravelDistance;
@@ -38,7 +39,6 @@ public class HookEntity extends Entity {
 		damage = 4;
 
 		maxTravelDistance = 12;
-		ani = new Animation();
 		speed = HOOK_SPEED;
 		collisionWidth = 0.6;
 		collisionHeight = 0.6;
@@ -49,24 +49,27 @@ public class HookEntity extends Entity {
 
 		// Movement Animation
 		// int hookMultiple = Game.SCALE - 1;
-		double movementInterval = 0.05;
-		int noOfSprites = ImageHandler.get().getSplitImageColumns("tryhook", 16);
+		// double movementInterval = 0.05;
+		// int noOfSprites = ImageHandler.get().getSplitImageColumns("tryhook", 16);
 
-		for (int i = 0; i < noOfSprites; i++) {
-			ani.add(ImageHandler.get().getImage("tryhook", i, 0, 16), movementInterval);
-			ani.startAnimation();
-		}
+		img = ImageHandler.get().getImage("hook");
+
+		// for (int i = 0; i < noOfSprites; i++) {
+		// ani.add(ImageHandler.get().getImage("tryhook", i, 0, 16), movementInterval);
+		// ani.startAnimation();
+		// }
 	}
 
 	public final static double SLOW_DOWN_VECTOR = 0.5;
 
 	public void update() {
-		ani.update();
+		// ani.update();
+		transform.rotation -= 0.5;
 
 		double xDist = vx * Time.getTickInterval();
 		double yDist = vy * Time.getTickInterval();
-		double tx = x + xDist;
-		double ty = y + yDist;
+		double tx = transform.position.x + xDist;
+		double ty = transform.position.y + yDist;
 
 		Entity te = isEntityCollision(tx, ty);
 		if (te != null) {
@@ -77,16 +80,16 @@ public class HookEntity extends Entity {
 		if (collisions[0] || collisions[1]) {
 			maxTravelDistance -= maxTravelDistance * SLOW_DOWN_VECTOR / 4;
 			if (collisions[0] && !collisions[1]) {
-				tx = x;
+				tx = transform.position.x;
 				vx *= -SLOW_DOWN_VECTOR;
 				vy *= SLOW_DOWN_VECTOR;
 			} else if (collisions[1] && !collisions[0]) {
-				ty = y;
+				ty = transform.position.y;
 				vx *= SLOW_DOWN_VECTOR;
 				vy *= -SLOW_DOWN_VECTOR;
 			} else {
-				ty = y;
-				tx = x;
+				ty = transform.position.y;
+				tx = transform.position.x;
 
 				vx *= -SLOW_DOWN_VECTOR;
 				vy *= -SLOW_DOWN_VECTOR;
@@ -98,8 +101,8 @@ public class HookEntity extends Entity {
 				temp = temp.getConnected();
 			}
 		}
-		x = tx;
-		y = ty;
+		transform.position.x = tx;
+		transform.position.y = ty;
 
 		travelled += Math.sqrt(xDist * xDist + yDist * yDist);
 		if (travelled >= maxTravelDistance) {
@@ -108,15 +111,15 @@ public class HookEntity extends Entity {
 
 		if (!reversing) {
 			if (hookPiece == null) {
-				if (Point.distance(x, y, owner.getX(), owner.getY()) >= PIECE_DISTANCE) {
+				if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) >= PIECE_DISTANCE) {
 					HookPieceEntity e = new HookPieceEntity(owner, vx, vy, speed);
 					hookPiece = e;
 				}
 			} else {
-				hookPiece.setDirection(new Vector2(x, y));
+				hookPiece.setDirection(new Vector2(transform.position.x, transform.position.y));
 			}
 		} else {
-			if (Point.distance(x, y, owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
+			if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
 				kill();
 			} else {
 				setDirection(new Vector2(hookPiece.getX(), hookPiece.getY()));
@@ -133,14 +136,14 @@ public class HookEntity extends Entity {
 		 * Hooked Entity Management
 		 */
 		if (hooked != null) {
-			hooked.try_setPosition(x, y);
+			hooked.try_setPosition(transform.position.x, transform.position.y);
 		}
 	}
 
 	public boolean[] isWorldCollision(double tx, double ty) {
 		if (Game.map.isCollides(tx, ty, this)) {
-			boolean xCol = Game.map.isCollides(tx, y, this);
-			boolean yCol = Game.map.isCollides(x, ty, this);
+			boolean xCol = Game.map.isCollides(tx, transform.position.y, this);
+			boolean yCol = Game.map.isCollides(transform.position.x, ty, this);
 
 			return new boolean[] { xCol, yCol };
 		}
@@ -148,9 +151,18 @@ public class HookEntity extends Entity {
 	}
 
 	public void render() {
-		Image img = ani.getImage();
-		Game.s.g.drawImage(img, (int) (Window.CENTER_X - (Game.focus.x - x) * Game.TILE_SIZE - img.getWidth(null) / 2), //
-				(int) (Window.CENTER_Y - (Game.focus.y - y) * Game.TILE_SIZE - img.getHeight(null) / 2), null);
+		int x = (int) (Window.CENTER_X - (Game.focus.x - transform.position.x) * Game.TILE_SIZE);
+		int y = (int) (Window.CENTER_Y - (Game.focus.y - transform.position.y) * Game.TILE_SIZE);
+
+		// Game.s.g.drawImage(img, (int) (Window.CENTER_X - (Game.focus.x - transform.position.x) * Game.TILE_SIZE - img.getWidth(null) / 2), //
+		// (int) (Window.CENTER_Y - (Game.focus.y - transform.position.y) * Game.TILE_SIZE - img.getHeight(null) / 2), null);
+
+		AffineTransform a = new AffineTransform();
+		a.rotate(transform.rotation, x, y);
+		a.translate((int) (Window.CENTER_X - (Game.focus.x - transform.position.x) * Game.TILE_SIZE - img.getWidth(null) / 2), //
+				(int) (Window.CENTER_Y - (Game.focus.y - transform.position.y) * Game.TILE_SIZE - img.getHeight(null) / 2));
+		a.scale(transform.scale.x, transform.scale.y);
+		Game.s.g.drawImage(img, a, null);
 
 		HookPieceEntity temp = hookPiece;
 		while (temp != null) {

@@ -6,12 +6,11 @@ import pudgewars.Game;
 import pudgewars.util.ImageHandler;
 
 public class Tile {
-	public final static Tile T_Dirt1 = new Tile("t_dirt", false, false, false);
-	public final static Tile T_Dirt2 = new Tile("t_dirt2", false, false, false);
-	public final static Tile T_Dirt3 = new Tile("t_dirt3", false, false, false);
-	public final static Tile T_Cobble = new Tile("cobblestoneSD", false, false, false);
-	public final static Tile T_Moss = new Tile("mossystoneSD", false, false, false);
-	public final static Tile T_Block = new Tile("mound", true, false, false);
+	public final static Tile T_Dirt1 = new Tile("grass1", false, false, false);
+	public final static Tile T_Dirt2 = new Tile("grass2", false, false, false);
+	public final static Tile T_Dirt3 = new Tile("grass3", false, false, false);
+	public final static Tile T_Block = new Tile("outerwall", true, true, false);
+	public final static Tile T_Mound = new Tile("mound2", true, false, false);
 	// public final static Tile T_Hookable = new Tile ("hookable", false, false, true);
 
 	String ID;
