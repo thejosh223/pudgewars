@@ -159,7 +159,7 @@ public class PudgeEntity extends Entity {
 	public void setHook(Vector2 click) {
 		if (!hooked) {
 			Entity e = new HookEntity(this, click);
-			Game.entities.add(e);
+			Game.entities2.entities.add(e);
 			hooked = true;
 		}
 	}
@@ -192,7 +192,7 @@ public class PudgeEntity extends Entity {
 	}
 
 	public void kill() {
-		Game.entities.remove(this);
+		Game.entities2.entities.remove(this);
 		System.out.println("Pudge was Killed");
 	}
 }

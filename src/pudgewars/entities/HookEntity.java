@@ -186,7 +186,7 @@ public class HookEntity extends Entity {
 		}
 		hookPiece = null;
 
-		Game.entities.remove(this);
+		Game.entities2.entities.remove(this);
 	}
 
 	public void collides(Entity e) {

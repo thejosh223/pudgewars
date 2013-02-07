@@ -1,10 +1,8 @@
 package pudgewars;
 
 import java.awt.Graphics2D;
-import java.util.ArrayList;
 
-import pudgewars.entities.Entity;
-import pudgewars.entities.PudgeEntity;
+import pudgewars.entities.EntityManager;
 import pudgewars.input.Keys;
 import pudgewars.input.MouseHandler;
 import pudgewars.level.Map;
@@ -17,12 +15,13 @@ public class Game {
 	public static final int TILE_HEIGHT = 15;
 
 	private boolean gameRunning;
-	public static ArrayList<Entity> entities;
+	// public static ArrayList<Entity> entities;
+	public static EntityManager entities2;
 	public static Map map;
 	public static Screen s;
 	public static Vector2 focus;
 
-	private PudgeEntity player;
+	// private PudgeEntity player;
 
 	/*
 	 * Input Classes
@@ -44,11 +43,7 @@ public class Game {
 		focus = new Vector2(Map.MAP_WIDTH / 2, Map.MAP_HEIGHT / 2);
 		gameRunning = true;
 
-		entities = new ArrayList<Entity>();
-		player = new PudgeEntity(new Vector2(4, 4));
-		player.controllable = true;
-		entities.add(player);
-		entities.add(new PudgeEntity(new Vector2(4, 12)));
+		entities2 = new EntityManager();
 
 		s = new Screen(Window.WIDTH, Window.HEIGHT);
 	}
@@ -114,28 +109,19 @@ public class Game {
 		 * UPDATES
 		 */
 
-		// Entities/Player Update
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).update();
-		}
-
-		// World Update
-		map.update();
+		// Entities and Map Update
+		entities2.updateEntities();
+		entities2.lateUpdateEntities();
 
 		controls();
 	}
 
 	private void render() {
-		// Anti-Aliasing (THIS IS AWESOME.)
-		// g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+		// Render Map and Entities
+		entities2.render();
 
-		// World Drawing
-		map.render();
-
-		// Entity/Player Drawing
-		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).render();
-		}
+		// Render GUI
+		entities2.renderGUI();
 
 		// Flips the page between the two buffers
 		s.drawToGraphics((Graphics2D) Window.strategy.getDrawGraphics());

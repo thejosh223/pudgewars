@@ -46,8 +46,8 @@ public abstract class Entity {
 	}
 
 	public Entity isEntityCollision(double tx, double ty) {
-		for (int i = 0; i < Game.entities.size(); i++) {
-			Entity e = Game.entities.get(i);
+		for (int i = 0; i < Game.entities2.entities.size(); i++) {
+			Entity e = Game.entities2.entities.get(i);
 			if (e != this) {
 				if (new Rectangle2D.Double( //
 						tx - rigidbody.collision.x / 2, //
