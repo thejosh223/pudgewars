@@ -6,7 +6,6 @@ import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
 import pudgewars.Window;
-import pudgewars.util.Animation;
 import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
@@ -32,20 +31,18 @@ public class HookEntity extends Entity {
 	private int damage;
 
 	public HookEntity(PudgeEntity e, Vector2 target) {
-		super(e.getX(), e.getY());
+		super(e.transform.position, new Vector2(0.6, 0.6));
 		owner = e;
 		hooked = null;
 
 		damage = 4;
 
 		maxTravelDistance = 12;
-		speed = HOOK_SPEED;
-		collisionWidth = 0.6;
-		collisionHeight = 0.6;
+		rigidbody.speed = HOOK_SPEED;
 
 		travelled = 0;
 
-		setDirection(target);
+		rigidbody.setDirection(target);
 
 		// Movement Animation
 		// int hookMultiple = Game.SCALE - 1;
@@ -66,8 +63,8 @@ public class HookEntity extends Entity {
 		// ani.update();
 		transform.rotation -= 0.5;
 
-		double xDist = vx * Time.getTickInterval();
-		double yDist = vy * Time.getTickInterval();
+		double xDist = rigidbody.velocity.x * Time.getTickInterval();
+		double yDist = rigidbody.velocity.y * Time.getTickInterval();
 		double tx = transform.position.x + xDist;
 		double ty = transform.position.y + yDist;
 
@@ -81,23 +78,23 @@ public class HookEntity extends Entity {
 			maxTravelDistance -= maxTravelDistance * SLOW_DOWN_VECTOR / 4;
 			if (collisions[0] && !collisions[1]) {
 				tx = transform.position.x;
-				vx *= -SLOW_DOWN_VECTOR;
-				vy *= SLOW_DOWN_VECTOR;
+				rigidbody.velocity.x *= -SLOW_DOWN_VECTOR;
+				rigidbody.velocity.y *= SLOW_DOWN_VECTOR;
 			} else if (collisions[1] && !collisions[0]) {
 				ty = transform.position.y;
-				vx *= SLOW_DOWN_VECTOR;
-				vy *= -SLOW_DOWN_VECTOR;
+				rigidbody.velocity.x *= SLOW_DOWN_VECTOR;
+				rigidbody.velocity.y *= -SLOW_DOWN_VECTOR;
 			} else {
 				ty = transform.position.y;
 				tx = transform.position.x;
 
-				vx *= -SLOW_DOWN_VECTOR;
-				vy *= -SLOW_DOWN_VECTOR;
+				rigidbody.velocity.x *= -SLOW_DOWN_VECTOR;
+				rigidbody.velocity.y *= -SLOW_DOWN_VECTOR;
 			}
 
 			HookPieceEntity temp = hookPiece;
 			while (temp != null) {
-				temp.setSpeed((float) (temp.getSpeed() * SLOW_DOWN_VECTOR));
+				temp.rigidbody.speed *= SLOW_DOWN_VECTOR;
 				temp = temp.getConnected();
 			}
 		}
@@ -112,17 +109,17 @@ public class HookEntity extends Entity {
 		if (!reversing) {
 			if (hookPiece == null) {
 				if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) >= PIECE_DISTANCE) {
-					HookPieceEntity e = new HookPieceEntity(owner, vx, vy, speed);
+					HookPieceEntity e = new HookPieceEntity(owner, rigidbody.velocity.x, rigidbody.velocity.y, rigidbody.speed);
 					hookPiece = e;
 				}
 			} else {
-				hookPiece.setDirection(new Vector2(transform.position.x, transform.position.y));
+				hookPiece.rigidbody.setDirection(new Vector2(transform.position.x, transform.position.y));
 			}
 		} else {
 			if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
 				kill();
 			} else {
-				setDirection(new Vector2(hookPiece.getX(), hookPiece.getY()));
+				rigidbody.setDirection(new Vector2(hookPiece.getX(), hookPiece.getY()));
 			}
 		}
 
@@ -172,7 +169,7 @@ public class HookEntity extends Entity {
 	}
 
 	private void reverse() {
-		speed = HookEntity.HOOK_REVERSE_SPEED;
+		rigidbody.speed = HookEntity.HOOK_REVERSE_SPEED;
 		reversing = true;
 
 		HookPieceEntity temp = hookPiece;

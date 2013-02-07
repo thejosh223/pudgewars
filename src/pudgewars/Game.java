@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import pudgewars.entities.Entity;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.input.Keys;
-import pudgewars.input.MouseButton;
 import pudgewars.input.MouseHandler;
 import pudgewars.level.Map;
 import pudgewars.util.Time;
@@ -33,8 +32,8 @@ public class Game {
 
 	// Constructor Method
 	public Game(Keys k, MouseHandler m) {
-		this.keyInput = k;
-		this.mouseInput = m;
+		Game.keyInput = k;
+		Game.mouseInput = m;
 
 		init();
 		gameLoop();
@@ -46,9 +45,10 @@ public class Game {
 		gameRunning = true;
 
 		entities = new ArrayList<Entity>();
-		player = new PudgeEntity(4, 4);
+		player = new PudgeEntity(new Vector2(4, 4));
+		player.controllable = true;
 		entities.add(player);
-		entities.add(new PudgeEntity(4, 12));
+		entities.add(new PudgeEntity(new Vector2(4, 12)));
 
 		s = new Screen(Window.WIDTH, Window.HEIGHT);
 	}
@@ -155,19 +155,6 @@ public class Game {
 			focus.set(focus.x, Game.TILE_HEIGHT / 2);
 		} else if (focus.y > Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2) {
 			focus.set(focus.x, Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2);
-		}
-
-		if (mouseInput.lastClicked[MouseButton.RIGHT] != null) {
-			Vector2 click = mouseInput.lastClicked[MouseButton.RIGHT];
-			player.setTarget(s.screenToWorldPoint(click));
-
-			mouseInput.lastClicked[MouseButton.RIGHT] = null;
-		}
-		if (mouseInput.lastClicked[MouseButton.LEFT] != null) {
-			Vector2 click = mouseInput.lastClicked[MouseButton.LEFT];
-			player.setHook(s.screenToWorldPoint(click));
-
-			mouseInput.lastClicked[MouseButton.LEFT] = null;
 		}
 	}
 }

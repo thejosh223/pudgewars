@@ -16,20 +16,20 @@ public class HookPieceEntity extends Entity {
 	private HookPieceEntity next;
 	private BufferedImage img;
 
-	public HookPieceEntity(PudgeEntity e, double vx, double vy, float speed) {
-		super(e.getX(), e.getY());
+	public HookPieceEntity(PudgeEntity e, double vx, double vy, double speed) {
+		super(e.transform.position);
 
 		owner = e;
-		this.vx = vx;
-		this.vy = vy;
-		this.speed = speed;
+		rigidbody.velocity.x = vx;
+		rigidbody.velocity.y = vy;
+		rigidbody.speed = speed;
 
 		img = ImageHandler.get().getImage("hookpiece");
 	}
 
 	public void update() {
-		double xDist = vx * Time.getTickInterval();
-		double yDist = vy * Time.getTickInterval();
+		double xDist = rigidbody.velocity.x * Time.getTickInterval();
+		double yDist = rigidbody.velocity.y * Time.getTickInterval();
 		double tx = transform.position.x + xDist;
 		double ty = transform.position.y + yDist;
 		transform.position.x = tx;
@@ -38,11 +38,11 @@ public class HookPieceEntity extends Entity {
 		if (!reversing) {
 			if (next == null) {
 				if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) >= HookEntity.PIECE_DISTANCE) {
-					HookPieceEntity e = new HookPieceEntity(owner, vx, vy, speed);
+					HookPieceEntity e = new HookPieceEntity(owner, rigidbody.velocity.x, rigidbody.velocity.y, rigidbody.speed);
 					next = e;
 				}
 			} else {
-				next.setDirection(new Vector2(transform.position.x, transform.position.y));
+				next.rigidbody.setDirection(new Vector2(transform.position.x, transform.position.y));
 			}
 		} else {
 			if (next != null) {
@@ -51,13 +51,13 @@ public class HookPieceEntity extends Entity {
 						next.kill();
 						next = null;
 					} else {
-						setDirection(new Vector2(next.getX(), next.getY()));
+						rigidbody.setDirection(new Vector2(next.getX(), next.getY()));
 					}
 				} else {
-					setDirection(new Vector2(next.getX(), next.getY()));
+					rigidbody.setDirection(new Vector2(next.getX(), next.getY()));
 				}
 			} else {
-				setDirection(new Vector2(owner.getX(), owner.getY()));
+				rigidbody.setDirection(new Vector2(owner.getX(), owner.getY()));
 			}
 		}
 	}
@@ -79,7 +79,7 @@ public class HookPieceEntity extends Entity {
 	}
 
 	public void reverse() {
-		speed = HookEntity.HOOK_REVERSE_SPEED;
+		rigidbody.speed = HookEntity.HOOK_REVERSE_SPEED;
 		reversing = true;
 	}
 

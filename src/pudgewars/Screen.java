@@ -2,7 +2,6 @@ package pudgewars;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 
 import pudgewars.util.Vector2;
@@ -57,5 +56,9 @@ public class Screen {
 	public Vector2 screenToWorldPoint(double x, double y) {
 		return new Vector2(Game.focus.x - ((cx - x * width) / (double) Game.TILE_SIZE),//
 				Game.focus.y - ((cy - y * height) / (double) Game.TILE_SIZE));
+	}
+
+	public Vector2 worldToScreenPoint(Vector2 v) {
+		return new Vector2((int) (Window.CENTER_X - (Game.focus.x - v.x) * Game.TILE_SIZE), (int) (Window.CENTER_Y - (Game.focus.y - v.y) * Game.TILE_SIZE));
 	}
 }

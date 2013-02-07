@@ -1,43 +1,69 @@
 package pudgewars.entities;
 
 import java.awt.BasicStroke;
-import java.awt.Color;
-import java.awt.GradientPaint;
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
-import java.awt.geom.Arc2D;
 
 import pudgewars.Game;
-import pudgewars.Window;
+import pudgewars.input.MouseButton;
 import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
 public class PudgeEntity extends Entity {
+	public final static int CLICK_SIZE = 8;
 	public final static double MOVEMENT_UNCERTAINTY = 0.05;
 	public final static int MAX_LIFE = 20;
 
-	protected Vector2 target;
+	public final static double COLLISION_WIDTH = 1;
+	public final static double COLLISION_HEIGHT = 1;
+
+	public boolean controllable = false;
+
 	protected boolean hooked;
 	protected int life;
 
 	protected Image img;
 
-	public PudgeEntity(double x, double y) {
-		super(x, y);
+	// Target Position
+	protected Image clicker;
+	protected Vector2 target;
+	protected double targetRotation;
+
+	public PudgeEntity(Vector2 position) {
+		super(position, new Vector2(COLLISION_WIDTH, COLLISION_HEIGHT));
 
 		life = 20;
 
-		collisionWidth = 0.8;
-		collisionHeight = 0.8;
-
-		speed = 3.8f;
+		rigidbody.speed = 3.8;
 
 		img = ImageHandler.get().getImage("pudge");
+
+		clicker = ImageHandler.get().getImage("selector");
+		target = null;
 	}
 
 	public void update() {
-		transform.rotation += 0.08;
+		// Controls
+		if (controllable) {
+			// System.out.println("Pudge Position: " + transform.position.x + ", " + transform.position.y);
+
+			if (Game.mouseInput.lastClicked[MouseButton.RIGHT] != null) {
+				Vector2 click = Game.mouseInput.lastClicked[MouseButton.RIGHT];
+				target = Game.s.screenToWorldPoint(click);
+
+				Game.mouseInput.lastClicked[MouseButton.RIGHT] = null;
+			}
+			if (Game.mouseInput.lastClicked[MouseButton.LEFT] != null) {
+				Vector2 click = Game.mouseInput.lastClicked[MouseButton.LEFT];
+				this.setHook(Game.s.screenToWorldPoint(click));
+
+				Game.mouseInput.lastClicked[MouseButton.LEFT] = null;
+			}
+
+			// Rotate the Clicker
+			if (target != null) targetRotation += -0.1;
+		}
 
 		if (target != null) {
 			if (transform.position.x >= target.x - MOVEMENT_UNCERTAINTY / 2 && transform.position.x < target.x + MOVEMENT_UNCERTAINTY / 2 //
@@ -47,15 +73,14 @@ public class PudgeEntity extends Entity {
 				setHorizontalMovement(0);
 				target = null;
 			} else {
-				setDirection(target);
+				rigidbody.setDirection(target);
 			}
 		}
 
-		vx += ax * Time.getTickInterval();
-		vy += ay * Time.getTickInterval();
+		rigidbody.updateVelocity();
 
-		double tx = transform.position.x + vx * Time.getTickInterval();
-		double ty = transform.position.y + vy * Time.getTickInterval();
+		double tx = transform.position.x + rigidbody.velocity.x * Time.getTickInterval();
+		double ty = transform.position.y + rigidbody.velocity.y * Time.getTickInterval();
 
 		/*
 		 * TODO:
@@ -93,7 +118,6 @@ public class PudgeEntity extends Entity {
 		removeHook();
 	}
 
-	public final static int CLICK_SIZE = Game.TILE_SIZE / 4;
 	final static int LIFESTROKE_DEPTH = 3;
 	final static BasicStroke LIFESTROKE = new BasicStroke(LIFESTROKE_DEPTH);
 
@@ -101,28 +125,15 @@ public class PudgeEntity extends Entity {
 	final static int FULL_LIFE_ARC = 180;
 
 	public void render() {
-		int x = (int) (Window.CENTER_X - (Game.focus.x - this.transform.position.x) * Game.TILE_SIZE);
-		int y = (int) (Window.CENTER_Y - (Game.focus.y - this.transform.position.y) * Game.TILE_SIZE);
-
-		// Game.s.g.setColor(Color.DARK_GRAY);
-		// Game.s.g.fillOval((int) (x - (Game.TILE_SIZE * collisionWidth) / 2), (int) (y - (Game.TILE_SIZE * collisionHeight) / 2), (int) (Game.TILE_SIZE * collisionWidth), (int) (Game.TILE_SIZE * collisionHeight));
-		// Game.s.g.drawImage(img, (int) (x - (Game.TILE_SIZE * collisionWidth) / 2), //
-		// (int) (y - (Game.TILE_SIZE * collisionHeight) / 2), //
-		// (int) (Game.TILE_SIZE * collisionWidth), //
-		// (int) (Game.TILE_SIZE * collisionHeight), null);
-
-		AffineTransform a = new AffineTransform();
-		a.rotate(transform.rotation, x, y);
-		a.translate((int) (x - (Game.TILE_SIZE * collisionWidth) / 2), (int) (y - (Game.TILE_SIZE * collisionHeight) / 2));
-		a.scale(transform.scale.x, transform.scale.y);
-		Game.s.g.drawImage(img, a, null);
+		// Draw Pudge
+		Game.s.g.drawImage(img, transform.getAffineTransformation(), null);
 
 		if (target != null) {
-			int tx = (int) (Window.CENTER_X - ((Game.focus.x - target.x) * Game.TILE_SIZE));
-			int ty = (int) (Window.CENTER_Y - ((Game.focus.y - target.y) * Game.TILE_SIZE));
-			Game.s.g.setColor(Color.LIGHT_GRAY);
-			// g.setStroke(new BasicStroke(Game.SCALE));
-			Game.s.g.fillOval((int) (tx - CLICK_SIZE / 2), (int) (ty - CLICK_SIZE / 2), CLICK_SIZE, CLICK_SIZE);
+			Vector2 targetLocation = Game.s.worldToScreenPoint(target);
+			AffineTransform a = new AffineTransform();
+			a.translate((int) (targetLocation.x - CLICK_SIZE / 2), (int) (targetLocation.y - CLICK_SIZE / 2));
+			a.rotate(targetRotation, CLICK_SIZE / 2, CLICK_SIZE / 2);
+			Game.s.g.drawImage(clicker, a, null);
 		}
 
 		/*
@@ -130,19 +141,15 @@ public class PudgeEntity extends Entity {
 		 */
 
 		// Dimension Definitions!
-		int ellipseWidth = (int) (Game.TILE_SIZE * collisionWidth);
-		int ellipseHeight = (int) (Game.TILE_SIZE * collisionHeight);
-		int lifeEllipseWidth = ellipseWidth + 2 * (LIFESTROKE_DEPTH + 1);
-		int lifeEllipseHeight = ellipseHeight + 2 * (LIFESTROKE_DEPTH + 1);
+		// int ellipseWidth = (int) (Game.TILE_SIZE * collisionWidth);
+		// int ellipseHeight = (int) (Game.TILE_SIZE * collisionHeight);
+		// int lifeEllipseWidth = ellipseWidth + 2 * (LIFESTROKE_DEPTH + 1);
+		// int lifeEllipseHeight = ellipseHeight + 2 * (LIFESTROKE_DEPTH + 1);
 
-		Game.s.g.setStroke(LIFESTROKE);
-		Game.s.g.setPaint(new GradientPaint((float) (x - lifeEllipseWidth * 0.5), (float) (y - lifeEllipseHeight * 0.5), new Color(250, 0, 0, 175), (float) (x + lifeEllipseWidth * 0.5), (float) (y - lifeEllipseHeight * 0.5), new Color(0, 0, 250, 175)));
+		// Game.s.g.setStroke(LIFESTROKE);
+		// Game.s.g.setPaint(new GradientPaint((float) (x - lifeEllipseWidth * 0.5), (float) (y - lifeEllipseHeight * 0.5), new Color(250, 0, 0, 175), (float) (x + lifeEllipseWidth * 0.5), (float) (y - lifeEllipseHeight * 0.5), new Color(0, 0, 250, 175)));
 
 		// Game.s.g.draw(new Arc2D.Double(x - lifeEllipseWidth * 0.5, y - lifeEllipseHeight * 0.5, lifeEllipseWidth, lifeEllipseHeight, ARC_STARTANGLE, FULL_LIFE_ARC * this.getLife() / PudgeEntity.MAX_LIFE, Arc2D.OPEN));
-	}
-
-	public void setTarget(Vector2 target) {
-		this.target = target;
 	}
 
 	public void removeHook() {

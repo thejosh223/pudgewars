@@ -62,10 +62,10 @@ public class Map {
 	}
 
 	public boolean isCollides(double x, double y, HookEntity e) {
-		double ty = y - e.getCollisionHeight() / 2;
-		for (int i = 0; i < 2; i++, ty += e.getCollisionHeight()) {
-			double tx = x - e.getCollisionWidth() / 2;
-			for (int o = 0; o < 2; o++, tx += e.getCollisionWidth()) {
+		double ty = y - e.rigidbody.collision.y / 2;
+		for (int i = 0; i < 2; i++, ty += e.rigidbody.collision.y) {
+			double tx = x - e.rigidbody.collision.x / 2;
+			for (int o = 0; o < 2; o++, tx += e.rigidbody.collision.x) {
 				if (map[(int) ty][(int) tx].isHookSolid()) {
 					return true;
 				}
@@ -75,10 +75,10 @@ public class Map {
 	}
 
 	public boolean isCollides(double x, double y, Entity e) {
-		double ty = y - e.getCollisionHeight() / 2;
-		for (int i = 0; i < 2; i++, ty += e.getCollisionHeight()) {
-			double tx = x - e.getCollisionWidth() / 2;
-			for (int o = 0; o < 2; o++, tx += e.getCollisionWidth()) {
+		double ty = y - e.rigidbody.collision.y / 2;
+		for (int i = 0; i < 2; i++, ty += e.rigidbody.collision.y) {
+			double tx = x - e.rigidbody.collision.x / 2;
+			for (int o = 0; o < 2; o++, tx += e.rigidbody.collision.x) {
 				if (map[(int) ty][(int) tx].isSolid()) {
 					return true;
 				}
@@ -88,21 +88,6 @@ public class Map {
 	}
 
 	public void render() {
-		// int x = (int) Math.floor(focus.getX() - Game.TILE_WIDTH / 2);
-		// int y = (int) Math.floor(focus.getY() - Game.TILE_HEIGHT / 2);
-		//
-		// if (x < 0) {
-		// x = 0;
-		// } else if (x > MAP_WIDTH - Game.TILE_WIDTH / 2) {
-		// x = MAP_WIDTH - Game.TILE_WIDTH / 2;
-		// }
-		//
-		// if (y < 0) {
-		// y = 0;
-		// } else if (y > MAP_HEIGHT - Game.TILE_HEIGHT / 2) {
-		// y = MAP_HEIGHT- Game.TILE_HEIGHT / 2;
-		// }
-
 		int dx = (int) (Window.CENTER_X - (Game.focus.x * Game.TILE_SIZE));
 		int dy = (int) (Window.CENTER_Y - (Game.focus.y * Game.TILE_SIZE));
 		for (int i = 0; i < MAP_HEIGHT; i++) {
