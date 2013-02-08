@@ -29,6 +29,10 @@ public class Transform {
 		this.scale = scale.clone();
 	}
 
+	public void rotateTowards(Vector2 target) {
+		rotation = -Math.atan2(position.x - target.x, position.y - target.y);
+	}
+
 	public AffineTransform getAffineTransformation() {
 		Vector2 v = Game.s.worldToScreenPoint(position);
 

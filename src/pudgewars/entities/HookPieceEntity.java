@@ -47,7 +47,8 @@ public class HookPieceEntity extends Entity {
 		} else {
 			if (next != null) {
 				if (next.getConnected() != null) {
-					if (Point.distance(next.getConnected().getX(), next.getConnected().getY(), owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
+					// if (Point.distance(next.getConnected().getX(), next.getConnected().getY(), owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
+					if (Vector2.distance(next.transform.position, owner.transform.position) <= rigidbody.velocity.magnitude() * Time.getTickInterval()) {
 						next.kill();
 						next = null;
 					} else {
@@ -60,9 +61,6 @@ public class HookPieceEntity extends Entity {
 				rigidbody.setDirection(new Vector2(owner.getX(), owner.getY()));
 			}
 		}
-	}
-
-	public void kill() {
 	}
 
 	public void render() {

@@ -14,7 +14,6 @@ import pudgewars.util.Vector2;
 
 public class PudgeEntity extends Entity {
 	public final static int CLICK_SIZE = 8;
-	public final static double MOVEMENT_UNCERTAINTY = 0.05;
 	public final static int MAX_LIFE = 20;
 
 	public final static double COLLISION_WIDTH = 1;
@@ -22,7 +21,8 @@ public class PudgeEntity extends Entity {
 
 	public boolean controllable = false;
 
-	protected boolean hooked;
+	public boolean hooking;
+	public HookEntity attachedHook;
 	protected int life;
 
 	protected Image img;
@@ -49,8 +49,6 @@ public class PudgeEntity extends Entity {
 	public void update() {
 		// Controls
 		if (controllable) {
-			// System.out.println("Pudge Position: " + transform.position.x + ", " + transform.position.y);
-
 			if (Game.mouseInput.lastClicked[MouseButton.RIGHT] != null) {
 				Vector2 click = Game.mouseInput.lastClicked[MouseButton.RIGHT];
 				target = Game.s.screenToWorldPoint(click);
@@ -64,14 +62,18 @@ public class PudgeEntity extends Entity {
 				Game.mouseInput.lastClicked[MouseButton.LEFT] = null;
 			}
 
+			// Rotate the Player towards mouse
+			// transform.rotateTowards(Game.s.screenToWorldPoint(Game.mouseInput.mousePosition));
+
 			// Rotate the Clicker
 			if (target != null) targetRotation += -0.1;
 		}
 
 		if (target != null) {
-			if (transform.position.x >= target.x - MOVEMENT_UNCERTAINTY / 2 && transform.position.x < target.x + MOVEMENT_UNCERTAINTY / 2 //
-					&& transform.position.y >= target.y - MOVEMENT_UNCERTAINTY / 2 && transform.position.y < target.y + MOVEMENT_UNCERTAINTY / 2) {
+			transform.rotateTowards(target);
 
+			double dist = transform.position.distance(target);
+			if (dist < rigidbody.velocity.magnitude() * Time.getTickInterval()) {
 				setVerticalMovement(0);
 				setHorizontalMovement(0);
 				target = null;
@@ -84,38 +86,6 @@ public class PudgeEntity extends Entity {
 
 		// double tx = transform.position.x + rigidbody.velocity.x * Time.getTickInterval();
 		// double ty = transform.position.y + rigidbody.velocity.y * Time.getTickInterval();
-
-		/*
-		 * TODO:
-		 * Entity collisions are handled in priority to world collisions.
-		 */
-		// Entity te = isEntityCollision(tx, ty);
-		// if (te != null) {
-		// // tx = x;
-		// // ty = y;
-		// } else {
-		// if (Game.map.isCollides(tx, ty, this)) {
-		// boolean xCol = Game.map.isCollides(tx, transform.position.y, this);
-		// boolean yCol = Game.map.isCollides(transform.position.x, ty, this);
-		// if (xCol && !yCol) {
-		// setHorizontalMovement(0);
-		// tx = transform.position.x;
-		// } else if (yCol && !xCol) {
-		// setVerticalMovement(0);
-		// ty = transform.position.y;
-		// } else {
-		// setHorizontalMovement(0);
-		// setVerticalMovement(0);
-		//
-		// ty = transform.position.y;
-		// tx = transform.position.x;
-		// target = null;
-		// }
-		// }
-		// }
-		//
-		// transform.position.x = tx;
-		// transform.position.y = ty;
 
 		// Un-comment this to have some fun!
 		removeHook();
@@ -156,14 +126,14 @@ public class PudgeEntity extends Entity {
 	}
 
 	public void removeHook() {
-		hooked = false;
+		hooking = false;
 	}
 
 	public void setHook(Vector2 click) {
-		if (!hooked) {
+		if (!hooking) {
 			Entity e = new HookEntity(this, click);
 			Game.entities.entities.add(e);
-			hooked = true;
+			hooking = true;
 		}
 	}
 
@@ -192,6 +162,18 @@ public class PudgeEntity extends Entity {
 		return false;
 	}
 
+	public void collides(Entity e, double vx, double vy) {
+		if (e instanceof PudgeEntity) {
+			PudgeEntity p = (PudgeEntity) e;
+			if (p.attachedHook != null) {
+				if (p.attachedHook.owner == this) {
+					p.attachedHook.detachPudge();
+					p.rigidbody.velocity = Vector2.ZERO.clone();
+				}
+			}
+		}
+	}
+
 	public void subLife(int sub) {
 		life -= sub;
 		if (life <= 0) {
@@ -204,7 +186,7 @@ public class PudgeEntity extends Entity {
 	}
 
 	public void kill() {
-		Game.entities.entities.remove(this);
+		super.kill();
 		System.out.println("Pudge was Killed");
 	}
 }

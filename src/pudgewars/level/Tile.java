@@ -55,12 +55,6 @@ public class Tile implements BBOwner {
 	 * Collision Detection!
 	 */
 	public final boolean blocks(BBOwner b) {
-		if (ID.equals("outerwall")) {
-			boolean a1 = b.shouldBlock(this);
-			boolean a2 = this.shouldBlock(b);
-			System.out.println("SS: " + a1 + ", " + a2);
-			return a1 && a2;
-		}
 		return b.shouldBlock(this) && this.shouldBlock(b);
 	}
 

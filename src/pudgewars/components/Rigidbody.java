@@ -4,7 +4,6 @@ import java.util.List;
 
 import pudgewars.Game;
 import pudgewars.entities.Entity;
-import pudgewars.interfaces.BBOwner;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
@@ -55,7 +54,6 @@ public class Rigidbody {
 
 	public boolean move(double vx, double vy) {
 		List<CollisionBox> l = Game.entities.getListCollisionBoxes(this);
-		// System.out.println("Here: " + l.size());
 		if (physicsSlide) {
 			boolean moved = false;
 			if (!gameObject.remove) moved |= semiMove(l, vx, 0); // Move in X Dir.

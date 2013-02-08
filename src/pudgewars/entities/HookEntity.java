@@ -1,7 +1,6 @@
 package pudgewars.entities;
 
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
@@ -14,23 +13,25 @@ import pudgewars.util.Vector2;
 
 public class HookEntity extends Entity {
 	public final static double PIECE_DISTANCE = 1;
-	public final static double MAX_TRAVEL_DISTANCE = 8;
 	public final static double KILL_UNCERTAINTY = 0.1;
+	public final static double SLOW_DOWN_VECTOR = 0.5;
 
 	// Hook Speed
 	public final static float HOOK_SPEED = 6;
 	public final static float HOOK_REVERSE_SPEED = 2 * HOOK_SPEED;
 
-	private PudgeEntity owner;
-	private PudgeEntity hooked;
-	// private Animation ani;
-	private Image img;
+	public PudgeEntity owner;
+	public PudgeEntity hooked;
 
-	private double travelled;
+	public boolean canHook = true;
+	private double travelled = 0;
 	private double maxTravelDistance;
 	private boolean reversing;
 	private HookPieceEntity hookPiece;
 	private int damage;
+
+	// Render
+	private Image img;
 
 	public HookEntity(PudgeEntity e, Vector2 target) {
 		super(e.transform.position, new Vector2(0.6, 0.6));
@@ -39,28 +40,14 @@ public class HookEntity extends Entity {
 
 		damage = 4;
 
-		maxTravelDistance = 12;
-		rigidbody.speed = HOOK_SPEED;
-
-		travelled = 0;
+		maxTravelDistance = 14;
+		rigidbody.speed = 10;
 
 		rigidbody.physicsSlide = false;
 		rigidbody.setDirection(target);
 
-		// Movement Animation
-		// int hookMultiple = Game.SCALE - 1;
-		// double movementInterval = 0.05;
-		// int noOfSprites = ImageHandler.get().getSplitImageColumns("tryhook", 16);
-
 		img = ImageHandler.get().getImage("hook");
-
-		// for (int i = 0; i < noOfSprites; i++) {
-		// ani.add(ImageHandler.get().getImage("tryhook", i, 0, 16), movementInterval);
-		// ani.startAnimation();
-		// }
 	}
-
-	public final static double SLOW_DOWN_VECTOR = 0.5;
 
 	public void update() {
 		// Spinning Animation
@@ -91,7 +78,8 @@ public class HookEntity extends Entity {
 			if (Vector2.distance(transform.position, owner.transform.position) <= rigidbody.velocity.magnitude() * Time.getTickInterval()) {
 				kill();
 			} else {
-				rigidbody.setDirection(new Vector2(hookPiece.getX(), hookPiece.getY()));
+				if (hookPiece == null) rigidbody.setDirection(owner.transform.position.clone());
+				else rigidbody.setDirection(hookPiece.transform.position.clone());
 			}
 		}
 
@@ -105,18 +93,9 @@ public class HookEntity extends Entity {
 		 * Hooked Entity Management
 		 */
 		if (hooked != null) {
-			hooked.try_setPosition(transform.position.x, transform.position.y);
+			// hooked.try_setPosition(transform.position.x, transform.position.y);
+			hooked.rigidbody.velocity = rigidbody.velocity.clone();
 		}
-	}
-
-	public boolean[] isWorldCollision(double tx, double ty) {
-		if (Game.map.isCollides(tx, ty, this)) {
-			boolean xCol = Game.map.isCollides(tx, transform.position.y, this);
-			boolean yCol = Game.map.isCollides(transform.position.x, ty, this);
-
-			return new boolean[] { xCol, yCol };
-		}
-		return new boolean[] { false, false };
 	}
 
 	public void render() {
@@ -152,15 +131,31 @@ public class HookEntity extends Entity {
 	}
 
 	public void kill() {
+		super.kill();
 		owner.removeHook();
 		while (hookPiece != null) {
 			hookPiece = hookPiece.getConnected();
 		}
 		hookPiece = null;
-
-		Game.entities.entities.remove(this);
 	}
 
+	public void attachPudge(PudgeEntity e) {
+		e.attachedHook = this; // Set the hookEntity as this
+		e.transform.position = transform.position.clone(); // Set the pudge as this position
+		// TODO: If killed, check for null (?)
+		e.subLife(damage); // Do some damage
+		hooked = e;
+		canHook = false;
+	}
+
+	public void detachPudge() {
+		hooked.attachedHook = null;
+		hooked = null;
+	}
+
+	/*
+	 * Collision Detection and Response
+	 */
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return false;
 		if (b instanceof PudgeEntity) {
@@ -192,12 +187,11 @@ public class HookEntity extends Entity {
 	}
 
 	public void collides(Entity e, double vx, double vy) {
-		if (hooked == null) {
+		if (hooked == null && canHook) {
 			if (e instanceof PudgeEntity) {
 				// TODO: Check if collision is with ally or enemy
 				if (e != owner) {
-					hooked = (PudgeEntity) e;
-					hooked.subLife(damage);
+					attachPudge((PudgeEntity) e);
 					reverse();
 				}
 			}

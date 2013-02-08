@@ -38,6 +38,15 @@ public class EntityManager {
 		}
 	}
 
+	public void killUpdateEntities() {
+		for (int i = 0; i < entities.size(); i++) {
+			if (entities.get(i).remove) {
+				entities.remove(i);
+				i--;
+			}
+		}
+	}
+
 	public void render() {
 		map.render();
 		for (int i = 0; i < entities.size(); i++) {

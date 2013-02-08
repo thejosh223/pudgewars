@@ -35,7 +35,9 @@ public abstract class Entity implements BBOwner {
 
 	// public abstract void collides(Entity e);
 
-	public abstract void kill();
+	public void kill() {
+		remove = true;
+	}
 
 	public boolean[] isWorldCollision(double tx, double ty) {
 		if (Game.map.isCollides(tx, ty, this)) {

@@ -112,6 +112,7 @@ public class Game {
 		// Entities and Map Update
 		entities.updateEntities();
 		entities.lateUpdateEntities();
+		entities.killUpdateEntities();
 
 		controls();
 	}
