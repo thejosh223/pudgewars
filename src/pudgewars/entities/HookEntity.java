@@ -78,7 +78,8 @@ public class HookEntity extends Entity {
 
 		if (!reversing) {
 			if (hookPiece == null) {
-				if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) >= PIECE_DISTANCE) {
+				// if (Point.distance(transform.position, owner.getX(), owner.getY()) >= PIECE_DISTANCE) {
+				if (Vector2.distance(transform.position, owner.transform.position) >= PIECE_DISTANCE) {
 					HookPieceEntity e = new HookPieceEntity(owner, rigidbody.velocity.x, rigidbody.velocity.y, rigidbody.speed);
 					hookPiece = e;
 				}
@@ -86,7 +87,8 @@ public class HookEntity extends Entity {
 				hookPiece.rigidbody.setDirection(new Vector2(transform.position.x, transform.position.y));
 			}
 		} else {
-			if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
+			// if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
+			if (Vector2.distance(transform.position, owner.transform.position) <= rigidbody.velocity.magnitude() * Time.getTickInterval()) {
 				kill();
 			} else {
 				rigidbody.setDirection(new Vector2(hookPiece.getX(), hookPiece.getY()));
