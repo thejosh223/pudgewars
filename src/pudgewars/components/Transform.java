@@ -1,9 +1,11 @@
-package pudgewars.util;
+package pudgewars.components;
 
 import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
 import pudgewars.entities.Entity;
+import pudgewars.util.Rotation;
+import pudgewars.util.Vector2;
 
 public class Transform {
 	public Entity gameObject;

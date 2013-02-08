@@ -1,11 +1,16 @@
 package pudgewars.level;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import pudgewars.Game;
 import pudgewars.Window;
+import pudgewars.components.Rigidbody;
 import pudgewars.entities.Entity;
 import pudgewars.entities.HookEntity;
+import pudgewars.physics.Physics;
+import pudgewars.util.CollisionBox;
 import pudgewars.util.Time;
 
 public class Map {
@@ -61,6 +66,22 @@ public class Map {
 		Game.focus.set(Game.focus.x + Time.getTickInterval() * vx, Game.focus.y + Time.getTickInterval() * vy);
 	}
 
+	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {
+		CollisionBox b = r.getCollisionBox().grow(1);
+		List<CollisionBox> l = new ArrayList<CollisionBox>();
+
+		for (double y = b.y0; y <= b.y1; y++) {
+			for (double x = b.x0; x <= b.x1; x++) {
+				Tile t = map[(int) y][(int) x];
+				if (t.blocks(b.owner)) {
+					l.add(new CollisionBox(t, (int) x, (int) y, (int) x + 1, (int) y + 1));
+				}
+			}
+		}
+
+		return l;
+	}
+
 	public boolean isCollides(double x, double y, HookEntity e) {
 		double ty = y - e.rigidbody.collision.y / 2;
 		for (int i = 0; i < 2; i++, ty += e.rigidbody.collision.y) {
@@ -79,7 +100,7 @@ public class Map {
 		for (int i = 0; i < 2; i++, ty += e.rigidbody.collision.y) {
 			double tx = x - e.rigidbody.collision.x / 2;
 			for (int o = 0; o < 2; o++, tx += e.rigidbody.collision.x) {
-				if (map[(int) ty][(int) tx].isSolid()) {
+				if (map[(int) ty][(int) tx].isPudgeSolid()) {
 					return true;
 				}
 			}

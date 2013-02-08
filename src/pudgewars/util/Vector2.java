@@ -26,7 +26,7 @@ public class Vector2 {
 		y += v.y;
 	}
 
-	public void scale(float amt) {
+	public void scale(double amt) {
 		x *= amt;
 		y *= amt;
 	}

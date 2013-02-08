@@ -6,6 +6,8 @@ import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
 import pudgewars.input.MouseButton;
+import pudgewars.interfaces.BBOwner;
+import pudgewars.level.Tile;
 import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
@@ -35,6 +37,7 @@ public class PudgeEntity extends Entity {
 
 		life = 20;
 
+		rigidbody.physicsSlide = true;
 		rigidbody.speed = 3.8;
 
 		img = ImageHandler.get().getImage("pudge");
@@ -79,40 +82,40 @@ public class PudgeEntity extends Entity {
 
 		rigidbody.updateVelocity();
 
-		double tx = transform.position.x + rigidbody.velocity.x * Time.getTickInterval();
-		double ty = transform.position.y + rigidbody.velocity.y * Time.getTickInterval();
+		// double tx = transform.position.x + rigidbody.velocity.x * Time.getTickInterval();
+		// double ty = transform.position.y + rigidbody.velocity.y * Time.getTickInterval();
 
 		/*
 		 * TODO:
 		 * Entity collisions are handled in priority to world collisions.
 		 */
-		Entity te = isEntityCollision(tx, ty);
-		if (te != null) {
-			// tx = x;
-			// ty = y;
-		} else {
-			if (Game.map.isCollides(tx, ty, this)) {
-				boolean xCol = Game.map.isCollides(tx, transform.position.y, this);
-				boolean yCol = Game.map.isCollides(transform.position.x, ty, this);
-				if (xCol && !yCol) {
-					setHorizontalMovement(0);
-					tx = transform.position.x;
-				} else if (yCol && !xCol) {
-					setVerticalMovement(0);
-					ty = transform.position.y;
-				} else {
-					setHorizontalMovement(0);
-					setVerticalMovement(0);
-
-					ty = transform.position.y;
-					tx = transform.position.x;
-					target = null;
-				}
-			}
-		}
-
-		transform.position.x = tx;
-		transform.position.y = ty;
+		// Entity te = isEntityCollision(tx, ty);
+		// if (te != null) {
+		// // tx = x;
+		// // ty = y;
+		// } else {
+		// if (Game.map.isCollides(tx, ty, this)) {
+		// boolean xCol = Game.map.isCollides(tx, transform.position.y, this);
+		// boolean yCol = Game.map.isCollides(transform.position.x, ty, this);
+		// if (xCol && !yCol) {
+		// setHorizontalMovement(0);
+		// tx = transform.position.x;
+		// } else if (yCol && !xCol) {
+		// setVerticalMovement(0);
+		// ty = transform.position.y;
+		// } else {
+		// setHorizontalMovement(0);
+		// setVerticalMovement(0);
+		//
+		// ty = transform.position.y;
+		// tx = transform.position.x;
+		// target = null;
+		// }
+		// }
+		// }
+		//
+		// transform.position.x = tx;
+		// transform.position.y = ty;
 
 		// Un-comment this to have some fun!
 		removeHook();
@@ -159,7 +162,7 @@ public class PudgeEntity extends Entity {
 	public void setHook(Vector2 click) {
 		if (!hooked) {
 			Entity e = new HookEntity(this, click);
-			Game.entities2.entities.add(e);
+			Game.entities.entities.add(e);
 			hooked = true;
 		}
 	}
@@ -177,7 +180,16 @@ public class PudgeEntity extends Entity {
 		transform.position.y = ty;
 	}
 
-	public void collides(Entity e) {
+	/*
+	 * Collisions
+	 */
+	public boolean shouldBlock(BBOwner b) {
+		if (b instanceof HookEntity) return true;
+		if (b instanceof PudgeEntity) return true;
+		if (b instanceof Tile) {
+			if (((Tile) b).isPudgeSolid()) return true;
+		}
+		return false;
 	}
 
 	public void subLife(int sub) {
@@ -192,7 +204,7 @@ public class PudgeEntity extends Entity {
 	}
 
 	public void kill() {
-		Game.entities2.entities.remove(this);
+		Game.entities.entities.remove(this);
 		System.out.println("Pudge was Killed");
 	}
 }

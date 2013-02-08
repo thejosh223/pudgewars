@@ -1,16 +1,18 @@
 package pudgewars.entities;
 
-import java.awt.geom.Rectangle2D;
-
 import pudgewars.Game;
-import pudgewars.util.Rigidbody;
+import pudgewars.components.Rigidbody;
+import pudgewars.components.Transform;
+import pudgewars.interfaces.BBOwner;
+import pudgewars.level.Tile;
 import pudgewars.util.Rotation;
-import pudgewars.util.Transform;
 import pudgewars.util.Vector2;
 
-public abstract class Entity {
+public abstract class Entity implements BBOwner {
 	public Transform transform;
 	public Rigidbody rigidbody;
+
+	public boolean remove;
 
 	public Entity(Vector2 position) {
 		this(position, Vector2.ZERO.clone());
@@ -31,7 +33,7 @@ public abstract class Entity {
 	public void lateUpdate() {
 	}
 
-	public abstract void collides(Entity e);
+	// public abstract void collides(Entity e);
 
 	public abstract void kill();
 
@@ -46,16 +48,17 @@ public abstract class Entity {
 	}
 
 	public Entity isEntityCollision(double tx, double ty) {
-		for (int i = 0; i < Game.entities2.entities.size(); i++) {
-			Entity e = Game.entities2.entities.get(i);
+		for (int i = 0; i < Game.entities.entities.size(); i++) {
+			Entity e = Game.entities.entities.get(i);
 			if (e != this) {
-				if (new Rectangle2D.Double( //
-						tx - rigidbody.collision.x / 2, //
-						ty - rigidbody.collision.y / 2, //
-						rigidbody.collision.x, //
-						rigidbody.collision.y).intersects(e.rigidbody.getCollisionBox())) {
-					return e;
-				}
+				// TODO!
+				// if (new Rectangle2D.Double( //
+				// tx - rigidbody.collision.x / 2, //
+				// ty - rigidbody.collision.y / 2, //
+				// rigidbody.collision.x, //
+				// rigidbody.collision.y).intersects(e.rigidbody.getCollisionBox())) {
+				// return e;
+				// }
 			}
 		}
 		return null;
@@ -74,15 +77,38 @@ public abstract class Entity {
 
 	public void setVerticalMovement(double vx) {
 		rigidbody.velocity.x = vx;
-		// this.vx = vx;
 	}
 
 	public void setHorizontalMovement(double vy) {
 		rigidbody.velocity.y = vy;
-		// this.vy = vy;
 	}
 
 	public void setPosition(double x, double y) {
 		transform.position.set(x, y);
 	}
+
+	/*
+	 * Collisions
+	 */
+	public final boolean blocks(BBOwner b) {
+		return b.shouldBlock(this) && this.shouldBlock(b);
+	}
+
+	public boolean shouldBlock(BBOwner b) {
+		return false;
+	}
+
+	public void handleCollision(Entity e, double vx, double vy) {
+		if (blocks(e)) {
+			this.collides(e, vx, vy);
+			e.collides(this, -vx, -vy);
+		}
+	}
+
+	public void collides(Entity e, double vx, double vy) {
+	}
+
+	public void collides(Tile t, double vx, double vy) {
+	}
+
 }

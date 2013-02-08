@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pudgewars.Game;
+import pudgewars.components.Rigidbody;
 import pudgewars.level.Map;
+import pudgewars.util.CollisionBox;
 import pudgewars.util.Vector2;
 
 public class EntityManager {
@@ -47,5 +49,39 @@ public class EntityManager {
 		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).onGUI();
 		}
+	}
+
+	/*
+	 * GetEntities Function by CollisionBox
+	 * -Returns a list of entities that intersect with the given box
+	 * -NOTE: Does not take into consideration blocks()
+	 */
+	// public List<Entity> getEntitiesFromBB(CollisionBox b) {
+	// List<Entity> l = new ArrayList<Entity>();
+	// for (Entity e : entities) {
+	// if (e.intersects(b)) {
+	// l.add(e);
+	// }
+	// }
+	// return l;
+	// }
+
+	/*
+	 * GetEntities Function by Entity
+	 * -Returns a list of entities that intersect with the Entity's
+	 * Bounding Box grown by 1.
+	 * -Only returns a list that is in blocks() && != entity
+	 * -Used for semiMove(vx, vy) in Entity.
+	 */
+	public List<CollisionBox> getListCollisionBoxes(Rigidbody r) {
+		CollisionBox b = r.getCollisionBox().grow(1);
+		// List<CollisionBox> l = new ArrayList<CollisionBox>();
+		List<CollisionBox> l = map.getCollisionBoxes(r);
+		for (Entity e : entities) {
+			if (e != r.gameObject && e.rigidbody.intersects(b) && b.owner.blocks(e)) {
+				l.add(e.rigidbody.getCollisionBox());
+			}
+		}
+		return l;
 	}
 }

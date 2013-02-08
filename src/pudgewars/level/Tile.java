@@ -3,9 +3,15 @@ package pudgewars.level;
 import java.awt.image.BufferedImage;
 
 import pudgewars.Game;
+import pudgewars.components.Rigidbody;
+import pudgewars.entities.Entity;
+import pudgewars.entities.HookEntity;
+import pudgewars.entities.HookPieceEntity;
+import pudgewars.entities.PudgeEntity;
+import pudgewars.interfaces.BBOwner;
 import pudgewars.util.ImageHandler;
 
-public class Tile {
+public class Tile implements BBOwner {
 	public final static Tile T_Dirt1 = new Tile("grass1", false, false, false);
 	public final static Tile T_Dirt2 = new Tile("grass2", false, false, false);
 	public final static Tile T_Dirt3 = new Tile("grass3", false, false, false);
@@ -15,13 +21,13 @@ public class Tile {
 
 	String ID;
 	BufferedImage img;
-	boolean solid;
+	boolean pudgeSolid;
 	boolean hookSolid;
 	boolean hookable;
 
-	public Tile(String ID, boolean solid, boolean hookSolid, boolean hookable) {
+	public Tile(String ID, boolean pudgeSolid, boolean hookSolid, boolean hookable) {
 		this.ID = ID;
-		this.solid = solid;
+		this.pudgeSolid = pudgeSolid;
 		this.hookSolid = hookSolid;
 		this.hookable = hookable;
 
@@ -33,8 +39,8 @@ public class Tile {
 		Game.s.g.drawImage(img, x, y, null);
 	}
 
-	public boolean isSolid() {
-		return solid;
+	public boolean isPudgeSolid() {
+		return pudgeSolid;
 	}
 
 	public boolean isHookSolid() {
@@ -44,4 +50,43 @@ public class Tile {
 	public boolean isHookable() {
 		return hookable;
 	}
+
+	/*
+	 * Collision Detection!
+	 */
+	public final boolean blocks(BBOwner b) {
+		if (ID.equals("outerwall")) {
+			boolean a1 = b.shouldBlock(this);
+			boolean a2 = this.shouldBlock(b);
+			System.out.println("SS: " + a1 + ", " + a2);
+			return a1 && a2;
+		}
+		return b.shouldBlock(this) && this.shouldBlock(b);
+	}
+
+	public boolean shouldBlock(BBOwner b) {
+		// Hook Collisions
+		if (b instanceof HookEntity) {
+			if (isHookable()) return true;
+			else if (isHookSolid()) return true;
+			else return false;
+		}
+		// Pudge Collisions
+		if (b instanceof PudgeEntity) {
+			if (isPudgeSolid()) return true;
+			return false;
+		}
+		return false;
+	}
+
+	public void handleCollision(Entity e, double vx, double vy) {
+		e.collides(this, vx, vy);
+	}
+
+	public void collides(Entity e, double vx, double vy) {
+	}
+
+	public void collides(Tile t, double vx, double vy) {
+	}
+
 }

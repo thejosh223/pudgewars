@@ -82,8 +82,4 @@ public class HookPieceEntity extends Entity {
 		rigidbody.speed = HookEntity.HOOK_REVERSE_SPEED;
 		reversing = true;
 	}
-
-	public void collides(Entity e) {
-		// Do Nothing.
-	}
 }

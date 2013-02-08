@@ -6,12 +6,14 @@ import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
 import pudgewars.Window;
+import pudgewars.interfaces.BBOwner;
+import pudgewars.level.Tile;
 import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
 public class HookEntity extends Entity {
-	public final static double PIECE_DISTANCE = 0.8;
+	public final static double PIECE_DISTANCE = 1;
 	public final static double MAX_TRAVEL_DISTANCE = 8;
 	public final static double KILL_UNCERTAINTY = 0.1;
 
@@ -42,6 +44,7 @@ public class HookEntity extends Entity {
 
 		travelled = 0;
 
+		rigidbody.physicsSlide = false;
 		rigidbody.setDirection(target);
 
 		// Movement Animation
@@ -60,46 +63,13 @@ public class HookEntity extends Entity {
 	public final static double SLOW_DOWN_VECTOR = 0.5;
 
 	public void update() {
-		// ani.update();
+		// Spinning Animation
 		transform.rotation -= 0.5;
+
+		rigidbody.updateVelocity();
 
 		double xDist = rigidbody.velocity.x * Time.getTickInterval();
 		double yDist = rigidbody.velocity.y * Time.getTickInterval();
-		double tx = transform.position.x + xDist;
-		double ty = transform.position.y + yDist;
-
-		Entity te = isEntityCollision(tx, ty);
-		if (te != null) {
-			te.collides(this);
-			collides(te);
-		}
-		boolean[] collisions = isWorldCollision(tx, ty);
-		if (collisions[0] || collisions[1]) {
-			maxTravelDistance -= maxTravelDistance * SLOW_DOWN_VECTOR / 4;
-			if (collisions[0] && !collisions[1]) {
-				tx = transform.position.x;
-				rigidbody.velocity.x *= -SLOW_DOWN_VECTOR;
-				rigidbody.velocity.y *= SLOW_DOWN_VECTOR;
-			} else if (collisions[1] && !collisions[0]) {
-				ty = transform.position.y;
-				rigidbody.velocity.x *= SLOW_DOWN_VECTOR;
-				rigidbody.velocity.y *= -SLOW_DOWN_VECTOR;
-			} else {
-				ty = transform.position.y;
-				tx = transform.position.x;
-
-				rigidbody.velocity.x *= -SLOW_DOWN_VECTOR;
-				rigidbody.velocity.y *= -SLOW_DOWN_VECTOR;
-			}
-
-			HookPieceEntity temp = hookPiece;
-			while (temp != null) {
-				temp.rigidbody.speed *= SLOW_DOWN_VECTOR;
-				temp = temp.getConnected();
-			}
-		}
-		transform.position.x = tx;
-		transform.position.y = ty;
 
 		travelled += Math.sqrt(xDist * xDist + yDist * yDist);
 		if (travelled >= maxTravelDistance) {
@@ -186,10 +156,40 @@ public class HookEntity extends Entity {
 		}
 		hookPiece = null;
 
-		Game.entities2.entities.remove(this);
+		Game.entities.entities.remove(this);
 	}
 
-	public void collides(Entity e) {
+	public boolean shouldBlock(BBOwner b) {
+		if (b instanceof HookEntity) return false;
+		if (b instanceof PudgeEntity) {
+			if (b == owner) return false;
+			else return true;
+		}
+		if (b instanceof Tile) {
+			if (((Tile) b).isHookable()) return true;
+			else if (((Tile) b).isHookSolid()) return true;
+			else return false;
+		}
+		return false;
+	}
+
+	public void collides(Tile t, double vx, double vy) {
+		if (vx == 0) {
+			rigidbody.velocity.y *= -1;
+		} else if (vy == 0) {
+			rigidbody.velocity.x *= -1;
+		}
+		rigidbody.velocity.scale(SLOW_DOWN_VECTOR);
+		rigidbody.speed *= SLOW_DOWN_VECTOR;
+
+		HookPieceEntity temp = hookPiece;
+		while (temp != null) {
+			temp.rigidbody.speed = rigidbody.speed;
+			temp = temp.getConnected();
+		}
+	}
+
+	public void collides(Entity e, double vx, double vy) {
 		if (hooked == null) {
 			if (e instanceof PudgeEntity) {
 				// TODO: Check if collision is with ally or enemy

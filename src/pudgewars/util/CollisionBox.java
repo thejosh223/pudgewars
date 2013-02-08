@@ -1,5 +1,7 @@
 package pudgewars.util;
 
+import pudgewars.interfaces.BBOwner;
+
 public class CollisionBox {
 
 	public double x0, y0;

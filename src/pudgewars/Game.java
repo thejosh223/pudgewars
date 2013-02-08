@@ -16,7 +16,7 @@ public class Game {
 
 	private boolean gameRunning;
 	// public static ArrayList<Entity> entities;
-	public static EntityManager entities2;
+	public static EntityManager entities;
 	public static Map map;
 	public static Screen s;
 	public static Vector2 focus;
@@ -43,7 +43,7 @@ public class Game {
 		focus = new Vector2(Map.MAP_WIDTH / 2, Map.MAP_HEIGHT / 2);
 		gameRunning = true;
 
-		entities2 = new EntityManager();
+		entities = new EntityManager();
 
 		s = new Screen(Window.WIDTH, Window.HEIGHT);
 	}
@@ -110,18 +110,18 @@ public class Game {
 		 */
 
 		// Entities and Map Update
-		entities2.updateEntities();
-		entities2.lateUpdateEntities();
+		entities.updateEntities();
+		entities.lateUpdateEntities();
 
 		controls();
 	}
 
 	private void render() {
 		// Render Map and Entities
-		entities2.render();
+		entities.render();
 
 		// Render GUI
-		entities2.renderGUI();
+		entities.renderGUI();
 
 		// Flips the page between the two buffers
 		s.drawToGraphics((Graphics2D) Window.strategy.getDrawGraphics());
