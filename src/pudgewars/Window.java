@@ -1,15 +1,20 @@
 package pudgewars;
 
 import java.awt.Canvas;
+import java.awt.Cursor;
 import java.awt.Dimension;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
-import pudgewars.input.MouseHandler;
 import pudgewars.input.KeyHandler;
 import pudgewars.input.Keys;
+import pudgewars.input.MouseHandler;
+import pudgewars.util.ImageHandler;
 
 public class Window extends Canvas {
 	private static final long serialVersionUID = 1L;
@@ -65,11 +70,14 @@ public class Window extends Canvas {
 
 		requestFocus();
 
-		g = new Game(k, m);
+		g = new Game(this, k, m);
+		Game.w = this;
 	}
 
 	// ----Main Method----
 	public static void main(String[] args) {
 		new Window();
+		g.init();
+		g.gameLoop();
 	}
 }

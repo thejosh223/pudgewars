@@ -3,10 +3,8 @@ package pudgewars.level;
 import java.awt.image.BufferedImage;
 
 import pudgewars.Game;
-import pudgewars.components.Rigidbody;
 import pudgewars.entities.Entity;
 import pudgewars.entities.HookEntity;
-import pudgewars.entities.HookPieceEntity;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.util.ImageHandler;
@@ -17,7 +15,7 @@ public class Tile implements BBOwner {
 	public final static Tile T_Dirt3 = new Tile("grass3", false, false, false);
 	public final static Tile T_Block = new Tile("outerwall", true, true, false);
 	public final static Tile T_Mound = new Tile("mound2", true, false, false);
-	// public final static Tile T_Hookable = new Tile ("hookable", false, false, true);
+	public final static Tile T_Hookable = new Tile("hookable", false, false, true);
 
 	String ID;
 	BufferedImage img;

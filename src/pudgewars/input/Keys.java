@@ -33,6 +33,7 @@ public class Keys {
 	public Key down = new Key();
 	public Key left = new Key();
 	public Key right = new Key();
+	public Key specialHook = new Key();
 
 	public void tick() {
 		for (Key k : keys) {

@@ -24,6 +24,7 @@ public class HookEntity extends Entity {
 	public PudgeEntity hooked;
 
 	public boolean canHook = true;
+	public boolean specialHook = false;
 	private double travelled = 0;
 	private double maxTravelDistance;
 	private boolean reversing;
@@ -33,15 +34,17 @@ public class HookEntity extends Entity {
 	// Render
 	private Image img;
 
-	public HookEntity(PudgeEntity e, Vector2 target) {
+	public HookEntity(PudgeEntity e, Vector2 target, boolean specialHook) {
 		super(e.transform.position, new Vector2(0.6, 0.6));
 		owner = e;
 		hooked = null;
 
+		this.specialHook = specialHook;
+
 		damage = 4;
 
 		maxTravelDistance = 14;
-		rigidbody.speed = 10;
+		rigidbody.speed = 8;
 
 		rigidbody.physicsSlide = false;
 		rigidbody.setDirection(target);
@@ -189,7 +192,6 @@ public class HookEntity extends Entity {
 	public void collides(Entity e, double vx, double vy) {
 		if (hooked == null && canHook) {
 			if (e instanceof PudgeEntity) {
-				// TODO: Check if collision is with ally or enemy
 				if (e != owner) {
 					attachPudge((PudgeEntity) e);
 					reverse();

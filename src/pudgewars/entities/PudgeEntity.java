@@ -49,6 +49,11 @@ public class PudgeEntity extends Entity {
 	public void update() {
 		// Controls
 		if (controllable) {
+
+			// Change Cursor
+			if (Game.keyInput.specialHook.isDown) Game.cursor.setCursor("Special");
+			else Game.cursor.setCursor("Default");
+
 			if (Game.mouseInput.lastClicked[MouseButton.RIGHT] != null) {
 				Vector2 click = Game.mouseInput.lastClicked[MouseButton.RIGHT];
 				target = Game.s.screenToWorldPoint(click);
@@ -57,13 +62,13 @@ public class PudgeEntity extends Entity {
 			}
 			if (Game.mouseInput.lastClicked[MouseButton.LEFT] != null) {
 				Vector2 click = Game.mouseInput.lastClicked[MouseButton.LEFT];
-				this.setHook(Game.s.screenToWorldPoint(click));
+
+				// Activate Hook
+				if (Game.keyInput.specialHook.isDown) this.setHook(Game.s.screenToWorldPoint(click), true);
+				else this.setHook(Game.s.screenToWorldPoint(click), false);
 
 				Game.mouseInput.lastClicked[MouseButton.LEFT] = null;
 			}
-
-			// Rotate the Player towards mouse
-			// transform.rotateTowards(Game.s.screenToWorldPoint(Game.mouseInput.mousePosition));
 
 			// Rotate the Clicker
 			if (target != null) targetRotation += -0.1;
@@ -129,9 +134,9 @@ public class PudgeEntity extends Entity {
 		hooking = false;
 	}
 
-	public void setHook(Vector2 click) {
+	public void setHook(Vector2 click, boolean specialHook) {
 		if (!hooking) {
-			Entity e = new HookEntity(this, click);
+			Entity e = new HookEntity(this, click, specialHook);
 			Game.entities.entities.add(e);
 			hooking = true;
 		}

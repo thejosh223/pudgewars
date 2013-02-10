@@ -6,6 +6,7 @@ import pudgewars.entities.EntityManager;
 import pudgewars.input.Keys;
 import pudgewars.input.MouseHandler;
 import pudgewars.level.Map;
+import pudgewars.render.CursorManager;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
@@ -16,6 +17,8 @@ public class Game {
 
 	private boolean gameRunning;
 	// public static ArrayList<Entity> entities;
+	public static Window w;
+	public static CursorManager cursor;
 	public static EntityManager entities;
 	public static Map map;
 	public static Screen s;
@@ -30,12 +33,10 @@ public class Game {
 	public static MouseHandler mouseInput;
 
 	// Constructor Method
-	public Game(Keys k, MouseHandler m) {
+	public Game(Window w, Keys k, MouseHandler m) {
+		Game.w = w;
 		Game.keyInput = k;
 		Game.mouseInput = m;
-
-		init();
-		gameLoop();
 	}
 
 	public void init() {
@@ -45,6 +46,7 @@ public class Game {
 
 		entities = new EntityManager();
 
+		cursor = new CursorManager(w);
 		s = new Screen(Window.WIDTH, Window.HEIGHT);
 	}
 
