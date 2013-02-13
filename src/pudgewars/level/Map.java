@@ -8,7 +8,7 @@ import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.components.Rigidbody;
 import pudgewars.entities.Entity;
-import pudgewars.entities.HookEntity;
+import pudgewars.entities.hooks.HookEntity;
 import pudgewars.physics.Physics;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.Time;

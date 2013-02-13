@@ -5,6 +5,8 @@ import java.awt.Image;
 import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
+import pudgewars.entities.hooks.HookEntity;
+import pudgewars.entities.hooks.NormalHookEntity;
 import pudgewars.input.MouseButton;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
@@ -22,7 +24,7 @@ public class PudgeEntity extends Entity {
 	public boolean controllable = false;
 
 	public boolean hooking;
-	public HookEntity attachedHook;
+	public NormalHookEntity attachedHook;
 	protected int life;
 
 	protected Image img;
@@ -136,7 +138,7 @@ public class PudgeEntity extends Entity {
 
 	public void setHook(Vector2 click, boolean specialHook) {
 		if (!hooking) {
-			Entity e = new HookEntity(this, click, specialHook);
+			Entity e = new NormalHookEntity(this, click, specialHook);
 			Game.entities.entities.add(e);
 			hooking = true;
 		}

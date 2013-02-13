@@ -1,11 +1,12 @@
-package pudgewars.entities;
+package pudgewars.entities.hooks;
 
 import java.awt.Point;
 import java.awt.image.BufferedImage;
 
 import pudgewars.Game;
 import pudgewars.Window;
-import pudgewars.entities.hooks.HookMovement;
+import pudgewars.entities.Entity;
+import pudgewars.entities.PudgeEntity;
 import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
@@ -15,19 +16,22 @@ public class HookPieceEntity extends Entity {
 	private int movementType;
 	// private boolean reversing;
 
+	private HookEntity hook;
 	private HookPieceEntity next;
 	private BufferedImage img;
 
-	public HookPieceEntity(PudgeEntity e, double vx, double vy, double speed) {
+	public HookPieceEntity(PudgeEntity e, HookEntity h) {
 		super(e.transform.position);
 
 		owner = e;
-		rigidbody.velocity.x = vx;
-		rigidbody.velocity.y = vy;
-		rigidbody.speed = speed;
+		hook = h;
+		// rigidbody.velocity.x = vx;
+		// rigidbody.velocity.y = vy;
+		rigidbody.speed = h.rigidbody.speed;
+		// rigidbody.setDirection(target)
 
 		// Default Movement Behaviour
-		movementType = HookMovement.FORWARD;
+		setMovementType(HookMovement.FORWARD);
 
 		img = ImageHandler.get().getImage("hookpiece");
 	}
@@ -44,7 +48,7 @@ public class HookPieceEntity extends Entity {
 			case HookMovement.FORWARD:
 				if (next == null) {
 					if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) >= HookEntity.PIECE_DISTANCE) {
-						HookPieceEntity e = new HookPieceEntity(owner, rigidbody.velocity.x, rigidbody.velocity.y, rigidbody.speed);
+						HookPieceEntity e = new HookPieceEntity(owner, hook);
 						next = e;
 					}
 				} else {
@@ -81,8 +85,18 @@ public class HookPieceEntity extends Entity {
 		return next;
 	}
 
-	public void reverse() {
-		rigidbody.speed = HookEntity.HOOK_REVERSE_SPEED;
-		movementType = HookMovement.REVERSE;
+	public void setMovementType(int movementType) {
+		if (!(movementType >= HookMovement.FORWARD && movementType <= HookMovement.STATIONARY)) return;
+
+		this.movementType = movementType;
+		rigidbody.speed = hook.rigidbody.speed;
+		switch (movementType) {
+			case HookMovement.FORWARD:
+				break;
+			case HookMovement.REVERSE:
+				break;
+			case HookMovement.STATIONARY:
+				break;
+		}
 	}
 }

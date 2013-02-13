@@ -1,10 +1,12 @@
-package pudgewars.entities;
+package pudgewars.entities.hooks;
 
 import java.awt.Image;
 import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
 import pudgewars.Window;
+import pudgewars.entities.Entity;
+import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 import pudgewars.util.ImageHandler;
@@ -23,13 +25,14 @@ public class HookEntity extends Entity {
 	public PudgeEntity owner;
 	public PudgeEntity hooked;
 
+	protected int movementType;
 	public boolean canHook = true;
 	public boolean specialHook = false;
-	private double travelled = 0;
-	private double maxTravelDistance;
-	private boolean reversing;
-	private HookPieceEntity hookPiece;
-	private int damage;
+	protected double travelled = 0;
+	protected double maxTravelDistance;
+	// protected boolean reversing;
+	protected HookPieceEntity hookPiece;
+	protected int damage;
 
 	// Render
 	private Image img;
@@ -63,27 +66,32 @@ public class HookEntity extends Entity {
 
 		travelled += Math.sqrt(xDist * xDist + yDist * yDist);
 		if (travelled >= maxTravelDistance) {
-			reverse();
+			setMovementType(HookMovement.REVERSE);
 		}
 
-		if (!reversing) {
-			if (hookPiece == null) {
-				// if (Point.distance(transform.position, owner.getX(), owner.getY()) >= PIECE_DISTANCE) {
-				if (Vector2.distance(transform.position, owner.transform.position) >= PIECE_DISTANCE) {
-					HookPieceEntity e = new HookPieceEntity(owner, rigidbody.velocity.x, rigidbody.velocity.y, rigidbody.speed);
-					hookPiece = e;
+		switch (movementType) {
+			case HookMovement.FORWARD:
+				if (hookPiece == null) {
+					// if (Point.distance(transform.position, owner.getX(), owner.getY()) >= PIECE_DISTANCE) {
+					if (Vector2.distance(transform.position, owner.transform.position) >= PIECE_DISTANCE) {
+						HookPieceEntity e = new HookPieceEntity(owner, this);
+						hookPiece = e;
+					}
+				} else {
+					hookPiece.rigidbody.setDirection(new Vector2(transform.position.x, transform.position.y));
 				}
-			} else {
-				hookPiece.rigidbody.setDirection(new Vector2(transform.position.x, transform.position.y));
-			}
-		} else {
-			// if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
-			if (Vector2.distance(transform.position, owner.transform.position) <= rigidbody.velocity.magnitude() * Time.getTickInterval()) {
-				kill();
-			} else {
-				if (hookPiece == null) rigidbody.setDirection(owner.transform.position.clone());
-				else rigidbody.setDirection(hookPiece.transform.position.clone());
-			}
+				break;
+			case HookMovement.REVERSE:
+				// if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
+				if (Vector2.distance(transform.position, owner.transform.position) <= rigidbody.velocity.magnitude() * Time.getTickInterval()) {
+					kill();
+				} else {
+					if (hookPiece == null) rigidbody.setDirection(owner.transform.position.clone());
+					else rigidbody.setDirection(hookPiece.transform.position.clone());
+				}
+				break;
+			case HookMovement.STATIONARY:
+				break;
 		}
 
 		HookPieceEntity temp = hookPiece;
@@ -122,13 +130,23 @@ public class HookEntity extends Entity {
 		}
 	}
 
-	private void reverse() {
-		rigidbody.speed = HookEntity.HOOK_REVERSE_SPEED;
-		reversing = true;
+	public void setMovementType(int movementType) {
+		if (!(movementType >= HookMovement.FORWARD && movementType <= HookMovement.STATIONARY)) return;
+
+		this.movementType = movementType;
+		switch (movementType) {
+			case HookMovement.FORWARD:
+				break;
+			case HookMovement.REVERSE:
+				rigidbody.speed = HookEntity.HOOK_REVERSE_SPEED;
+				break;
+			case HookMovement.STATIONARY:
+				break;
+		}
 
 		HookPieceEntity temp = hookPiece;
 		while (temp != null) {
-			temp.reverse();
+			temp.setMovementType(HookMovement.REVERSE);
 			temp = temp.getConnected();
 		}
 	}
@@ -140,63 +158,5 @@ public class HookEntity extends Entity {
 			hookPiece = hookPiece.getConnected();
 		}
 		hookPiece = null;
-	}
-
-	public void attachPudge(PudgeEntity e) {
-		e.attachedHook = this; // Set the hookEntity as this
-		e.transform.position = transform.position.clone(); // Set the pudge as this position
-		// TODO: If killed, check for null (?)
-		e.subLife(damage); // Do some damage
-		hooked = e;
-		canHook = false;
-	}
-
-	public void detachPudge() {
-		hooked.attachedHook = null;
-		hooked = null;
-	}
-
-	/*
-	 * Collision Detection and Response
-	 */
-	public boolean shouldBlock(BBOwner b) {
-		if (b instanceof HookEntity) return false;
-		if (b instanceof PudgeEntity) {
-			if (b == owner) return false;
-			else return true;
-		}
-		if (b instanceof Tile) {
-			if (((Tile) b).isHookable()) return true;
-			else if (((Tile) b).isHookSolid()) return true;
-			else return false;
-		}
-		return false;
-	}
-
-	public void collides(Tile t, double vx, double vy) {
-		if (vx == 0) {
-			rigidbody.velocity.y *= -1;
-		} else if (vy == 0) {
-			rigidbody.velocity.x *= -1;
-		}
-		rigidbody.velocity.scale(SLOW_DOWN_VECTOR);
-		rigidbody.speed *= SLOW_DOWN_VECTOR;
-
-		HookPieceEntity temp = hookPiece;
-		while (temp != null) {
-			temp.rigidbody.speed = rigidbody.speed;
-			temp = temp.getConnected();
-		}
-	}
-
-	public void collides(Entity e, double vx, double vy) {
-		if (hooked == null && canHook) {
-			if (e instanceof PudgeEntity) {
-				if (e != owner) {
-					attachPudge((PudgeEntity) e);
-					reverse();
-				}
-			}
-		}
 	}
 }

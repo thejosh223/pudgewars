@@ -116,6 +116,8 @@ public class Game {
 		entities.lateUpdateEntities();
 		entities.killUpdateEntities();
 
+		// System.out.println("Entities: " + entities.entities.size());
+
 		controls();
 	}
 

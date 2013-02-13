@@ -4,8 +4,8 @@ import java.awt.image.BufferedImage;
 
 import pudgewars.Game;
 import pudgewars.entities.Entity;
-import pudgewars.entities.HookEntity;
 import pudgewars.entities.PudgeEntity;
+import pudgewars.entities.hooks.HookEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.util.ImageHandler;
 
