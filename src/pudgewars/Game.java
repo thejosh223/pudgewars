@@ -93,7 +93,8 @@ public class Game {
 			/*
 			 * Rendering
 			 */
-			// if (ticked) {
+			if (ticked) {
+			}
 			render();
 			fps++;
 			// }

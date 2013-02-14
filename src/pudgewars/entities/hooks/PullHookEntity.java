@@ -1,14 +1,13 @@
 package pudgewars.entities.hooks;
 
-import pudgewars.entities.Entity;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 import pudgewars.util.Vector2;
 
-public class NormalHookEntity extends HookEntity {
+public class PullHookEntity extends HookEntity {
 
-	public NormalHookEntity(PudgeEntity e, Vector2 target) {
+	public PullHookEntity(PudgeEntity e, Vector2 target) {
 		super(e, target);
 	}
 
@@ -16,7 +15,7 @@ public class NormalHookEntity extends HookEntity {
 	 * Pudge Hooking
 	 */
 	public void attachPudge(PudgeEntity e) {
-		e.attachedHook = this; // Set the hookEntity as this
+		// e.attachedHook = this; // Set the hookEntity as this
 		e.transform.position = transform.position.clone(); // Set the pudge as this position
 		// TODO: If killed, check for null (?)
 		e.subLife(damage); // Do some damage
@@ -35,26 +34,20 @@ public class NormalHookEntity extends HookEntity {
 
 	// Method Override
 	public boolean shouldBlock(BBOwner b) {
-		if (b instanceof HookEntity) return false;
-		if (b instanceof PudgeEntity) {
-			if (b == owner) return false;
-			else return true;
-		}
 		if (b instanceof Tile) {
 			if (((Tile) b).isHookSolid()) return true;
+			else if (((Tile) b).isHookable()) return true;
 			else return false;
 		}
 		return false;
 	}
 
-	public void collides(Entity e, double vx, double vy) {
-		if (hooked == null && canHook) {
-			if (e instanceof PudgeEntity) {
-				if (e != owner) {
-					attachPudge((PudgeEntity) e);
-					setMovementType(HookMovement.REVERSE);
-				}
-			}
+	public void collides(Tile t, double vx, double vy) {
+		if (t.isHookable()) {
+			setMovementType(HookMovement.STATIONARY);
+			System.out.println("Hookable");
+		} else {
+			setMovementType(HookMovement.REVERSE);
 		}
 	}
 }

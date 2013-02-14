@@ -1,11 +1,7 @@
 package pudgewars;
 
 import java.awt.Canvas;
-import java.awt.Cursor;
 import java.awt.Dimension;
-import java.awt.Image;
-import java.awt.Point;
-import java.awt.Toolkit;
 import java.awt.image.BufferStrategy;
 
 import javax.swing.JFrame;
@@ -14,7 +10,6 @@ import javax.swing.JPanel;
 import pudgewars.input.KeyHandler;
 import pudgewars.input.Keys;
 import pudgewars.input.MouseHandler;
-import pudgewars.util.ImageHandler;
 
 public class Window extends Canvas {
 	private static final long serialVersionUID = 1L;
@@ -22,7 +17,7 @@ public class Window extends Canvas {
 	public static int WIDTH = Game.TILE_SIZE * Game.TILE_WIDTH;
 	public static int HEIGHT = Game.TILE_SIZE * Game.TILE_HEIGHT;
 
-	public static int SCALE = 2;
+	public static int SCALE = 3;
 	public static int ACTUAL_WIDTH = WIDTH * SCALE;
 	public static int ACTUAL_HEIGHT = HEIGHT * SCALE;
 

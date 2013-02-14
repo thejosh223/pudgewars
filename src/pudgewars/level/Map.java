@@ -9,7 +9,6 @@ import pudgewars.Window;
 import pudgewars.components.Rigidbody;
 import pudgewars.entities.Entity;
 import pudgewars.entities.hooks.HookEntity;
-import pudgewars.physics.Physics;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.Time;
 
@@ -52,7 +51,7 @@ public class Map {
 	}
 
 	public void update() {
-		// Scrolling of th Map
+		// Scrolling of the Map
 		double vx = 0;
 		double vy = 0;
 		if (Game.mouseInput.mousePosition.y >= 0 && Game.mouseInput.mousePosition.y < SCROLLBAR_Y || Game.keyInput.up.isDown) {

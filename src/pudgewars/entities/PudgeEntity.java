@@ -6,7 +6,9 @@ import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
 import pudgewars.entities.hooks.HookEntity;
+import pudgewars.entities.hooks.HookType;
 import pudgewars.entities.hooks.NormalHookEntity;
+import pudgewars.entities.hooks.PullHookEntity;
 import pudgewars.input.MouseButton;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
@@ -67,8 +69,8 @@ public class PudgeEntity extends Entity {
 				Vector2 click = Game.mouseInput.lastClicked[MouseButton.LEFT];
 
 				// Activate Hook
-				if (Game.keyInput.specialHook.isDown) this.setHook(Game.s.screenToWorldPoint(click), true);
-				else this.setHook(Game.s.screenToWorldPoint(click), false);
+				if (Game.keyInput.specialHook.isDown) this.setHook(Game.s.screenToWorldPoint(click), HookType.PULL);
+				else setHook(Game.s.screenToWorldPoint(click), HookType.NORMAL);
 
 				Game.mouseInput.lastClicked[MouseButton.LEFT] = null;
 			}
@@ -141,26 +143,35 @@ public class PudgeEntity extends Entity {
 		// PudgeEntity.MAX_LIFE, Arc2D.OPEN));
 	}
 
-	public void setHook(Vector2 click, boolean specialHook) {
+	public void setHook(Vector2 click, int hookType) {
 		if (!isHooking) {
-			Entity e = new NormalHookEntity(this, click, specialHook);
+			Entity e = null;
+
+			switch (hookType) {
+				case HookType.NORMAL:
+					e = new NormalHookEntity(this, click);
+					break;
+				case HookType.PULL:
+					e = new PullHookEntity(this, click);
+					break;
+			}
 			Game.entities.entities.add(e);
 			isHooking = true;
 		}
 	}
 
-	public void try_setPosition(double tx, double ty) {
-		Entity te = isEntityCollision(tx, ty);
-		if (te != null) {
-			if (te instanceof PudgeEntity) {
-				tx = transform.position.x;
-				ty = transform.position.y;
-				return;
-			}
-		}
-		transform.position.x = tx;
-		transform.position.y = ty;
-	}
+	// public void try_setPosition(double tx, double ty) {
+	// Entity te = isEntityCollision(tx, ty);
+	// if (te != null) {
+	// if (te instanceof PudgeEntity) {
+	// tx = transform.position.x;
+	// ty = transform.position.y;
+	// return;
+	// }
+	// }
+	// transform.position.x = tx;
+	// transform.position.y = ty;
+	// }
 
 	/*
 	 * Collisions

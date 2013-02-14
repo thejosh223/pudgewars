@@ -32,7 +32,12 @@ public class Vector2 {
 	}
 
 	public void normalize() {
-		double magnitude = (double) Math.sqrt(x * x + y * y);
+		double magnitude = this.magnitude();
+		if (magnitude == 0) {
+			x = 0;
+			y = 0;
+			return;
+		}
 		x /= magnitude;
 		y /= magnitude;
 	}
