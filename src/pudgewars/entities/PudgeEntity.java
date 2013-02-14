@@ -21,9 +21,10 @@ public class PudgeEntity extends Entity {
 	public final static double COLLISION_WIDTH = 1;
 	public final static double COLLISION_HEIGHT = 1;
 
+	// Whether or not you can control this Pudge
 	public boolean controllable = false;
 
-	public boolean hooking;
+	public boolean isHooking;
 	public NormalHookEntity attachedHook;
 	protected int life;
 
@@ -91,11 +92,13 @@ public class PudgeEntity extends Entity {
 
 		rigidbody.updateVelocity();
 
-		// double tx = transform.position.x + rigidbody.velocity.x * Time.getTickInterval();
-		// double ty = transform.position.y + rigidbody.velocity.y * Time.getTickInterval();
+		// double tx = transform.position.x + rigidbody.velocity.x *
+		// Time.getTickInterval();
+		// double ty = transform.position.y + rigidbody.velocity.y *
+		// Time.getTickInterval();
 
 		// Un-comment this to have some fun!
-		removeHook();
+		isHooking = false;
 	}
 
 	final static int LIFESTROKE_DEPTH = 3;
@@ -127,20 +130,22 @@ public class PudgeEntity extends Entity {
 		// int lifeEllipseHeight = ellipseHeight + 2 * (LIFESTROKE_DEPTH + 1);
 
 		// Game.s.g.setStroke(LIFESTROKE);
-		// Game.s.g.setPaint(new GradientPaint((float) (x - lifeEllipseWidth * 0.5), (float) (y - lifeEllipseHeight * 0.5), new Color(250, 0, 0, 175), (float) (x + lifeEllipseWidth * 0.5), (float) (y - lifeEllipseHeight * 0.5), new Color(0, 0, 250, 175)));
+		// Game.s.g.setPaint(new GradientPaint((float) (x - lifeEllipseWidth *
+		// 0.5), (float) (y - lifeEllipseHeight * 0.5), new Color(250, 0, 0,
+		// 175), (float) (x + lifeEllipseWidth * 0.5), (float) (y -
+		// lifeEllipseHeight * 0.5), new Color(0, 0, 250, 175)));
 
-		// Game.s.g.draw(new Arc2D.Double(x - lifeEllipseWidth * 0.5, y - lifeEllipseHeight * 0.5, lifeEllipseWidth, lifeEllipseHeight, ARC_STARTANGLE, FULL_LIFE_ARC * this.getLife() / PudgeEntity.MAX_LIFE, Arc2D.OPEN));
-	}
-
-	public void removeHook() {
-		hooking = false;
+		// Game.s.g.draw(new Arc2D.Double(x - lifeEllipseWidth * 0.5, y -
+		// lifeEllipseHeight * 0.5, lifeEllipseWidth, lifeEllipseHeight,
+		// ARC_STARTANGLE, FULL_LIFE_ARC * this.getLife() /
+		// PudgeEntity.MAX_LIFE, Arc2D.OPEN));
 	}
 
 	public void setHook(Vector2 click, boolean specialHook) {
-		if (!hooking) {
+		if (!isHooking) {
 			Entity e = new NormalHookEntity(this, click, specialHook);
 			Game.entities.entities.add(e);
-			hooking = true;
+			isHooking = true;
 		}
 	}
 
