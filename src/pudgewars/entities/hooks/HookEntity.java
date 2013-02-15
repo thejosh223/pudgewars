@@ -55,7 +55,7 @@ public class HookEntity extends Entity {
 
 	public void update() {
 		// Spinning Animation
-		transform.rotation -= 0.5;
+		transform.rotation -= 0.4;
 
 		rigidbody.updateVelocity();
 
@@ -93,6 +93,7 @@ public class HookEntity extends Entity {
 				if (hookPiece == null) {
 					if (transform.position.distance(owner.transform.position) < HookEntity.PULL_SPEED * Time.getBaseTickInterval()) {
 						owner.rigidbody.velocity = Vector2.ZERO.clone();
+						owner.canTileCollide = true;
 						kill();
 					} else {
 						owner.rigidbody.setDirection(transform.position, HookEntity.PULL_SPEED);

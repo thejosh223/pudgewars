@@ -3,7 +3,6 @@ package pudgewars.entities.hooks;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
-import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
 public class PullHookEntity extends HookEntity {
@@ -20,11 +19,13 @@ public class PullHookEntity extends HookEntity {
 		e.transform.position = transform.position.clone(); // Set the pudge as this position
 		// TODO: If killed, check for null (?)
 		e.subLife(damage); // Do some damage
+		e.canTileCollide = false;
 		hooked = e;
 		canHook = false;
 	}
 
 	public void detachPudge() {
+		hooked.canTileCollide = true;
 		hooked.attachedHook = null;
 		hooked = null;
 	}
@@ -45,6 +46,7 @@ public class PullHookEntity extends HookEntity {
 
 	public void collides(Tile t, double vx, double vy) {
 		if (t.isHookable()) {
+			owner.canTileCollide = false;
 			rigidbody.speed = 0;
 			setMovementType(MovementScheme.PULL_FORWARD);
 		} else {

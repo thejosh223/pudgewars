@@ -26,8 +26,6 @@ public class Animation {
 	// -Method: Adds a scene to the ArrayList
 	// -"synchronised": this method must run first, before all threads can continue to run
 	public synchronized void add(Image i, double t) {
-		i = ImageHandler.makeColorTransparent((BufferedImage) i, null);
-
 		// Sets the length of the animation based on the total amount of [t]s per scene
 		totalTime += t;
 
@@ -105,6 +103,13 @@ public class Animation {
 
 	public double getTotalTime() {
 		return totalTime;
+	}
+
+	public static Animation makeAnimation(String ref, int numAnimations, int width, int height, double interval) {
+		Animation a = new Animation();
+		for (int i = 0; i < numAnimations; i++)
+			a.add(ImageHandler.get().getImage(ref, i, 0, width, height), interval);
+		return a;
 	}
 
 	// -----------PRIVATE INNER CLASS---------------

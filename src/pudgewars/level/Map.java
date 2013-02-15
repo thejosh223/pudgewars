@@ -37,6 +37,7 @@ public class Map {
 						&& (o == (int) (MAP_WIDTH * 0.25) || o == (int) (MAP_WIDTH * 0.75))) {
 					map[i][o] = Tile.T_Hookable;
 				} else {
+					// map[i][o] = Tile.T_Dirt1;
 					int r = new Random().nextInt(3);
 					if (r == 0) {
 						map[i][o] = Tile.T_Dirt1;
@@ -89,9 +90,7 @@ public class Map {
 		for (int i = 0; i < 2; i++, ty += e.rigidbody.collision.y) {
 			double tx = x - e.rigidbody.collision.x / 2;
 			for (int o = 0; o < 2; o++, tx += e.rigidbody.collision.x) {
-				if (map[(int) ty][(int) tx].isHookSolid()) {
-					return true;
-				}
+				if (map[(int) ty][(int) tx].isHookSolid()) { return true; }
 			}
 		}
 		return false;
@@ -102,9 +101,7 @@ public class Map {
 		for (int i = 0; i < 2; i++, ty += e.rigidbody.collision.y) {
 			double tx = x - e.rigidbody.collision.x / 2;
 			for (int o = 0; o < 2; o++, tx += e.rigidbody.collision.x) {
-				if (map[(int) ty][(int) tx].isPudgeSolid()) {
-					return true;
-				}
+				if (map[(int) ty][(int) tx].isPudgeSolid()) { return true; }
 			}
 		}
 		return false;

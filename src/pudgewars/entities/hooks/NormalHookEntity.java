@@ -16,15 +16,18 @@ public class NormalHookEntity extends HookEntity {
 	 * Pudge Hooking
 	 */
 	public void attachPudge(PudgeEntity e) {
-		e.attachedHook = this; // Set the hookEntity as this
+		// e.attachedHook = this; // Set the hookEntity as this
 		e.transform.position = transform.position.clone(); // Set the pudge as this position
 		// TODO: If killed, check for null (?)
 		e.subLife(damage); // Do some damage
+		e.canTileCollide = false;
+		e.attachedHook = this;
 		hooked = e;
 		canHook = false;
 	}
 
 	public void detachPudge() {
+		hooked.canTileCollide = true;
 		hooked.attachedHook = null;
 		hooked = null;
 	}
@@ -51,7 +54,6 @@ public class NormalHookEntity extends HookEntity {
 		if (hooked == null && canHook) {
 			if (e instanceof PudgeEntity) {
 				if (e != owner) {
-					System.out.println("sda");
 					attachPudge((PudgeEntity) e);
 					setMovementType(MovementScheme.REVERSE);
 				}

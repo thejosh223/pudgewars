@@ -12,6 +12,7 @@ import pudgewars.entities.hooks.PullHookEntity;
 import pudgewars.input.MouseButton;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
+import pudgewars.util.Animation;
 import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
@@ -27,10 +28,12 @@ public class PudgeEntity extends Entity {
 	public boolean controllable = false;
 
 	public boolean isHooking;
+	public boolean canTileCollide;
 	public NormalHookEntity attachedHook;
 	protected int life;
 
 	protected Image img;
+	protected Animation ani;
 
 	// Target Position
 	protected Image clicker;
@@ -42,16 +45,22 @@ public class PudgeEntity extends Entity {
 
 		life = 20;
 
+		canTileCollide = true;
+
 		rigidbody.physicsSlide = true;
 		rigidbody.speed = 3.8;
 
-		img = ImageHandler.get().getImage("pudge");
+		ani = Animation.makeAnimation("pudge3", 8, 16, 16, 0.05);
+		ani.startAnimation();
+		img = ImageHandler.get().getImage("pudge3");
 
 		clicker = ImageHandler.get().getImage("selector");
 		target = null;
 	}
 
 	public void update() {
+		ani.update();
+
 		// Controls
 		if (controllable) {
 			// Change Cursor
@@ -92,18 +101,12 @@ public class PudgeEntity extends Entity {
 		}
 
 		if (!controllable) {
-			System.out.println(rigidbody.velocity.magnitude());
 			// if (attachedHook == null) {
 			// } else {
 			// System.out.println("--> " + attachedHook);
 			// }
 		}
 		rigidbody.updateVelocity();
-
-		// double tx = transform.position.x + rigidbody.velocity.x *
-		// Time.getTickInterval();
-		// double ty = transform.position.y + rigidbody.velocity.y *
-		// Time.getTickInterval();
 
 		// Un-comment this to have some fun!
 		isHooking = false;
@@ -117,7 +120,8 @@ public class PudgeEntity extends Entity {
 
 	public void render() {
 		// Draw Pudge
-		Game.s.g.drawImage(img, transform.getAffineTransformation(), null);
+		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
+		// Game.s.g.drawImage(img, transform.getAffineTransformation(), null);
 
 		if (target != null) {
 			Vector2 targetLocation = Game.s.worldToScreenPoint(target);
@@ -166,27 +170,16 @@ public class PudgeEntity extends Entity {
 		}
 	}
 
-	// public void try_setPosition(double tx, double ty) {
-	// Entity te = isEntityCollision(tx, ty);
-	// if (te != null) {
-	// if (te instanceof PudgeEntity) {
-	// tx = transform.position.x;
-	// ty = transform.position.y;
-	// return;
-	// }
-	// }
-	// transform.position.x = tx;
-	// transform.position.y = ty;
-	// }
-
 	/*
 	 * Collisions
 	 */
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return true;
 		if (b instanceof PudgeEntity) return true;
-		if (b instanceof Tile) {
-			if (((Tile) b).isPudgeSolid()) return true;
+		if (canTileCollide) {
+			if (b instanceof Tile) {
+				if (((Tile) b).isPudgeSolid()) return true;
+			}
 		}
 		return false;
 	}
@@ -195,6 +188,7 @@ public class PudgeEntity extends Entity {
 		if (e instanceof PudgeEntity) {
 			PudgeEntity p = (PudgeEntity) e;
 			if (p.attachedHook != null) {
+				System.out.println("asdm");
 				if (p.attachedHook.owner == this) {
 					p.attachedHook.detachPudge();
 					p.rigidbody.velocity = Vector2.ZERO.clone();
