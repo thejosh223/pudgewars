@@ -14,23 +14,22 @@ import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
 public class HookEntity extends Entity {
+	public final static double PULL_SPEED = 6;
 	public final static double PIECE_DISTANCE = 1;
-	public final static double KILL_UNCERTAINTY = 0.1;
 	public final static double SLOW_DOWN_VECTOR = 0.5;
 
 	// Hook Speed
-	public final static float HOOK_SPEED = 6;
+	public final static float HOOK_SPEED = 8;
 	public final static float HOOK_REVERSE_SPEED = 2 * HOOK_SPEED;
 
 	public PudgeEntity owner;
 	public PudgeEntity hooked;
+	protected HookPieceEntity hookPiece;
 
-	protected int movementType;
+	protected MovementScheme movementScheme;
 	public boolean canHook = true;
 	protected double travelled = 0;
 	protected double maxTravelDistance;
-	// protected boolean reversing;
-	protected HookPieceEntity hookPiece;
 	protected int damage;
 
 	// Render
@@ -44,10 +43,12 @@ public class HookEntity extends Entity {
 		damage = 4;
 
 		maxTravelDistance = 14;
-		rigidbody.speed = 8;
+		rigidbody.speed = HOOK_SPEED;
 
 		rigidbody.physicsSlide = false;
 		rigidbody.setDirection(target);
+
+		setMovementType(MovementScheme.FORWARD);
 
 		img = ImageHandler.get().getImage("hook");
 	}
@@ -63,25 +64,24 @@ public class HookEntity extends Entity {
 
 		travelled += Math.sqrt(xDist * xDist + yDist * yDist);
 		if (travelled >= maxTravelDistance) {
-			setMovementType(HookMovement.REVERSE);
+			setMovementType(MovementScheme.REVERSE);
 		}
 
-		switch (movementType) {
-			case HookMovement.FORWARD:
+		switch (movementScheme) {
+			case FORWARD:
 				if (hookPiece == null) {
 					// if (Point.distance(transform.position, owner.getX(),
 					// owner.getY()) >= PIECE_DISTANCE) {
 					if (Vector2.distance(transform.position, owner.transform.position) >= PIECE_DISTANCE) {
-						HookPieceEntity e = new HookPieceEntity(owner, this);
+						HookPieceEntity e = new HookPieceEntity(owner, this, null);
 						hookPiece = e;
+						Game.entities.entities.add(e);
 					}
 				} else {
 					hookPiece.rigidbody.setDirection(new Vector2(transform.position.x, transform.position.y));
 				}
 				break;
-			case HookMovement.REVERSE:
-				// if (Point.distance(transform.position.x, transform.position.y,
-				// owner.getX(), owner.getY()) <= HookEntity.KILL_UNCERTAINTY) {
+			case REVERSE:
 				if (Vector2.distance(transform.position, owner.transform.position) <= rigidbody.velocity.magnitude() * Time.getTickInterval()) {
 					kill();
 				} else {
@@ -89,20 +89,24 @@ public class HookEntity extends Entity {
 					else rigidbody.setDirection(hookPiece.transform.position.clone());
 				}
 				break;
-			case HookMovement.STATIONARY:
+			case PULL_FORWARD:
+				if (hookPiece == null) {
+					if (transform.position.distance(owner.transform.position) < HookEntity.PULL_SPEED * Time.getBaseTickInterval()) {
+						owner.rigidbody.velocity = Vector2.ZERO.clone();
+						kill();
+					} else {
+						owner.rigidbody.setDirection(transform.position, HookEntity.PULL_SPEED);
+					}
+				}
 				break;
-		}
-
-		HookPieceEntity temp = hookPiece;
-		while (temp != null) {
-			temp.update();
-			temp = temp.getConnected();
 		}
 
 		/*
 		 * Hooked Entity Management
 		 */
 		if (hooked != null) {
+			// System.out.println("Rig: " + rigidbody.velocity.magnitude());
+			hooked.rigidbody.speed = rigidbody.speed;
 			hooked.rigidbody.velocity = rigidbody.velocity.clone();
 		}
 	}
@@ -122,32 +126,26 @@ public class HookEntity extends Entity {
 				(int) (Window.CENTER_Y - (Game.focus.y - transform.position.y) * Game.TILE_SIZE - img.getHeight(null) / 2));
 		a.scale(transform.scale.x, transform.scale.y);
 		Game.s.g.drawImage(img, a, null);
-
-		HookPieceEntity temp = hookPiece;
-		while (temp != null) {
-			temp.render();
-			temp = temp.getConnected();
-		}
 	}
 
-	public void setMovementType(int movementType) {
-		if (!(movementType >= HookMovement.FORWARD && movementType <= HookMovement.STATIONARY)) return;
-
-		this.movementType = movementType;
-		switch (movementType) {
-			case HookMovement.FORWARD:
+	public void setMovementType(MovementScheme m) {
+		this.movementScheme = m;
+		switch (movementScheme) {
+			case FORWARD:
 				break;
-			case HookMovement.REVERSE:
+			case REVERSE:
 				rigidbody.speed = HookEntity.HOOK_REVERSE_SPEED;
 				break;
-			case HookMovement.STATIONARY:
+			case STATIONARY:
 				rigidbody.speed = 0;
+				break;
+			case PULL_FORWARD:
 				break;
 		}
 
 		HookPieceEntity temp = hookPiece;
 		while (temp != null) {
-			temp.setMovementType(HookMovement.REVERSE);
+			temp.setMovementType(movementScheme);
 			temp = temp.getConnected();
 		}
 	}

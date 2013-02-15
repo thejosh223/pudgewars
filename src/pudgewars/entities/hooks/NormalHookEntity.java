@@ -51,8 +51,9 @@ public class NormalHookEntity extends HookEntity {
 		if (hooked == null && canHook) {
 			if (e instanceof PudgeEntity) {
 				if (e != owner) {
+					System.out.println("sda");
 					attachPudge((PudgeEntity) e);
-					setMovementType(HookMovement.REVERSE);
+					setMovementType(MovementScheme.REVERSE);
 				}
 			}
 		}

@@ -33,8 +33,7 @@ public class Rigidbody {
 		velocity.x += acceleration.x * Time.getTickInterval();
 		velocity.y += acceleration.y * Time.getTickInterval();
 		// System.out.println("Velocity: " + velocity.magnitude());
-		velocity.normalize();
-		velocity.scale(speed);
+		velocity.setMagnitude(speed);
 		// System.out.println("Velocity: " + velocity.magnitude());
 		move(velocity.x * Time.getTickInterval(), velocity.y * Time.getTickInterval());
 	}

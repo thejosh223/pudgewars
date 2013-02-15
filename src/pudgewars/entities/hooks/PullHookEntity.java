@@ -3,6 +3,7 @@ package pudgewars.entities.hooks;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
+import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
 public class PullHookEntity extends HookEntity {
@@ -44,10 +45,10 @@ public class PullHookEntity extends HookEntity {
 
 	public void collides(Tile t, double vx, double vy) {
 		if (t.isHookable()) {
-			setMovementType(HookMovement.STATIONARY);
-			System.out.println("Hookable");
+			rigidbody.speed = 0;
+			setMovementType(MovementScheme.PULL_FORWARD);
 		} else {
-			setMovementType(HookMovement.REVERSE);
+			setMovementType(MovementScheme.REVERSE);
 		}
 	}
 }

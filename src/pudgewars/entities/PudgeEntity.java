@@ -54,7 +54,6 @@ public class PudgeEntity extends Entity {
 	public void update() {
 		// Controls
 		if (controllable) {
-
 			// Change Cursor
 			if (Game.keyInput.specialHook.isDown) Game.cursor.setCursor("Special");
 			else Game.cursor.setCursor("Default");
@@ -92,6 +91,13 @@ public class PudgeEntity extends Entity {
 			}
 		}
 
+		if (!controllable) {
+			System.out.println(rigidbody.velocity.magnitude());
+			// if (attachedHook == null) {
+			// } else {
+			// System.out.println("--> " + attachedHook);
+			// }
+		}
 		rigidbody.updateVelocity();
 
 		// double tx = transform.position.x + rigidbody.velocity.x *

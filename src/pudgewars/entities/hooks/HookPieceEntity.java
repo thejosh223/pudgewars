@@ -13,53 +13,54 @@ import pudgewars.util.Vector2;
 
 public class HookPieceEntity extends Entity {
 	private PudgeEntity owner;
-	private int movementType;
-	// private boolean reversing;
+	private MovementScheme movementScheme;
 
 	private HookEntity hook;
 	private HookPieceEntity next;
+	private HookPieceEntity prev;
 	private BufferedImage img;
 
-	public HookPieceEntity(PudgeEntity e, HookEntity h) {
+	public HookPieceEntity(PudgeEntity e, HookEntity h, HookPieceEntity p) {
 		super(e.transform.position);
 
 		owner = e;
 		hook = h;
+		prev = p;
 		// rigidbody.velocity.x = vx;
 		// rigidbody.velocity.y = vy;
 		rigidbody.speed = h.rigidbody.speed;
 		// rigidbody.setDirection(target)
 
 		// Default Movement Behaviour
-		setMovementType(HookMovement.FORWARD);
+		setMovementType(MovementScheme.FORWARD);
 
 		img = ImageHandler.get().getImage("hookpiece");
 	}
 
 	public void update() {
-		double xDist = rigidbody.velocity.x * Time.getTickInterval();
-		double yDist = rigidbody.velocity.y * Time.getTickInterval();
-		double tx = transform.position.x + xDist;
-		double ty = transform.position.y + yDist;
-		transform.position.x = tx;
-		transform.position.y = ty;
+		// Move the entity
+		rigidbody.updateVelocity();
 
-		switch (movementType) {
-			case HookMovement.FORWARD:
+		switch (movementScheme) {
+			case FORWARD:
 				if (next == null) {
 					if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) >= HookEntity.PIECE_DISTANCE) {
-						HookPieceEntity e = new HookPieceEntity(owner, hook);
+						HookPieceEntity e = new HookPieceEntity(owner, hook, this);
 						next = e;
+						Game.entities.entities.add(e);
 					}
 				} else {
 					next.rigidbody.setDirection(new Vector2(transform.position.x, transform.position.y));
 				}
 				break;
-			case HookMovement.REVERSE:
+			case REVERSE:
 				if (next == null) {
 					rigidbody.setDirection(owner.transform.position);
+					if (transform.position.distance(owner.transform.position) < rigidbody.speed * Time.getBaseTickInterval()) {
+						kill();
+					}
 				} else {
-					if (Vector2.distance(transform.position, owner.transform.position) <= rigidbody.velocity.magnitude() * Time.getTickInterval()) {
+					if (Vector2.distance(transform.position, owner.transform.position) <= rigidbody.speed * Time.getTickInterval()) {
 						next.kill();
 						next = null;
 					} else {
@@ -67,9 +68,40 @@ public class HookPieceEntity extends Entity {
 					}
 				}
 				break;
-			case HookMovement.STATIONARY:
+			case STATIONARY:
+				break;
+			case PULL_FORWARD:
+				if (next == null) {
+					if (prev == null) {
+						if (transform.position.distance(owner.transform.position) < HookEntity.PULL_SPEED * Time.getBaseTickInterval()) {
+							kill();
+						} else {
+							owner.rigidbody.setDirection(transform.position, HookEntity.PULL_SPEED);
+						}
+					} else {
+						if (transform.position.distance(owner.transform.position) < HookEntity.PULL_SPEED * Time.getBaseTickInterval()) {
+							kill();
+						} else {
+							owner.rigidbody.setDirection(transform.position, HookEntity.PULL_SPEED);
+						}
+					}
+				} else {
+				}
 				break;
 		}
+	}
+
+	public void kill() {
+		super.kill();
+		if (prev != null) {
+			// Set previous hookPiece.next = null
+			prev.next = null;
+		} else {
+			// If prev == null, then prev == hook.
+			// Set hook.hookPiece = null
+			hook.hookPiece = null;
+		}
+		if (next != null) next.prev = null;
 	}
 
 	public void render() {
@@ -85,17 +117,17 @@ public class HookPieceEntity extends Entity {
 		return next;
 	}
 
-	public void setMovementType(int movementType) {
-		if (!(movementType >= HookMovement.FORWARD && movementType <= HookMovement.STATIONARY)) return;
-
-		this.movementType = movementType;
+	public void setMovementType(MovementScheme m) {
+		this.movementScheme = m;
 		rigidbody.speed = hook.rigidbody.speed;
-		switch (movementType) {
-			case HookMovement.FORWARD:
+		switch (movementScheme) {
+			case FORWARD:
 				break;
-			case HookMovement.REVERSE:
+			case REVERSE:
 				break;
-			case HookMovement.STATIONARY:
+			case STATIONARY:
+				break;
+			case PULL_FORWARD:
 				break;
 		}
 	}

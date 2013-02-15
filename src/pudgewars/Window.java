@@ -33,6 +33,7 @@ public class Window extends Canvas {
 	public Window() {
 		// The Window
 		container = new JFrame("Villageville");
+		container.setBounds(50, 50, ACTUAL_WIDTH, ACTUAL_HEIGHT);
 		container.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panel = (JPanel) container.getContentPane();
