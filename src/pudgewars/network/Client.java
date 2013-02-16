@@ -217,21 +217,21 @@ public class Client {
 	    }
 	}
 	
-	//public static void main(String args[]){	
-		//String host = JOptionPane.showInputDialog(null, "Enter host:", "127.0.0.1");
-		//String host = "127.0.0.1";
-		//createAndShowGUI();
-		//chatWindow.setText("Connecting to host: "+host+"...\n");
-		//try {
-		//	Socket socket = new Socket(host,8888);
-		//	conn = new MyConnection(socket);
+	public static void main(String args[]){	
+		String host = JOptionPane.showInputDialog(null, "Enter host:", "127.0.0.1");
+		String host = "127.0.0.1";
+		createAndShowGUI();
+		chatWindow.setText("Connecting to host: "+host+"...\n");
+		try {
+			Socket socket = new Socket(host,8888);
+			conn = new MyConnection(socket);
 			
-		//	Thread t = new Thread(new getMessage());
-		//	t.start();
-		//} catch (Exception e) {
-		//	e.printStackTrace();
-		//	JOptionPane.showMessageDialog(null, "Unable to connect to host: " + host + ". Server not initialized.");
-		//	System.exit(1);
-		//}
-	//}
+			Thread t = new Thread(new getMessage());
+			t.start();
+		} catch (Exception e) {
+			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Unable to connect to host: " + host + ". Server not initialized.");
+			System.exit(1);
+		}
+	}
 }
