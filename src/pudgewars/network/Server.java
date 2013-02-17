@@ -1,0 +1,150 @@
+package pudgewars.network;
+
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.util.Vector;
+
+public class Server {
+	private static int WAITING_STATE = 0;
+	private static int FULL_STATE = 1;
+	private static int INGAME_STATE = 2;
+	private static int SERVER_STATE = 0;
+	private static int COUNTER = 0;
+	private static int READY = 0;
+	
+	private static Vector<ClientNode> clients = new Vector<ClientNode>();
+	
+	private static class handleClient implements Runnable{
+		Socket socket;
+		
+		public handleClient(Socket socket){
+			this.socket = socket;
+		}
+		
+		public void run(){
+			MyConnection conn = new MyConnection(socket);
+
+			int team = 0;
+			if(teamCount(0) < 4 && teamCount(1) < 4) team = COUNTER % 2;
+			else if(teamCount(0) < 4) team = 0;
+			else if(teamCount(1) < 4) team = 1;
+			else SERVER_STATE = FULL_STATE; 
+			
+			if(SERVER_STATE == FULL_STATE){
+				conn.sendMessage("SERVERERROR\nEOM");
+				return;
+			}
+			
+			ClientNode client = new ClientNode(conn, "Client" + COUNTER++, "", team);
+			clients.add(client);
+			conn.sendMessage("NAME\n" + client.getName() + "\nEOM");
+			sendToAll("Server Message: " + client.getName() + " has joined.\n");
+			updateClientsInfo();
+			
+			while(SERVER_STATE != INGAME_STATE){
+				String line = conn.getMessage();
+				
+				if(line.equals("/q")){
+					sendToAll("Server Message: " + client.getName() + " has left.\n");
+					clients.remove(client);
+					String status = client.getStatus();
+					if(!status.equals("")) READY--;
+					updateClientsInfo();
+					SERVER_STATE = WAITING_STATE;
+					break;
+				}
+				
+				do{
+					if(line.length() >= 4 && line.substring(0, 3).equals("/cn")){
+						line = line.replaceAll("\\s+", " ");
+						String[] parts = line.split(" ");
+						String newName = parts[1];
+						conn.sendMessage("NAME\n" + newName + "\nEOM");
+						sendToAll("Server Message: " + client.getName() + " has changed name to " + newName + ".\n");
+						client.setName(newName);
+						updateClientsInfo();
+					}else if(line.length() >= 4 && line.substring(0, 3).equals("/cs")){
+						line = line.replaceAll("\\s+", " ");
+						String status = line.substring(4);
+						if(!status.equals("")){
+							client.setStatus(" - " + status);
+							READY++;
+						}
+						else{
+							client.setStatus("");
+							READY--;
+						}
+						updateClientsInfo();
+					}else if(line.length() >= 4 && line.substring(0, 3).equals("/ct")){
+						if(client.getTeam() == 0){
+							if(teamCount(1) < 4) client.setTeam(1);
+							else conn.sendMessage("FULLERROR\nEOM");
+						}
+						else{
+							if(teamCount(0) < 4) client.setTeam(0);
+							else conn.sendMessage("FULLERROR\nEOM");
+						}
+						updateClientsInfo();
+					}else if(line.charAt(0) == '/'){
+						conn.sendMessage("Server Message: Invalid command " + line + "\nEOM");
+					}else{
+						sendToAll(client.getName() + ": " + line + "\n");
+					}
+					
+					line = conn.getMessage();
+				}while(!line.equals("EOM"));
+				
+				if(READY == clients.size()){
+					if(teamCount(1) > 0 && teamCount(0) > 0) SERVER_STATE = INGAME_STATE;
+					else{
+						sendToAll("TEAMERROR\n");
+						READY = 0;
+						for(int x = 0;x<clients.size();x++) clients.get(x).setStatus("");
+						updateClientsInfo();
+					}
+				}
+			}
+			if(SERVER_STATE == INGAME_STATE) sendToAll("START\n");
+		}
+		
+		private int teamCount(int team){
+			int count = 0;
+			for(int x = 0; x<clients.size(); x++){
+				if(clients.get(x).getTeam() == team) count++;
+			}
+			return count;
+		}
+		
+		public void sendToAll(String msg){
+			for(int x = 0; x<clients.size(); x++){
+				clients.get(x).getConnection().sendMessage(msg + "EOM");
+			}
+		}
+		
+		public void updateClientsInfo(){
+			String msg = "ClientsInfo1\n";
+			for(int x = 0; x<clients.size(); x++){
+				if(clients.get(x).getTeam() == 0) msg = msg + clients.get(x).getName() + clients.get(x).getStatus() + "\n";
+			}
+			msg = msg + "ClientsInfo2\n";
+			for(int x = 0; x<clients.size(); x++){
+				if(clients.get(x).getTeam() == 1) msg = msg + clients.get(x).getName() + clients.get(x).getStatus() + "\n";
+			}
+			sendToAll(msg);
+		}
+	}
+		
+	public static void main(String args[]){
+		try {
+			ServerSocket ssocket = new ServerSocket(8888);
+			while (true) {
+				Socket socket = ssocket.accept();
+
+				Thread t = new Thread(new handleClient(socket));
+				t.start();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+}
