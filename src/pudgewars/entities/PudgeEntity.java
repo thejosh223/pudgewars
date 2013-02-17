@@ -5,6 +5,7 @@ import java.awt.Image;
 import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
+import pudgewars.components.Stats;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.entities.hooks.HookType;
 import pudgewars.entities.hooks.NormalHookEntity;
@@ -24,13 +25,15 @@ public class PudgeEntity extends Entity {
 	public final static double COLLISION_WIDTH = 1;
 	public final static double COLLISION_HEIGHT = 1;
 
+	public Stats stats;
+
 	// Whether or not you can control this Pudge
 	public boolean controllable = false;
 
 	public boolean isHooking;
+	public boolean canMove;
 	public boolean canTileCollide;
 	public NormalHookEntity attachedHook;
-	protected int life;
 
 	protected Image img;
 	protected Animation ani;
@@ -43,12 +46,13 @@ public class PudgeEntity extends Entity {
 	public PudgeEntity(Vector2 position) {
 		super(position, new Vector2(COLLISION_WIDTH, COLLISION_HEIGHT));
 
-		life = 20;
-
 		canTileCollide = true;
+		canMove = true;
+
+		stats = new Stats(this);
+		stats.restoreDefaults();
 
 		rigidbody.physicsSlide = true;
-		rigidbody.speed = 3.8;
 
 		ani = Animation.makeAnimation("pudge3", 8, 16, 16, 0.05);
 		ani.startAnimation();
@@ -59,10 +63,14 @@ public class PudgeEntity extends Entity {
 	}
 
 	public void update() {
-		ani.update();
+		if (rigidbody.isMoving()) ani.update();
+
+		if (!canMove) {
+			target = null;
+		}
 
 		// Controls
-		if (controllable) {
+		if (controllable && canMove) {
 			// Change Cursor
 			if (Game.keyInput.specialHook.isDown) Game.cursor.setCursor("Special");
 			else Game.cursor.setCursor("Default");
@@ -70,7 +78,6 @@ public class PudgeEntity extends Entity {
 			if (Game.mouseInput.lastClicked[MouseButton.RIGHT] != null) {
 				Vector2 click = Game.mouseInput.lastClicked[MouseButton.RIGHT];
 				target = Game.s.screenToWorldPoint(click);
-
 				Game.mouseInput.lastClicked[MouseButton.RIGHT] = null;
 			}
 			if (Game.mouseInput.lastClicked[MouseButton.LEFT] != null) {
@@ -88,7 +95,7 @@ public class PudgeEntity extends Entity {
 		}
 
 		if (target != null) {
-			transform.rotateTowards(target);
+			transform.rotateTowards(target, 0.1);
 
 			double dist = transform.position.distance(target);
 			if (dist < rigidbody.velocity.magnitude() * Time.getTickInterval()) {
@@ -100,12 +107,6 @@ public class PudgeEntity extends Entity {
 			}
 		}
 
-		if (!controllable) {
-			// if (attachedHook == null) {
-			// } else {
-			// System.out.println("--> " + attachedHook);
-			// }
-		}
 		rigidbody.updateVelocity();
 
 		// Un-comment this to have some fun!
@@ -121,7 +122,6 @@ public class PudgeEntity extends Entity {
 	public void render() {
 		// Draw Pudge
 		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
-		// Game.s.g.drawImage(img, transform.getAffineTransformation(), null);
 
 		if (target != null) {
 			Vector2 targetLocation = Game.s.worldToScreenPoint(target);
@@ -188,24 +188,12 @@ public class PudgeEntity extends Entity {
 		if (e instanceof PudgeEntity) {
 			PudgeEntity p = (PudgeEntity) e;
 			if (p.attachedHook != null) {
-				System.out.println("asdm");
 				if (p.attachedHook.owner == this) {
 					p.attachedHook.detachPudge();
 					p.rigidbody.velocity = Vector2.ZERO.clone();
 				}
 			}
 		}
-	}
-
-	public void subLife(int sub) {
-		life -= sub;
-		if (life <= 0) {
-			kill();
-		}
-	}
-
-	public int getLife() {
-		return life;
 	}
 
 	public void kill() {

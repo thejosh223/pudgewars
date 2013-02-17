@@ -12,29 +12,8 @@ public class PullHookEntity extends HookEntity {
 	}
 
 	/*
-	 * Pudge Hooking
-	 */
-	public void attachPudge(PudgeEntity e) {
-		// e.attachedHook = this; // Set the hookEntity as this
-		e.transform.position = transform.position.clone(); // Set the pudge as this position
-		// TODO: If killed, check for null (?)
-		e.subLife(damage); // Do some damage
-		e.canTileCollide = false;
-		hooked = e;
-		canHook = false;
-	}
-
-	public void detachPudge() {
-		hooked.canTileCollide = true;
-		hooked.attachedHook = null;
-		hooked = null;
-	}
-
-	/*
 	 * Collision Detection and Response
 	 */
-
-	// Method Override
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof Tile) {
 			if (((Tile) b).isHookSolid()) return true;
@@ -47,7 +26,9 @@ public class PullHookEntity extends HookEntity {
 	public void collides(Tile t, double vx, double vy) {
 		if (t.isHookable()) {
 			owner.canTileCollide = false;
+			owner.canMove = false;
 			rigidbody.speed = 0;
+			isRotating = false;
 			setMovementType(MovementScheme.PULL_FORWARD);
 		} else {
 			setMovementType(MovementScheme.REVERSE);

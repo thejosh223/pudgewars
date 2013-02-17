@@ -67,6 +67,10 @@ public class Vector2 {
 		System.out.println("V: " + x + ", " + y);
 	}
 
+	public static Vector2 componentMultiply(Vector2 a, Vector2 b) {
+		return new Vector2(a.x * b.x, a.y * b.y);
+	}
+
 	public static double distance(Vector2 v1, Vector2 v2) {
 		return Math.sqrt((v2.x - v1.x) * (v2.x - v1.x) + (v2.y - v1.y) * (v2.y - v1.y));
 	}
@@ -74,4 +78,5 @@ public class Vector2 {
 	public static double distance(double x1, double y1, double x2, double y2) {
 		return Vector2.distance(new Vector2(x1, y1), new Vector2(x2, y2));
 	}
+
 }

@@ -11,8 +11,8 @@ public class Transform {
 	public Entity gameObject;
 
 	public Vector2 position;
-	public double rotation;
 	public Vector2 scale;
+	public double rotation;
 
 	public Transform(Entity e) {
 		this(e, Vector2.ZERO, Rotation.ZERO, new Vector2(1, 1));
@@ -29,8 +29,18 @@ public class Transform {
 		this.scale = scale.clone();
 	}
 
+	public void rotateTowards(Vector2 target, double amt) {
+		double r = -Math.atan2(position.x - target.x, position.y - target.y);
+		r = Rotation.clampRotation(r);
+
+		if (r - rotation > Math.PI) r -= Math.PI * 2;
+		else if (r - rotation < -Math.PI) r += Math.PI * 2;
+
+		rotation = Rotation.clampRotation(rotation + (r - rotation) * amt);
+	}
+
 	public void rotateTowards(Vector2 target) {
-		rotation = -Math.atan2(position.x - target.x, position.y - target.y);
+		rotation = Rotation.clampRotation(-Math.atan2(position.x - target.x, position.y - target.y));
 	}
 
 	public AffineTransform getAffineTransformation() {

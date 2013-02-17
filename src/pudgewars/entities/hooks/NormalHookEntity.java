@@ -16,18 +16,20 @@ public class NormalHookEntity extends HookEntity {
 	 * Pudge Hooking
 	 */
 	public void attachPudge(PudgeEntity e) {
-		// e.attachedHook = this; // Set the hookEntity as this
 		e.transform.position = transform.position.clone(); // Set the pudge as this position
-		// TODO: If killed, check for null (?)
-		e.subLife(damage); // Do some damage
+		e.stats.subLife(damage); // Do some damage
 		e.canTileCollide = false;
+		e.canMove = false;
 		e.attachedHook = this;
+
 		hooked = e;
 		canHook = false;
+		isRotating = false;
 	}
 
 	public void detachPudge() {
 		hooked.canTileCollide = true;
+		hooked.canMove = true;
 		hooked.attachedHook = null;
 		hooked = null;
 	}
@@ -35,8 +37,6 @@ public class NormalHookEntity extends HookEntity {
 	/*
 	 * Collision Detection and Response
 	 */
-
-	// Method Override
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return false;
 		if (b instanceof PudgeEntity) {

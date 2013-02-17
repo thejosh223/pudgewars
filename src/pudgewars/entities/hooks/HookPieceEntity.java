@@ -73,16 +73,16 @@ public class HookPieceEntity extends Entity {
 			case PULL_FORWARD:
 				if (next == null) {
 					if (prev == null) {
-						if (transform.position.distance(owner.transform.position) < HookEntity.PULL_SPEED * Time.getBaseTickInterval()) {
+						if (transform.position.distance(owner.transform.position) < owner.stats.hookSpeed * Time.getBaseTickInterval()) {
 							kill();
 						} else {
-							owner.rigidbody.setDirection(transform.position, HookEntity.PULL_SPEED);
+							owner.rigidbody.setDirection(transform.position, owner.stats.hookSpeed);
 						}
 					} else {
-						if (transform.position.distance(owner.transform.position) < HookEntity.PULL_SPEED * Time.getBaseTickInterval()) {
+						if (transform.position.distance(owner.transform.position) < owner.stats.hookSpeed * Time.getBaseTickInterval()) {
 							kill();
 						} else {
-							owner.rigidbody.setDirection(transform.position, HookEntity.PULL_SPEED);
+							owner.rigidbody.setDirection(transform.position, owner.stats.hookSpeed);
 						}
 					}
 				} else {

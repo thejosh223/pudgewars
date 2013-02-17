@@ -13,7 +13,6 @@ public class Rigidbody {
 	public Transform transform;
 
 	public Vector2 velocity;
-	public Vector2 acceleration;
 	public Vector2 collision;
 
 	public double speed;
@@ -26,25 +25,21 @@ public class Rigidbody {
 		this.collision = collision.clone();
 
 		velocity = Vector2.ZERO.clone();
-		acceleration = Vector2.ZERO.clone();
 	}
 
 	public void updateVelocity() {
-		velocity.x += acceleration.x * Time.getTickInterval();
-		velocity.y += acceleration.y * Time.getTickInterval();
-		// System.out.println("Velocity: " + velocity.magnitude());
 		velocity.setMagnitude(speed);
-		// System.out.println("Velocity: " + velocity.magnitude());
 		move(velocity.x * Time.getTickInterval(), velocity.y * Time.getTickInterval());
 	}
 
 	public void setDirection(Vector2 target) {
-		setDirection(target, speed);
+		double angle = Math.atan2(gameObject.transform.position.x - target.x, gameObject.transform.position.y - target.y);
+		velocity.set(-Math.sin(angle), -Math.cos(angle));
 	}
 
 	public void setDirection(Vector2 target, double speed) {
-		double angle = Math.atan2(gameObject.transform.position.x - target.x, gameObject.transform.position.y - target.y);
-		velocity.set(-speed * Math.sin(angle), -speed * Math.cos(angle));
+		setDirection(target);
+		this.speed = speed;
 	}
 
 	/*
@@ -140,6 +135,10 @@ public class Rigidbody {
 		return false;
 	}
 
+	public boolean isMoving() {
+		return !(velocity.x == 0 && velocity.y == 0);
+	}
+
 	/*
 	 * Collision Detection
 	 */
@@ -152,8 +151,9 @@ public class Rigidbody {
 	}
 
 	public CollisionBox getCollisionBox() {
-		return new CollisionBox(gameObject, transform.position.x - collision.x / 2, transform.position.y - collision.y / 2, //
-				transform.position.x + collision.x / 2, transform.position.y + collision.y / 2);
+		Vector2 v = Vector2.componentMultiply(collision, transform.scale);
+		return new CollisionBox(gameObject, transform.position.x - v.x / 2, transform.position.y - v.y / 2, //
+				transform.position.x + v.x / 2, transform.position.y + v.y / 2);
 	}
 
 	// TODO

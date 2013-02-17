@@ -1,26 +1,23 @@
 package pudgewars.entities.hooks;
 
 import java.awt.Image;
-import java.awt.geom.AffineTransform;
 
 import pudgewars.Game;
-import pudgewars.Window;
 import pudgewars.entities.Entity;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 import pudgewars.util.ImageHandler;
+import pudgewars.util.Rotation;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
 public class HookEntity extends Entity {
-	public final static double PULL_SPEED = 6;
 	public final static double PIECE_DISTANCE = 1;
 	public final static double SLOW_DOWN_VECTOR = 0.5;
 
 	// Hook Speed
-	public final static float HOOK_SPEED = 8;
-	public final static float HOOK_REVERSE_SPEED = 2 * HOOK_SPEED;
+	public final static float HOOK_REVERSE_MULT = 2;
 
 	public PudgeEntity owner;
 	public PudgeEntity hooked;
@@ -33,17 +30,17 @@ public class HookEntity extends Entity {
 	protected int damage;
 
 	// Render
-	private Image img;
+	protected Image img;
+	protected boolean isRotating = true;
 
 	public HookEntity(PudgeEntity e, Vector2 target) {
-		super(e.transform.position, new Vector2(0.6, 0.6));
+		super(e.transform.position, new Vector2(e.stats.hookSize, e.stats.hookSize));
 		owner = e;
 		hooked = null;
 
-		damage = 4;
-
-		maxTravelDistance = 14;
-		rigidbody.speed = HOOK_SPEED;
+		maxTravelDistance = e.stats.hookRange;
+		rigidbody.speed = e.stats.hookSpeed;
+		this.damage = e.stats.hookDamage;
 
 		rigidbody.physicsSlide = false;
 		rigidbody.setDirection(target);
@@ -55,8 +52,9 @@ public class HookEntity extends Entity {
 
 	public void update() {
 		// Spinning Animation
-		transform.rotation -= 0.4;
+		if (isRotating) transform.rotation = Rotation.clampRotation(transform.rotation - 0.4);
 
+		// Movement
 		rigidbody.updateVelocity();
 
 		double xDist = rigidbody.velocity.x * Time.getTickInterval();
@@ -65,6 +63,7 @@ public class HookEntity extends Entity {
 		travelled += Math.sqrt(xDist * xDist + yDist * yDist);
 		if (travelled >= maxTravelDistance) {
 			setMovementType(MovementScheme.REVERSE);
+			rigidbody.speed = owner.stats.hookSpeed * HookEntity.HOOK_REVERSE_MULT;
 		}
 
 		switch (movementScheme) {
@@ -82,7 +81,7 @@ public class HookEntity extends Entity {
 				}
 				break;
 			case REVERSE:
-				if (Vector2.distance(transform.position, owner.transform.position) <= rigidbody.velocity.magnitude() * Time.getTickInterval()) {
+				if (Vector2.distance(transform.position, owner.transform.position) <= rigidbody.speed * Time.getTickInterval()) {
 					kill();
 				} else {
 					if (hookPiece == null) rigidbody.setDirection(owner.transform.position.clone());
@@ -91,12 +90,13 @@ public class HookEntity extends Entity {
 				break;
 			case PULL_FORWARD:
 				if (hookPiece == null) {
-					if (transform.position.distance(owner.transform.position) < HookEntity.PULL_SPEED * Time.getBaseTickInterval()) {
+					if (transform.position.distance(owner.transform.position) < owner.stats.hookSpeed * Time.getBaseTickInterval()) {
 						owner.rigidbody.velocity = Vector2.ZERO.clone();
 						owner.canTileCollide = true;
+						owner.canMove = true;
 						kill();
 					} else {
-						owner.rigidbody.setDirection(transform.position, HookEntity.PULL_SPEED);
+						owner.rigidbody.setDirection(transform.position, owner.stats.hookSpeed);
 					}
 				}
 				break;
@@ -106,27 +106,18 @@ public class HookEntity extends Entity {
 		 * Hooked Entity Management
 		 */
 		if (hooked != null) {
-			// System.out.println("Rig: " + rigidbody.velocity.magnitude());
 			hooked.rigidbody.speed = rigidbody.speed;
 			hooked.rigidbody.velocity = rigidbody.velocity.clone();
 		}
 	}
 
 	public void render() {
-		int x = (int) (Window.CENTER_X - (Game.focus.x - transform.position.x) * Game.TILE_SIZE);
-		int y = (int) (Window.CENTER_Y - (Game.focus.y - transform.position.y) * Game.TILE_SIZE);
-
 		// Game.s.g.drawImage(img, (int) (Window.CENTER_X - (Game.focus.x -
 		// transform.position.x) * Game.TILE_SIZE - img.getWidth(null) / 2), //
 		// (int) (Window.CENTER_Y - (Game.focus.y - transform.position.y) *
 		// Game.TILE_SIZE - img.getHeight(null) / 2), null);
 
-		AffineTransform a = new AffineTransform();
-		a.rotate(transform.rotation, x, y);
-		a.translate((int) (Window.CENTER_X - (Game.focus.x - transform.position.x) * Game.TILE_SIZE - img.getWidth(null) / 2), //
-				(int) (Window.CENTER_Y - (Game.focus.y - transform.position.y) * Game.TILE_SIZE - img.getHeight(null) / 2));
-		a.scale(transform.scale.x, transform.scale.y);
-		Game.s.g.drawImage(img, a, null);
+		Game.s.g.drawImage(img, transform.getAffineTransformation(), null);
 	}
 
 	public void setMovementType(MovementScheme m) {
@@ -135,7 +126,7 @@ public class HookEntity extends Entity {
 			case FORWARD:
 				break;
 			case REVERSE:
-				rigidbody.speed = HookEntity.HOOK_REVERSE_SPEED;
+				rigidbody.speed = owner.stats.hookSpeed * HookEntity.HOOK_REVERSE_MULT;
 				break;
 			case STATIONARY:
 				rigidbody.speed = 0;
@@ -154,6 +145,7 @@ public class HookEntity extends Entity {
 	public void kill() {
 		super.kill();
 		owner.isHooking = false;
+		owner.stats.restoreDefaults();
 		while (hookPiece != null) {
 			hookPiece = hookPiece.getConnected();
 		}
