@@ -4,6 +4,7 @@ import java.awt.Image;
 
 import pudgewars.Game;
 import pudgewars.entities.Entity;
+import pudgewars.entities.LightSource;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
@@ -12,7 +13,7 @@ import pudgewars.util.Rotation;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
-public class HookEntity extends Entity {
+public class HookEntity extends Entity implements LightSource {
 	public final static double PIECE_DISTANCE = 1;
 	public final static double SLOW_DOWN_VECTOR = 0.5;
 
@@ -180,5 +181,9 @@ public class HookEntity extends Entity {
 	}
 
 	public void collides(Entity e, double vx, double vy) {
+	}
+
+	public double getLightRadius() {
+		return 2;
 	}
 }

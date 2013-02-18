@@ -37,6 +37,10 @@ public class Stats {
 		return _life;
 	}
 
+	public double lifePercentage() {
+		return (double) _life / life;
+	}
+
 	public void addLife(int a) {
 		_life += a;
 		if (_life > life) _life = life;

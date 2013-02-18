@@ -18,7 +18,7 @@ import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
-public class PudgeEntity extends Entity {
+public class PudgeEntity extends Entity implements LightSource {
 	public final static int CLICK_SIZE = 8;
 	public final static int MAX_LIFE = 20;
 
@@ -35,13 +35,16 @@ public class PudgeEntity extends Entity {
 	public boolean canTileCollide;
 	public NormalHookEntity attachedHook;
 
-	protected Image img;
-	protected Animation ani;
-
 	// Target Position
 	protected Image clicker;
 	protected Vector2 target;
 	protected double targetRotation;
+
+	// Rendering
+	protected Image img;
+	protected Animation ani;
+	protected Image fullLife;
+	protected Image emptyLife;
 
 	public PudgeEntity(Vector2 position) {
 		super(position, new Vector2(COLLISION_WIDTH, COLLISION_HEIGHT));
@@ -60,6 +63,9 @@ public class PudgeEntity extends Entity {
 
 		clicker = ImageHandler.get().getImage("selector");
 		target = null;
+
+		fullLife = ImageHandler.get().getImage("life_full");
+		emptyLife = ImageHandler.get().getImage("life_empty");
 	}
 
 	public void update() {
@@ -136,21 +142,16 @@ public class PudgeEntity extends Entity {
 		 */
 
 		// Dimension Definitions!
-		// int ellipseWidth = (int) (Game.TILE_SIZE * collisionWidth);
-		// int ellipseHeight = (int) (Game.TILE_SIZE * collisionHeight);
-		// int lifeEllipseWidth = ellipseWidth + 2 * (LIFESTROKE_DEPTH + 1);
-		// int lifeEllipseHeight = ellipseHeight + 2 * (LIFESTROKE_DEPTH + 1);
+		Vector2 v = Game.s.worldToScreenPoint(transform.position);
+		v.y -= Game.TILE_SIZE / 2;
+		int lifebarWidth = fullLife.getWidth(null);
+		int lifebarHeight = fullLife.getHeight(null);
+		int lifebarActual = (int) (fullLife.getWidth(null) * stats.lifePercentage());
 
-		// Game.s.g.setStroke(LIFESTROKE);
-		// Game.s.g.setPaint(new GradientPaint((float) (x - lifeEllipseWidth *
-		// 0.5), (float) (y - lifeEllipseHeight * 0.5), new Color(250, 0, 0,
-		// 175), (float) (x + lifeEllipseWidth * 0.5), (float) (y -
-		// lifeEllipseHeight * 0.5), new Color(0, 0, 250, 175)));
-
-		// Game.s.g.draw(new Arc2D.Double(x - lifeEllipseWidth * 0.5, y -
-		// lifeEllipseHeight * 0.5, lifeEllipseWidth, lifeEllipseHeight,
-		// ARC_STARTANGLE, FULL_LIFE_ARC * this.getLife() /
-		// PudgeEntity.MAX_LIFE, Arc2D.OPEN));
+		Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x + lifebarWidth / 2, (int) v.y + lifebarHeight / 2, //
+				0, 0, lifebarWidth, lifebarHeight, null);
+		Game.s.g.drawImage(fullLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x - lifebarWidth / 2 + lifebarActual, (int) v.y + lifebarHeight / 2, //
+				0, 0, lifebarActual, lifebarHeight, null);
 	}
 
 	public void setHook(Vector2 click, int hookType) {
@@ -199,5 +200,9 @@ public class PudgeEntity extends Entity {
 	public void kill() {
 		super.kill();
 		System.out.println("Pudge was Killed");
+	}
+
+	public double getLightRadius() {
+		return 4;
 	}
 }

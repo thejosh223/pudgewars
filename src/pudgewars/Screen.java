@@ -7,8 +7,8 @@ import java.awt.image.BufferedImage;
 import pudgewars.util.Vector2;
 
 public class Screen {
-	private int width;
-	private int height;
+	public int width;
+	public int height;
 
 	// Center Coordinates
 	private int cx;

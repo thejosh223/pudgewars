@@ -8,9 +8,11 @@ import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.components.Rigidbody;
 import pudgewars.entities.Entity;
+import pudgewars.entities.LightSourceEntity;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.Time;
+import pudgewars.util.Vector2;
 
 public class Map {
 	public final static int MAP_WIDTH = 26;
@@ -90,7 +92,9 @@ public class Map {
 		for (int i = 0; i < 2; i++, ty += e.rigidbody.collision.y) {
 			double tx = x - e.rigidbody.collision.x / 2;
 			for (int o = 0; o < 2; o++, tx += e.rigidbody.collision.x) {
-				if (map[(int) ty][(int) tx].isHookSolid()) { return true; }
+				if (map[(int) ty][(int) tx].isHookSolid()) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -101,7 +105,9 @@ public class Map {
 		for (int i = 0; i < 2; i++, ty += e.rigidbody.collision.y) {
 			double tx = x - e.rigidbody.collision.x / 2;
 			for (int o = 0; o < 2; o++, tx += e.rigidbody.collision.x) {
-				if (map[(int) ty][(int) tx].isPudgeSolid()) { return true; }
+				if (map[(int) ty][(int) tx].isPudgeSolid()) {
+					return true;
+				}
 			}
 		}
 		return false;
@@ -113,6 +119,19 @@ public class Map {
 		for (int i = 0; i < MAP_HEIGHT; i++) {
 			for (int o = 0; o < MAP_WIDTH; o++) {
 				map[i][o].render(dx + o * Game.TILE_SIZE, dy + i * Game.TILE_SIZE);
+			}
+		}
+	}
+
+	public void postRender() {
+	}
+
+	public void addLightSources(List<Entity> entities) {
+		for (int i = 0; i < MAP_HEIGHT; i++) {
+			for (int o = 0; o < MAP_WIDTH; o++) {
+				if (map[i][o].lightRadius() > 0) {
+					entities.add(new LightSourceEntity(new Vector2(o + 0.5, i + 0.5), map[i][o].lightRadius()));
+				}
 			}
 		}
 	}

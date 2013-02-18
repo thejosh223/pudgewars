@@ -1,5 +1,11 @@
 package pudgewars.entities;
 
+import java.awt.AlphaComposite;
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +29,7 @@ public class EntityManager {
 		entities.add(new PudgeEntity(new Vector2(4, 12)));
 
 		map = Game.map;
+		map.addLightSources(entities);
 	}
 
 	public void updateEntities() {
@@ -52,12 +59,39 @@ public class EntityManager {
 		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).render();
 		}
+		map.postRender();
+		renderLightmap();
 	}
 
 	public void renderGUI() {
 		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).onGUI();
 		}
+	}
+
+	public void renderLightmap() {
+		BufferedImage lightMap = new BufferedImage(Game.s.width / 2, Game.s.height / 2, BufferedImage.TYPE_INT_ARGB);
+		Graphics2D g = (Graphics2D) lightMap.getGraphics();
+
+		// Init Drawing
+		g.setColor(Color.black);
+		g.fillRect(0, 0, lightMap.getWidth(), lightMap.getHeight());
+
+		g.setComposite(AlphaComposite.Clear);
+
+		for (int i = 0; i < entities.size(); i++) {
+			if (entities.get(i) instanceof LightSource) {
+				Vector2 v = entities.get(i).transform.position;
+				v = Game.s.worldToScreenPoint(v);
+				v.scale(0.5);
+				double radius = ((LightSource) entities.get(i)).getLightRadius() * Game.TILE_SIZE;
+				radius *= 0.5;
+				Shape circle = new Ellipse2D.Double(v.x - radius, v.y - radius, radius * 2, radius * 2);
+				g.fill(circle);
+			}
+		}
+
+		Game.s.g.drawImage(lightMap, 0, 0, Game.s.width, Game.s.height, null);
 	}
 
 	/*

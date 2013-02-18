@@ -9,10 +9,15 @@ import pudgewars.util.Rotation;
 import pudgewars.util.Vector2;
 
 public abstract class Entity implements BBOwner {
+	// Basic Components
 	public Transform transform;
 	public Rigidbody rigidbody;
 
+	// Kill Data
 	public boolean remove;
+
+	// Team Data
+	public Team team;
 
 	public Entity(Vector2 position) {
 		this(position, Vector2.ZERO.clone());

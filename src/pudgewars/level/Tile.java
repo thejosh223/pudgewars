@@ -10,26 +10,26 @@ import pudgewars.interfaces.BBOwner;
 import pudgewars.util.ImageHandler;
 
 public class Tile implements BBOwner {
-	public final static Tile T_Dirt1 = new Tile("grass1", false, false, false);
-	public final static Tile T_Dirt2 = new Tile("grass2", false, false, false);
-	public final static Tile T_Dirt3 = new Tile("grass3", false, false, false);
-	public final static Tile T_Block = new Tile("outerwall", true, true, false);
-	public final static Tile T_Mound = new Tile("mound2", true, false, false);
-	public final static Tile T_Hookable = new Tile("hookable", false, false, true);
+	public final static Tile T_Dirt1 = new Tile("grass1", false, false, false, 0);
+	public final static Tile T_Dirt2 = new Tile("grass2", false, false, false, 0);
+	public final static Tile T_Dirt3 = new Tile("grass3", false, false, false, 0);
+	public final static Tile T_Block = new Tile("outerwall", true, true, false, 0);
+	public final static Tile T_Mound = new Tile("mound2", true, false, false, 0);
+	public final static Tile T_Hookable = new Tile("hookable", false, false, true, 6);
 
 	String ID;
 	BufferedImage img;
 	boolean pudgeSolid;
 	boolean hookSolid;
 	boolean hookable;
+	double lightRadius;
 
-	public Tile(String ID, boolean pudgeSolid, boolean hookSolid, boolean hookable) {
+	public Tile(String ID, boolean pudgeSolid, boolean hookSolid, boolean hookable, double lightRadius) {
 		this.ID = ID;
 		this.pudgeSolid = pudgeSolid;
 		this.hookSolid = hookSolid;
 		this.hookable = hookable;
-
-		System.out.println("ID: " + ID);
+		this.lightRadius = lightRadius;
 		img = ImageHandler.get().getImage(ID);
 	}
 
@@ -47,6 +47,10 @@ public class Tile implements BBOwner {
 
 	public boolean isHookable() {
 		return hookable;
+	}
+
+	public double lightRadius() {
+		return lightRadius;
 	}
 
 	/*
