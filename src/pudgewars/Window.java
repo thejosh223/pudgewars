@@ -21,6 +21,8 @@ public class Window extends Canvas {
 	public static int ACTUAL_WIDTH = WIDTH * SCALE;
 	public static int ACTUAL_HEIGHT = HEIGHT * SCALE;
 
+	public static int LIGHTMAP_MULT = 1;
+
 	public static int CENTER_X = WIDTH / 2;
 	public static int CENTER_Y = HEIGHT / 2;
 

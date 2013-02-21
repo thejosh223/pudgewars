@@ -9,6 +9,7 @@ import pudgewars.Window;
 import pudgewars.components.Rigidbody;
 import pudgewars.entities.Entity;
 import pudgewars.entities.LightSourceEntity;
+import pudgewars.entities.Team;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.Time;
@@ -69,6 +70,18 @@ public class Map {
 			vx = SCROLL_SPEED;
 		}
 		Game.focus.set(Game.focus.x + Time.getTickInterval() * vx, Game.focus.y + Time.getTickInterval() * vy);
+
+		if (Game.focus.x < Game.TILE_WIDTH / 2.0) {
+			Game.focus.set(Game.TILE_WIDTH / 2.0, Game.focus.y);
+		} else if (Game.focus.x > Map.MAP_WIDTH - Game.TILE_WIDTH / 2.0) {
+			Game.focus.set(Map.MAP_WIDTH - Game.TILE_WIDTH / 2.0, Game.focus.y);
+		}
+
+		if (Game.focus.y < Game.TILE_HEIGHT / 2.0) {
+			Game.focus.set(Game.focus.x, Game.TILE_HEIGHT / 2.0);
+		} else if (Game.focus.y > Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2.0) {
+			Game.focus.set(Game.focus.x, Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2.0);
+		}
 	}
 
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {
@@ -129,8 +142,10 @@ public class Map {
 	public void addLightSources(List<Entity> entities) {
 		for (int i = 0; i < MAP_HEIGHT; i++) {
 			for (int o = 0; o < MAP_WIDTH; o++) {
-				if (map[i][o].lightRadius() > 0) {
-					entities.add(new LightSourceEntity(new Vector2(o + 0.5, i + 0.5), map[i][o].lightRadius()));
+				if (map[i][o].lightWidth > 0 && map[i][o].lightHeight > 0) {
+					entities.add(new LightSourceEntity(new Vector2(o + 0.5, i + 0.5), //
+							o < MAP_WIDTH / 2 ? Team.leftTeam : Team.rightTeam, //
+							map[i][o].lightWidth, map[i][o].lightHeight));
 				}
 			}
 		}

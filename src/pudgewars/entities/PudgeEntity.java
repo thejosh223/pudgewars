@@ -2,9 +2,12 @@ package pudgewars.entities;
 
 import java.awt.BasicStroke;
 import java.awt.Image;
+import java.awt.Shape;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Ellipse2D;
 
 import pudgewars.Game;
+import pudgewars.Window;
 import pudgewars.components.Stats;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.entities.hooks.HookType;
@@ -46,8 +49,10 @@ public class PudgeEntity extends Entity implements LightSource {
 	protected Image fullLife;
 	protected Image emptyLife;
 
-	public PudgeEntity(Vector2 position) {
+	public PudgeEntity(Vector2 position, Team team) {
 		super(position, new Vector2(COLLISION_WIDTH, COLLISION_HEIGHT));
+
+		this.team = team;
 
 		canTileCollide = true;
 		canMove = true;
@@ -71,6 +76,11 @@ public class PudgeEntity extends Entity implements LightSource {
 	public void update() {
 		if (rigidbody.isMoving()) ani.update();
 
+		// Stats
+		if (Game.keyInput.buyMode.wasPressed()) {
+			stats.isOpen ^= true; // Cool way to NOT
+		}
+
 		if (!canMove) {
 			target = null;
 		}
@@ -81,19 +91,15 @@ public class PudgeEntity extends Entity implements LightSource {
 			if (Game.keyInput.specialHook.isDown) Game.cursor.setCursor("Special");
 			else Game.cursor.setCursor("Default");
 
-			if (Game.mouseInput.lastClicked[MouseButton.RIGHT] != null) {
-				Vector2 click = Game.mouseInput.lastClicked[MouseButton.RIGHT];
-				target = Game.s.screenToWorldPoint(click);
-				Game.mouseInput.lastClicked[MouseButton.RIGHT] = null;
+			Vector2 rightClick = Game.mouseInput.getMouseClicked(MouseButton.RIGHT);
+			if (rightClick != null) {
+				target = Game.s.screenToWorldPoint(rightClick);
 			}
-			if (Game.mouseInput.lastClicked[MouseButton.LEFT] != null) {
-				Vector2 click = Game.mouseInput.lastClicked[MouseButton.LEFT];
-
+			Vector2 leftClick = Game.mouseInput.getMouseClicked(MouseButton.LEFT);
+			if (leftClick != null) {
 				// Activate Hook
-				if (Game.keyInput.specialHook.isDown) this.setHook(Game.s.screenToWorldPoint(click), HookType.PULL);
-				else setHook(Game.s.screenToWorldPoint(click), HookType.NORMAL);
-
-				Game.mouseInput.lastClicked[MouseButton.LEFT] = null;
+				if (Game.keyInput.specialHook.isDown) this.setHook(Game.s.screenToWorldPoint(leftClick), HookType.PULL);
+				else setHook(Game.s.screenToWorldPoint(leftClick), HookType.NORMAL);
 			}
 
 			// Rotate the Clicker
@@ -129,14 +135,6 @@ public class PudgeEntity extends Entity implements LightSource {
 		// Draw Pudge
 		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
 
-		if (target != null) {
-			Vector2 targetLocation = Game.s.worldToScreenPoint(target);
-			AffineTransform a = new AffineTransform();
-			a.translate((int) (targetLocation.x - CLICK_SIZE / 2), (int) (targetLocation.y - CLICK_SIZE / 2));
-			a.rotate(targetRotation, CLICK_SIZE / 2, CLICK_SIZE / 2);
-			Game.s.g.drawImage(clicker, a, null);
-		}
-
 		/*
 		 * LIFE DRAWING
 		 */
@@ -152,6 +150,18 @@ public class PudgeEntity extends Entity implements LightSource {
 				0, 0, lifebarWidth, lifebarHeight, null);
 		Game.s.g.drawImage(fullLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x - lifebarWidth / 2 + lifebarActual, (int) v.y + lifebarHeight / 2, //
 				0, 0, lifebarActual, lifebarHeight, null);
+	}
+
+	public void onGUI() {
+		if (target != null) {
+			Vector2 targetLocation = Game.s.worldToScreenPoint(target);
+			AffineTransform a = new AffineTransform();
+			a.translate((int) (targetLocation.x - CLICK_SIZE / 2), (int) (targetLocation.y - CLICK_SIZE / 2));
+			a.rotate(targetRotation, CLICK_SIZE / 2, CLICK_SIZE / 2);
+			Game.s.g.drawImage(clicker, a, null);
+		}
+
+		stats.onGUI();
 	}
 
 	public void setHook(Vector2 click, int hookType) {
@@ -202,7 +212,11 @@ public class PudgeEntity extends Entity implements LightSource {
 		System.out.println("Pudge was Killed");
 	}
 
-	public double getLightRadius() {
-		return 4;
+	public Shape getLightShape() {
+		Vector2 v = Game.s.worldToScreenPoint(transform.position);
+		v.scale(1.0 / Window.LIGHTMAP_MULT);
+		double r = (4 * Game.TILE_SIZE) / Window.LIGHTMAP_MULT;
+		Shape circle = new Ellipse2D.Double(v.x - r, v.y - r, r * 2, r * 2);
+		return circle;
 	}
 }

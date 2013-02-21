@@ -9,17 +9,27 @@ import pudgewars.util.Vector2;
 
 public class MouseHandler implements MouseInputListener {
 	public Vector2 mousePosition;
-	public Vector2[] lastClicked;
+
+	private Vector2[] lastClicked;
+	private Vector2[] mouseClicked;
 
 	public MouseHandler() {
 		mousePosition = new Vector2();
 		lastClicked = new Vector2[3];
+		mouseClicked = new Vector2[3];
 	}
 
-	public void mouseClicked(MouseEvent e) {
+	public void tick() {
+		for (int i = 0; i < lastClicked.length; i++) {
+			mouseClicked[i] = lastClicked[i];
+			lastClicked[i] = null;
+		}
 	}
 
-	public void mouseEntered(MouseEvent arg0) {
+	public Vector2 getMouseClicked(int i) {
+		if (i < 0 || i > 3) return null;
+		Vector2 t = lastClicked[i];
+		return t;
 	}
 
 	public void mouseExited(MouseEvent arg0) {
@@ -35,13 +45,20 @@ public class MouseHandler implements MouseInputListener {
 		lastClicked[mouseButton] = new Vector2((double) e.getX() / Window.ACTUAL_WIDTH, (double) e.getY() / Window.ACTUAL_HEIGHT);
 	}
 
+	public void mouseMoved(MouseEvent e) {
+		mousePosition.set((double) e.getX() / Window.ACTUAL_WIDTH, (double) e.getY() / Window.ACTUAL_HEIGHT);
+	}
+
+	public void mouseClicked(MouseEvent e) {
+	}
+
+	public void mouseEntered(MouseEvent arg0) {
+	}
+
 	public void mouseReleased(MouseEvent arg0) {
 	}
 
 	public void mouseDragged(MouseEvent arg0) {
 	}
 
-	public void mouseMoved(MouseEvent e) {
-		mousePosition.set((double) e.getX() / Window.ACTUAL_WIDTH, (double) e.getY() / Window.ACTUAL_HEIGHT);
-	}
 }

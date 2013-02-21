@@ -3,13 +3,12 @@ package pudgewars.entities;
 import java.awt.AlphaComposite;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Shape;
-import java.awt.geom.Ellipse2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
 import pudgewars.Game;
+import pudgewars.Window;
 import pudgewars.components.Rigidbody;
 import pudgewars.level.Map;
 import pudgewars.util.CollisionBox;
@@ -23,10 +22,12 @@ public class EntityManager {
 
 	public EntityManager() {
 		entities = new ArrayList<Entity>();
-		player = new PudgeEntity(new Vector2(4, 4));
+		player = new PudgeEntity(new Vector2(4, 4), Team.leftTeam);
 		player.controllable = true;
 		entities.add(player);
-		entities.add(new PudgeEntity(new Vector2(4, 12)));
+		entities.add(new PudgeEntity(new Vector2(4, 12), Team.leftTeam));
+		entities.add(new PudgeEntity(new Vector2(20, 4), Team.rightTeam));
+		entities.add(new PudgeEntity(new Vector2(20, 12), Team.rightTeam));
 
 		map = Game.map;
 		map.addLightSources(entities);
@@ -70,7 +71,9 @@ public class EntityManager {
 	}
 
 	public void renderLightmap() {
-		BufferedImage lightMap = new BufferedImage(Game.s.width / 2, Game.s.height / 2, BufferedImage.TYPE_INT_ARGB);
+		// int lightmapMultiple = 1;
+
+		BufferedImage lightMap = new BufferedImage(Game.s.width / Window.LIGHTMAP_MULT, Game.s.height / Window.LIGHTMAP_MULT, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) lightMap.getGraphics();
 
 		// Init Drawing
@@ -80,14 +83,11 @@ public class EntityManager {
 		g.setComposite(AlphaComposite.Clear);
 
 		for (int i = 0; i < entities.size(); i++) {
-			if (entities.get(i) instanceof LightSource) {
-				Vector2 v = entities.get(i).transform.position;
-				v = Game.s.worldToScreenPoint(v);
-				v.scale(0.5);
-				double radius = ((LightSource) entities.get(i)).getLightRadius() * Game.TILE_SIZE;
-				radius *= 0.5;
-				Shape circle = new Ellipse2D.Double(v.x - radius, v.y - radius, radius * 2, radius * 2);
-				g.fill(circle);
+			Entity e = entities.get(i);
+			if (e instanceof LightSource) {
+				if (e.team == Team.freeForAll || e.team == player.team) {
+					g.fill(((LightSource) e).getLightShape());
+				}
 			}
 		}
 

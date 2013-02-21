@@ -1,8 +1,11 @@
 package pudgewars.entities.hooks;
 
 import java.awt.Image;
+import java.awt.Shape;
+import java.awt.geom.Ellipse2D;
 
 import pudgewars.Game;
+import pudgewars.Window;
 import pudgewars.entities.Entity;
 import pudgewars.entities.LightSource;
 import pudgewars.entities.PudgeEntity;
@@ -183,7 +186,11 @@ public class HookEntity extends Entity implements LightSource {
 	public void collides(Entity e, double vx, double vy) {
 	}
 
-	public double getLightRadius() {
-		return 2;
+	public Shape getLightShape() {
+		Vector2 v = Game.s.worldToScreenPoint(transform.position);
+		v.scale(1.0 / Window.LIGHTMAP_MULT);
+		double r = (3 * Game.TILE_SIZE) / Window.LIGHTMAP_MULT;
+		Shape circle = new Ellipse2D.Double(v.x - r, v.y - r, r * 2, r * 2);
+		return circle;
 	}
 }

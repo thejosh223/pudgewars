@@ -136,17 +136,6 @@ public class Game {
 
 	public void controls() {
 		keyInput.tick();
-
-		if (focus.x < Game.TILE_WIDTH / 2) {
-			focus.set(Game.TILE_WIDTH / 2, focus.y);
-		} else if (focus.x > Map.MAP_WIDTH - Game.TILE_WIDTH / 2) {
-			focus.set(Map.MAP_WIDTH - Game.TILE_WIDTH / 2, focus.y);
-		}
-
-		if (focus.y < Game.TILE_HEIGHT / 2) {
-			focus.set(focus.x, Game.TILE_HEIGHT / 2);
-		} else if (focus.y > Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2) {
-			focus.set(focus.x, Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2);
-		}
+		mouseInput.tick();
 	}
 }

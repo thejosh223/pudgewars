@@ -23,6 +23,8 @@ public class KeyHandler implements KeyListener {
 		keys.put(KeyEvent.VK_RIGHT, k.right);
 
 		keys.put(KeyEvent.VK_SHIFT, k.specialHook);
+
+		keys.put(KeyEvent.VK_B, k.buyMode);
 	}
 
 	public void keyPressed(KeyEvent e) {

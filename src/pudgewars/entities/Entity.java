@@ -26,6 +26,8 @@ public abstract class Entity implements BBOwner {
 	public Entity(Vector2 position, Vector2 collision) {
 		transform = new Transform(this, position, Rotation.ZERO, Vector2.ONE);
 		rigidbody = new Rigidbody(this, collision);
+
+		team = Team.freeForAll;
 	}
 
 	public abstract void update();
