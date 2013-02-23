@@ -24,31 +24,35 @@ public class Server {
 		public void run(){
 			MyConnection conn = new MyConnection(socket);
 
+			//automatic team assignment
 			int team = 0;
 			if(teamCount(0) < 4 && teamCount(1) < 4) team = COUNTER % 2;
 			else if(teamCount(0) < 4) team = 0;
 			else if(teamCount(1) < 4) team = 1;
 			else SERVER_STATE = FULL_STATE; 
 			
-			if(SERVER_STATE == FULL_STATE){
+			//check if server is full or there is an ongoing game
+			if(SERVER_STATE == FULL_STATE || SERVER_STATE == INGAME_STATE){
 				conn.sendMessage("SERVERERROR\nEOM");
 				return;
 			}
 			
+			//add client to clients vector
 			ClientNode client = new ClientNode(conn, "Client" + COUNTER++, "", team);
 			clients.add(client);
 			conn.sendMessage("NAME\n" + client.getName() + "\nEOM");
 			sendToAll("Server Message: " + client.getName() + " has joined.\n");
 			updateClientsInfo();
 			
+			//waiting for all players to get ready, chat system
 			while(SERVER_STATE != INGAME_STATE){
 				String line = conn.getMessage();
 				
 				if(line.equals("/q")){
+					System.out.println("Server Message: " + client.getName() + " has left.\n");
 					sendToAll("Server Message: " + client.getName() + " has left.\n");
 					clients.remove(client);
-					String status = client.getStatus();
-					if(!status.equals("")) READY--;
+					if(!client.getStatus().equals("")) READY--;
 					updateClientsInfo();
 					SERVER_STATE = WAITING_STATE;
 					break;
@@ -57,17 +61,15 @@ public class Server {
 				do{
 					if(line.length() >= 4 && line.substring(0, 3).equals("/cn")){
 						line = line.replaceAll("\\s+", " ");
-						String[] parts = line.split(" ");
-						String newName = parts[1];
+						String newName = line.split(" ")[1];
 						conn.sendMessage("NAME\n" + newName + "\nEOM");
 						sendToAll("Server Message: " + client.getName() + " has changed name to " + newName + ".\n");
 						client.setName(newName);
 						updateClientsInfo();
 					}else if(line.length() >= 4 && line.substring(0, 3).equals("/cs")){
 						line = line.replaceAll("\\s+", " ");
-						String status = line.substring(4);
-						if(!status.equals("")){
-							client.setStatus(" - " + status);
+						if(!line.substring(4).equals("")){
+							client.setStatus(" - " + line.substring(4));
 							READY++;
 						}
 						else{
@@ -75,25 +77,17 @@ public class Server {
 							READY--;
 						}
 						updateClientsInfo();
-					}else if(line.length() >= 4 && line.substring(0, 3).equals("/ct")){
-						if(client.getTeam() == 0){
-							if(teamCount(1) < 4) client.setTeam(1);
-							else conn.sendMessage("FULLERROR\nEOM");
-						}
-						else{
-							if(teamCount(0) < 4) client.setTeam(0);
-							else conn.sendMessage("FULLERROR\nEOM");
-						}
+					}else if(line.equals("/ct")){
+						if(client.getTeam() == 0 && teamCount(1) < 4) client.setTeam(1);
+						else if(client.getTeam() == 1 && teamCount(0) < 4) client.setTeam(0);
+						else conn.sendMessage("FULLERROR\nEOM");
 						updateClientsInfo();
-					}else if(line.charAt(0) == '/'){
-						conn.sendMessage("Server Message: Invalid command " + line + "\nEOM");
 					}else{
 						sendToAll(client.getName() + ": " + line + "\n");
 					}
 					
 					line = conn.getMessage();
 				}while(!line.equals("EOM"));
-				
 				if(READY == clients.size()){
 					if(teamCount(1) > 0 && teamCount(0) > 0) SERVER_STATE = INGAME_STATE;
 					else{
@@ -104,7 +98,10 @@ public class Server {
 					}
 				}
 			}
-			if(SERVER_STATE == INGAME_STATE) sendToAll("START\n");
+			
+			if(SERVER_STATE == INGAME_STATE){
+				sendToAll("START\nEOM");
+			}
 		}
 		
 		private int teamCount(int team){
