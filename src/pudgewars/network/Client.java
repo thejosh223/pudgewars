@@ -204,8 +204,8 @@ public class Client {
 		            	changeTeamButton.setEnabled(true);
 		        	}else if(msg.equals("START")){
 		        		JOptionPane.showMessageDialog(null, "Start Game");
-		        		Window w = new Window();
-		        		w.start();
+		        		//Window w = new Window();
+		        		//w.start();
 		        	}else{
 			        	do{
 			        		chatWindow.setText(chatWindow.getText() + msg + "\n");

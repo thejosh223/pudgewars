@@ -73,9 +73,9 @@ public class Window extends Canvas {
 	}
 
 	// ----Main Method----
-	//public static void main(String[] args) {
-	public void start() {
-		//new Window();
+	public static void main(String[] args) {
+	//public void start() {
+		new Window();
 		g.init();
 		g.gameLoop();
 	}
