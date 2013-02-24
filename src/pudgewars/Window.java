@@ -9,6 +9,7 @@ import javax.swing.JPanel;
 
 import pudgewars.input.KeyHandler;
 import pudgewars.input.Keys;
+import pudgewars.input.MouseButtons;
 import pudgewars.input.MouseHandler;
 
 public class Window extends Canvas {
@@ -34,7 +35,7 @@ public class Window extends Canvas {
 
 	public Window() {
 		// The Window
-		container = new JFrame("Villageville");
+		container = new JFrame("Pudge Wars");
 		container.setBounds(50, 50, ACTUAL_WIDTH, ACTUAL_HEIGHT);
 		container.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -59,12 +60,13 @@ public class Window extends Canvas {
 		strategy = getBufferStrategy();
 
 		Keys k = new Keys();
-		KeyHandler keyHandle = new KeyHandler(k);
-		MouseHandler m = new MouseHandler();
+		MouseButtons m = new MouseButtons();
+		KeyHandler keyHandler = new KeyHandler(k);
+		MouseHandler mouseHandler = new MouseHandler(m);
 
-		this.addKeyListener(keyHandle);
-		this.addMouseListener(m);
-		this.addMouseMotionListener(m);
+		this.addKeyListener(keyHandler);
+		this.addMouseListener(mouseHandler);
+		this.addMouseMotionListener(mouseHandler);
 
 		requestFocus();
 

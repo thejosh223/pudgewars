@@ -1,7 +1,7 @@
 package pudgewars.entities;
 
 import java.awt.Shape;
-import java.awt.geom.Rectangle2D;
+import java.awt.geom.Ellipse2D;
 
 import pudgewars.Game;
 import pudgewars.Window;
@@ -28,7 +28,8 @@ public class LightSourceEntity extends Entity implements LightSource {
 	public Shape getLightShape() {
 		Vector2 v = Game.s.worldToScreenPoint(transform.position);
 		v.scale(1.0 / Window.LIGHTMAP_MULT);
-		Rectangle2D rect = new Rectangle2D.Double(v.x - width / 2, v.y - height / 2, width, height);
+		// Rectangle2D rect = new Rectangle2D.Double(v.x - width / 2, v.y - height / 2, width, height);
+		Ellipse2D rect = new Ellipse2D.Double(v.x - width / 2, v.y - height / 2, width, height);
 		return rect;
 	}
 }

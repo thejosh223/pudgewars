@@ -13,6 +13,9 @@ public abstract class Entity implements BBOwner {
 	public Transform transform;
 	public Rigidbody rigidbody;
 
+	// Name
+	public String name;
+
 	// Kill Data
 	public boolean remove;
 

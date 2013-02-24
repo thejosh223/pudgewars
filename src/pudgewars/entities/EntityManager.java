@@ -23,9 +23,13 @@ public class EntityManager {
 	public EntityManager() {
 		entities = new ArrayList<Entity>();
 		player = new PudgeEntity(new Vector2(4, 4), Team.leftTeam);
+		player.name = "MainDude";
 		player.controllable = true;
 		entities.add(player);
-		entities.add(new PudgeEntity(new Vector2(4, 12), Team.leftTeam));
+
+		PudgeEntity p = new PudgeEntity(new Vector2(4, 12), Team.leftTeam);
+		p.name = "Second";
+		entities.add(p);
 		entities.add(new PudgeEntity(new Vector2(20, 4), Team.rightTeam));
 		entities.add(new PudgeEntity(new Vector2(20, 12), Team.rightTeam));
 

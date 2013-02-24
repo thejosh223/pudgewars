@@ -38,13 +38,13 @@ public class HookEntity extends Entity implements LightSource {
 	protected boolean isRotating = true;
 
 	public HookEntity(PudgeEntity e, Vector2 target) {
-		super(e.transform.position, new Vector2(e.stats.hookSize, e.stats.hookSize));
+		super(e.transform.position, new Vector2(e.stats.hookSize.getValue(), e.stats.hookSize.getValue()));
 		owner = e;
 		hooked = null;
 
-		maxTravelDistance = e.stats.hookRange;
-		rigidbody.speed = e.stats.hookSpeed;
-		this.damage = e.stats.hookDamage;
+		maxTravelDistance = e.stats.hookRange.getValue();
+		rigidbody.speed = e.stats.hookSpeed.getValue();
+		this.damage = (int) e.stats.hookDamage.getValue();
 
 		rigidbody.physicsSlide = false;
 		rigidbody.setDirection(target);
@@ -67,7 +67,7 @@ public class HookEntity extends Entity implements LightSource {
 		travelled += Math.sqrt(xDist * xDist + yDist * yDist);
 		if (travelled >= maxTravelDistance) {
 			setMovementType(MovementScheme.REVERSE);
-			rigidbody.speed = owner.stats.hookSpeed * HookEntity.HOOK_REVERSE_MULT;
+			rigidbody.speed = owner.stats.hookSpeed.getValue() * HookEntity.HOOK_REVERSE_MULT;
 		}
 
 		switch (movementScheme) {
@@ -94,13 +94,13 @@ public class HookEntity extends Entity implements LightSource {
 				break;
 			case PULL_FORWARD:
 				if (hookPiece == null) {
-					if (transform.position.distance(owner.transform.position) < owner.stats.hookSpeed * Time.getBaseTickInterval()) {
+					if (transform.position.distance(owner.transform.position) < owner.stats.hookSpeed.getValue() * Time.getBaseTickInterval()) {
 						owner.rigidbody.velocity = Vector2.ZERO.clone();
 						owner.canTileCollide = true;
 						owner.canMove = true;
 						kill();
 					} else {
-						owner.rigidbody.setDirection(transform.position, owner.stats.hookSpeed);
+						owner.rigidbody.setDirection(transform.position, owner.stats.hookSpeed.getValue());
 					}
 				}
 				break;
@@ -130,7 +130,7 @@ public class HookEntity extends Entity implements LightSource {
 			case FORWARD:
 				break;
 			case REVERSE:
-				rigidbody.speed = owner.stats.hookSpeed * HookEntity.HOOK_REVERSE_MULT;
+				rigidbody.speed = owner.stats.hookSpeed.getValue() * HookEntity.HOOK_REVERSE_MULT;
 				break;
 			case STATIONARY:
 				rigidbody.speed = 0;

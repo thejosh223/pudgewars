@@ -137,6 +137,13 @@ public class Map {
 	}
 
 	public void postRender() {
+		int dx = (int) (Window.CENTER_X - (Game.focus.x * Game.TILE_SIZE));
+		int dy = (int) (Window.CENTER_Y - (Game.focus.y * Game.TILE_SIZE));
+		for (int i = 0; i < MAP_HEIGHT; i++) {
+			for (int o = 0; o < MAP_WIDTH; o++) {
+				map[i][o].postRender(dx + o * Game.TILE_SIZE, dy + i * Game.TILE_SIZE);
+			}
+		}
 	}
 
 	public void addLightSources(List<Entity> entities) {

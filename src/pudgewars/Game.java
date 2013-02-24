@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 
 import pudgewars.entities.EntityManager;
 import pudgewars.input.Keys;
-import pudgewars.input.MouseHandler;
+import pudgewars.input.MouseButtons;
 import pudgewars.level.Map;
 import pudgewars.render.CursorManager;
 import pudgewars.util.Time;
@@ -30,10 +30,10 @@ public class Game {
 	 * Input Classes
 	 */
 	public static Keys keyInput;
-	public static MouseHandler mouseInput;
+	public static MouseButtons mouseInput;
 
 	// Constructor Method
-	public Game(Window w, Keys k, MouseHandler m) {
+	public Game(Window w, Keys k, MouseButtons m) {
 		Game.w = w;
 		Game.keyInput = k;
 		Game.mouseInput = m;
@@ -53,7 +53,9 @@ public class Game {
 	public void gameLoop() {
 		long timeBefore = System.nanoTime();
 		long timePassed = System.nanoTime() - timeBefore;
-		float unprocessedSeconds = 0;
+		double unprocessedSeconds = 0;
+
+		double sleepTime = 0;
 
 		// FPS Counter
 		int fps = 0;
@@ -77,6 +79,10 @@ public class Game {
 			/*
 			 * Tick Controller -limits the # of ticks to TPS. -if FPS < 60, it ticks rather than rendering.
 			 */
+			if (unprocessedSeconds < Time.getBaseTickInterval()) {
+				sleepTime += timePassed / 1000000000.0;
+			}
+
 			boolean ticked = false;
 			while (unprocessedSeconds > Time.getBaseTickInterval()) {
 				tick();
@@ -85,8 +91,9 @@ public class Game {
 
 				Time.totalTicks++;
 				if (Time.totalTicks % 60 == 0) {
-					Window.container.setTitle("PudgeWars (fps:" + fps + ")");
+					Window.container.setTitle("PudgeWars (fps:" + fps + ") (spd:" + (int) (sleepTime * 100 / 0.94) + "%)");
 					fps = 0;
+					sleepTime = 0;
 				}
 			}
 
@@ -94,10 +101,10 @@ public class Game {
 			 * Rendering
 			 */
 			if (ticked) {
+				// }
+				render();
+				fps++;
 			}
-			render();
-			fps++;
-			// }
 
 			try {
 				Thread.sleep(1);
@@ -125,7 +132,6 @@ public class Game {
 	private void render() {
 		// Render Map and Entities
 		entities.render();
-
 		// Render GUI
 		entities.renderGUI();
 

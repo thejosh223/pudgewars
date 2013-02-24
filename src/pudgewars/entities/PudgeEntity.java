@@ -13,7 +13,6 @@ import pudgewars.entities.hooks.HookEntity;
 import pudgewars.entities.hooks.HookType;
 import pudgewars.entities.hooks.NormalHookEntity;
 import pudgewars.entities.hooks.PullHookEntity;
-import pudgewars.input.MouseButton;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 import pudgewars.util.Animation;
@@ -91,15 +90,13 @@ public class PudgeEntity extends Entity implements LightSource {
 			if (Game.keyInput.specialHook.isDown) Game.cursor.setCursor("Special");
 			else Game.cursor.setCursor("Default");
 
-			Vector2 rightClick = Game.mouseInput.getMouseClicked(MouseButton.RIGHT);
-			if (rightClick != null) {
-				target = Game.s.screenToWorldPoint(rightClick);
-			}
-			Vector2 leftClick = Game.mouseInput.getMouseClicked(MouseButton.LEFT);
-			if (leftClick != null) {
-				// Activate Hook
-				if (Game.keyInput.specialHook.isDown) this.setHook(Game.s.screenToWorldPoint(leftClick), HookType.PULL);
-				else setHook(Game.s.screenToWorldPoint(leftClick), HookType.NORMAL);
+			Vector2 right = Game.mouseInput.right.wasPressed();
+			if (right != null) target = Game.s.screenToWorldPoint(right);
+
+			Vector2 left = Game.mouseInput.left.wasPressed();
+			if (left != null) {
+				if (Game.keyInput.specialHook.isDown) this.setHook(Game.s.screenToWorldPoint(left), HookType.PULL);
+				else setHook(Game.s.screenToWorldPoint(left), HookType.NORMAL);
 			}
 
 			// Rotate the Clicker
@@ -161,7 +158,7 @@ public class PudgeEntity extends Entity implements LightSource {
 			Game.s.g.drawImage(clicker, a, null);
 		}
 
-		stats.onGUI();
+		if (controllable) stats.onGUI();
 	}
 
 	public void setHook(Vector2 click, int hookType) {
