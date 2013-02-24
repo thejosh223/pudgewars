@@ -53,7 +53,7 @@ public class Map {
 			}
 		}
 	}
-
+	
 	public void update() {
 		// Scrolling of the Map
 		double vx = 0;
@@ -83,7 +83,7 @@ public class Map {
 			Game.focus.set(Game.focus.x, Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2.0);
 		}
 	}
-
+	
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {
 		CollisionBox b = r.getCollisionBox().grow(1);
 		List<CollisionBox> l = new ArrayList<CollisionBox>();

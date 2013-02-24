@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import pudgewars.Game;
 import pudgewars.Window;
@@ -13,6 +14,8 @@ import pudgewars.components.Rigidbody;
 import pudgewars.level.Map;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.Vector2;
+import pudgewars.components.Network;
+import pudgewars.network.ClientNode;
 
 public class EntityManager {
 
@@ -20,23 +23,62 @@ public class EntityManager {
 	public PudgeEntity player;
 	public Map map;
 
-	public EntityManager() {
+	public EntityManager(){
 		entities = new ArrayList<Entity>();
-		player = new PudgeEntity(new Vector2(4, 4), Team.leftTeam);
-		player.controllable = true;
-		entities.add(player);
-		entities.add(new PudgeEntity(new Vector2(4, 12), Team.leftTeam));
-		entities.add(new PudgeEntity(new Vector2(20, 4), Team.rightTeam));
-		entities.add(new PudgeEntity(new Vector2(20, 12), Team.rightTeam));
-
 		map = Game.map;
+	}
+	
+	public void ServerEntityManager(Vector<ClientNode> clients){
+		int x = 0, y = 0;
+		for(int i = 0; i<clients.size(); i++){
+			if(clients.get(i).getTeam() == 0) entities.add(new PudgeEntity(new Vector2(4, 8*x++ + 4), Team.leftTeam));
+			else entities.add(new PudgeEntity(new Vector2(20, 8*y++ + 4), Team.rightTeam));
+		}
+	}
+	
+	public void ClientEntityManager(Vector2 position, Team team, boolean controllable){
+		PudgeEntity pudge = new PudgeEntity(position, team);
+		if(controllable){
+			player = pudge;
+			player.controllable = true;
+		}
+		entities.add(pudge);
+	}
+	
+	public void sendServerEntities(Vector<Network> clients){
+		for(int x = 0; x < clients.size(); x++){
+			for(int y = 0; y < entities.size(); y++){
+				boolean controllable = (x == y) ? true : false;
+				clients.get(x).sendServerPudgeEntity(new Vector2(entities.get(y).getX(),entities.get(y).getY()), entities.get(y).team, controllable);
+			}
+			clients.get(x).sendMessage("EOM");
+		}
+	}
+	
+	public void generateClientEntities(Network client){
+		String msg = client.getMessage();
+		while(!msg.equals("EOM")){
+			System.out.println(msg);
+			String parts[] = msg.split(" ");
+			Vector2 position = new Vector2(Float.parseFloat(parts[1]),Float.parseFloat(parts[2]));
+			Team team = (parts[3].equals("leftTeam")) ? Team.leftTeam : Team.rightTeam;
+			boolean controllable = (parts[4].equals("true")) ? true : false;
+			ClientEntityManager(position, team, controllable);
+			msg = client.getMessage();
+		}
 		map.addLightSources(entities);
 	}
 
+	public void sendPosition(){
+		for (int i = 0; i < entities.size(); i++) {
+			System.out.println(entities.get(i).getX() + ", " + entities.get(i).getY());
+		}
+	}
+	
 	public void updateEntities() {
 		map.update();
 		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).update();
+			entities.get(i).update(i);
 		}
 	}
 
@@ -61,7 +103,7 @@ public class EntityManager {
 			entities.get(i).render();
 		}
 		map.postRender();
-		renderLightmap();
+		//renderLightmap();
 	}
 
 	public void renderGUI() {
@@ -69,7 +111,7 @@ public class EntityManager {
 			entities.get(i).onGUI();
 		}
 	}
-
+	
 	public void renderLightmap() {
 		// int lightmapMultiple = 1;
 

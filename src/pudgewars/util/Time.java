@@ -1,7 +1,7 @@
 package pudgewars.util;
 
 public class Time {
-	public final static int TICKS_PER_SECOND = 60;
+	public final static int TICKS_PER_SECOND = 20;
 
 	// # of seconds between ticks
 	private static double tickInterval = 1.0f / TICKS_PER_SECOND;

@@ -11,13 +11,15 @@ import pudgewars.input.KeyHandler;
 import pudgewars.input.Keys;
 import pudgewars.input.MouseHandler;
 
+import pudgewars.network.MyConnection;
+
 public class Window extends Canvas {
 	private static final long serialVersionUID = 1L;
 
 	public static int WIDTH = Game.TILE_SIZE * Game.TILE_WIDTH;
 	public static int HEIGHT = Game.TILE_SIZE * Game.TILE_HEIGHT;
 
-	public static int SCALE = 3;
+	public static int SCALE = 2;
 	public static int ACTUAL_WIDTH = WIDTH * SCALE;
 	public static int ACTUAL_HEIGHT = HEIGHT * SCALE;
 
@@ -73,10 +75,10 @@ public class Window extends Canvas {
 	}
 
 	// ----Main Method----
-	public static void main(String[] args) {
-	//public void start() {
-		new Window();
-		g.init();
+	//public static void main(String[] args) {
+	public void startClientGame(MyConnection conn) {
+		//new Window();
+		g.init(conn);
 		g.gameLoop();
 	}
 }

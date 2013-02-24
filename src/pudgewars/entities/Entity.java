@@ -31,9 +31,11 @@ public abstract class Entity implements BBOwner {
 	}
 
 	public abstract void update();
-
+	
 	public abstract void render();
 
+	public void update(int i){}
+	
 	public void onGUI() {
 	}
 

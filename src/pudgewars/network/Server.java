@@ -4,6 +4,10 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.Vector;
 
+import javax.swing.JOptionPane;
+
+import pudgewars.ServerGame;
+
 public class Server {
 	private static int WAITING_STATE = 0;
 	private static int FULL_STATE = 1;
@@ -47,6 +51,8 @@ public class Server {
 			//waiting for all players to get ready, chat system
 			while(SERVER_STATE != INGAME_STATE){
 				String line = conn.getMessage();
+				
+				if(line.equals("STOP")) return;
 				
 				if(line.equals("/q")){
 					System.out.println("Server Message: " + client.getName() + " has left.\n");
@@ -99,8 +105,16 @@ public class Server {
 				}
 			}
 			
+			//start game!
 			if(SERVER_STATE == INGAME_STATE){
+				try {
+					new Socket("127.0.0.1",8888);
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 				sendToAll("START\nEOM");
+				conn.getMessage();
+				return;
 			}
 		}
 		
@@ -134,12 +148,19 @@ public class Server {
 	public static void main(String args[]){
 		try {
 			ServerSocket ssocket = new ServerSocket(8888);
+			Vector<Thread> threads = new Vector<Thread>();
 			while (true) {
 				Socket socket = ssocket.accept();
-
+				if(SERVER_STATE == INGAME_STATE) break;
 				Thread t = new Thread(new handleClient(socket));
 				t.start();
+				threads.add(t);
 			}
+			for(int i = 0; i < threads.size(); i++) threads.get(i).join();
+			//join all threads, no more threads
+			ServerGame g = new ServerGame(clients);
+			g.init();
+			g.gameLoop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
