@@ -18,6 +18,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultCaret;
 
+import pudgewars.Window;
+
 public class Client {
 	static JTextArea chatWindow, onlineClients1, onlineClients2;
 	static JTextField message, name;
@@ -59,13 +61,13 @@ public class Client {
 		chatWindow.setWrapStyleWord(true);
 		chatWindow.setEditable(false);
 		
-		DefaultCaret caret = (DefaultCaret)chatWindow.getCaret();
-		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
-		
 		JScrollPane chatWindowScroll = new JScrollPane(chatWindow);
 		chatWindowScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		chatWindowScroll.setBounds(10,80,350,230);
 		pane.add(chatWindowScroll);
+		
+		DefaultCaret caret = (DefaultCaret)chatWindow.getCaret();
+		caret.setUpdatePolicy(DefaultCaret.ALWAYS_UPDATE);
 		
 		onlineClients1 = new JTextArea();
 		onlineClients1.setLineWrap(true);
@@ -111,7 +113,7 @@ public class Client {
 		changeTeamButton.setBounds(380,10,150,35);
 		changeTeamButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-            	conn.sendMessage("/ct \nEOM");
+            	conn.sendMessage("/ct\nEOM");
             }
         });
 		pane.add(changeTeamButton);
@@ -201,9 +203,9 @@ public class Client {
 		            	readyButton.setVisible(true);
 		            	changeTeamButton.setEnabled(true);
 		        	}else if(msg.equals("START")){
-		        		msg = conn.getMessage();
 		        		JOptionPane.showMessageDialog(null, "Start Game");
-		        		System.exit(0);
+		        		//Window w = new Window();
+		        		//w.start();
 		        	}else{
 			        	do{
 			        		chatWindow.setText(chatWindow.getText() + msg + "\n");
