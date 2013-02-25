@@ -76,7 +76,7 @@ public class PudgeEntity extends Entity implements LightSource {
 	public void update(){}
 	
 	public void update(int i) {
-		if(Game.positions.get(i) != null || target == null) target = Game.positions.get(i);
+		if(Game.positions.get(i) != null && !controllable) target = Game.positions.get(i);
 		if (rigidbody.isMoving()) ani.update();
 
 		// Stats
