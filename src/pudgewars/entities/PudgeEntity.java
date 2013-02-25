@@ -85,7 +85,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		}
 
 		// Controls
-		if (controllable && canMove) {
+		if (controllable && canMove && !stats.isOpen) {
 			// Change Cursor
 			if (Game.keyInput.specialHook.isDown) Game.cursor.setCursor("Special");
 			else Game.cursor.setCursor("Default");
@@ -119,7 +119,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		rigidbody.updateVelocity();
 
 		// Un-comment this to have some fun!
-		isHooking = false;
+		// isHooking = false;
 	}
 
 	final static int LIFESTROKE_DEPTH = 3;
@@ -150,15 +150,19 @@ public class PudgeEntity extends Entity implements LightSource {
 	}
 
 	public void onGUI() {
-		if (target != null) {
-			Vector2 targetLocation = Game.s.worldToScreenPoint(target);
-			AffineTransform a = new AffineTransform();
-			a.translate((int) (targetLocation.x - CLICK_SIZE / 2), (int) (targetLocation.y - CLICK_SIZE / 2));
-			a.rotate(targetRotation, CLICK_SIZE / 2, CLICK_SIZE / 2);
-			Game.s.g.drawImage(clicker, a, null);
-		}
+		if (controllable) {
+			// Draw Target Reticle
+			if (target != null) {
+				Vector2 targetLocation = Game.s.worldToScreenPoint(target);
+				AffineTransform a = new AffineTransform();
+				a.translate((int) (targetLocation.x - CLICK_SIZE / 2), (int) (targetLocation.y - CLICK_SIZE / 2));
+				a.rotate(targetRotation, CLICK_SIZE / 2, CLICK_SIZE / 2);
+				Game.s.g.drawImage(clicker, a, null);
+			}
 
-		if (controllable) stats.onGUI();
+			// Draw Stats
+			stats.onGUI();
+		}
 	}
 
 	public void setHook(Vector2 click, int hookType) {

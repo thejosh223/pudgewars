@@ -8,7 +8,7 @@ import pudgewars.util.Vector2;
 public class PullHookEntity extends HookEntity {
 
 	public PullHookEntity(PudgeEntity e, Vector2 target) {
-		super(e, target);
+		super(e, "specialhook", target);
 	}
 
 	/*

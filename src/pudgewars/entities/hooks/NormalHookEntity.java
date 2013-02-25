@@ -9,7 +9,7 @@ import pudgewars.util.Vector2;
 public class NormalHookEntity extends HookEntity {
 
 	public NormalHookEntity(PudgeEntity e, Vector2 target) {
-		super(e, target);
+		super(e, "hook", target);
 	}
 
 	/*
@@ -17,7 +17,11 @@ public class NormalHookEntity extends HookEntity {
 	 */
 	public void attachPudge(PudgeEntity e) {
 		e.transform.position = transform.position.clone(); // Set the pudge as this position
-		e.stats.subLife(damage); // Do some damage
+		if (e.stats.subLife(damage)) {
+			// Pudge was Killed!
+			owner.stats.experience += 2;
+			return;
+		}
 		e.canTileCollide = false;
 		e.canMove = false;
 		e.attachedHook = this;

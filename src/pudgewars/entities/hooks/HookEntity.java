@@ -37,7 +37,7 @@ public class HookEntity extends Entity implements LightSource {
 	protected Image img;
 	protected boolean isRotating = true;
 
-	public HookEntity(PudgeEntity e, Vector2 target) {
+	public HookEntity(PudgeEntity e, String s, Vector2 target) {
 		super(e.transform.position, new Vector2(e.stats.hookSize.getValue(), e.stats.hookSize.getValue()));
 		owner = e;
 		hooked = null;
@@ -51,7 +51,7 @@ public class HookEntity extends Entity implements LightSource {
 
 		setMovementType(MovementScheme.FORWARD);
 
-		img = ImageHandler.get().getImage("hook");
+		img = ImageHandler.get().getImage(s);
 	}
 
 	public void update() {

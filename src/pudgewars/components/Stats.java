@@ -2,29 +2,30 @@ package pudgewars.components;
 
 import java.awt.Image;
 
+import pudgewars.Game;
 import pudgewars.entities.PudgeEntity;
-import pudgewars.render.GUI;
 import pudgewars.util.ImageHandler;
 
 public class Stats {
 	public PudgeEntity pudge;
 
 	// Inventory Data
-	public int experience = 0;
+	public int experience = 5;
 	public boolean isOpen = false;
 	public Image[] statImages;
+	public Image[] expImages;
 
 	// Movement Data
-	public BaseStat moveSpeed = new BaseStat("MoveSpeed", 0, 3.8, 1, 1);
+	public BaseStat moveSpeed = new BaseStat(this, "MoveSpeed", 0, 3.8, 1, 1);
 
 	// Hook Data
-	public BaseStat hookSize = new BaseStat("Hook Size", 5, 1, 0.25, 1);
-	public BaseStat hookSpeed = new BaseStat("Hook Speed", 3, 8, 1, 1);
-	public BaseStat hookRange = new BaseStat("Hook Range", 4, 14, 2, 1);
-	public BaseStat hookDamage = new BaseStat("Hook Damage", 2, 4, 1, 1);
+	public BaseStat hookSize = new BaseStat(this, "Hook Size", 5, 1, 0.25, 1);
+	public BaseStat hookSpeed = new BaseStat(this, "Hook Speed", 3, 8, 1, 1);
+	public BaseStat hookRange = new BaseStat(this, "Hook Range", 4, 14, 2, 1);
+	public BaseStat hookDamage = new BaseStat(this, "Hook Damage", 2, 4, 1, 1);
 
 	// Player Data
-	public BaseStat life = new BaseStat("Life", 1, 20, 2, 1);
+	public BaseStat life = new BaseStat(this, "Life", 1, 20, 2, 1);
 	public BaseStat[] ref;
 	private int _life;
 
@@ -43,9 +44,11 @@ public class Stats {
 
 		// Load the Images
 		statImages = new Image[CharStat.length];
-		for (int i = 0; i < CharStat.length; i++) {
+		for (int i = 0; i < CharStat.length; i++)
 			statImages[i] = ImageHandler.get().getImage("stats", i, 0, 16, 16);
-		}
+		expImages = new Image[4];
+		for (int i = 0; i < 4; i++)
+			expImages[i] = ImageHandler.get().getImage("exp_" + i);
 	}
 
 	public void restoreDefaults() {
@@ -68,16 +71,32 @@ public class Stats {
 		if (_life > life.getValue()) _life = (int) life.getValue();
 	}
 
-	public void subLife(int a) {
+	public boolean subLife(int a) {
 		_life -= a;
-		if (_life <= 0) pudge.kill();
+		if (_life <= 0) {
+			pudge.kill();
+			return true;
+		}
+		return false;
 	}
 
 	public void onGUI() {
+		// Draw Experience
+		int expWidth = expImages[0].getWidth(null);
+		int expHeight = expImages[0].getHeight(null);
+		int expActual = (int) (((((int) experience) % 10) / 10.0) * expWidth);
+		Game.s.g.drawImage(expImages[(int) (experience / 10)], (Game.s.width - expWidth) / 2, Game.s.height - expHeight, expWidth, expHeight, null);
+		Game.s.g.drawImage(expImages[(int) (experience / 10) + 1], //
+				(Game.s.width - expWidth) / 2, Game.s.height - expHeight, (Game.s.width - expWidth) / 2 + expActual, Game.s.height, //
+				0, 0, expActual, expHeight, null);
+
 		if (isOpen) {
 			for (int i = 0; i < CharStat.length; i++) {
-				if (GUI.button(ref[i].img, 10, 10 + i * (16 + 4), ref[i].img.getWidth(null), ref[i].img.getHeight(null))) {
-					System.out.println("[" + ref[i].name + "] was clicked for : " + pudge.name);
+				if (ref[i].drawButtons(10, 10 + i * (16 + 4))) {
+					if (ref[i].cost <= experience) {
+						experience -= ref[i].cost;
+						ref[i].levelUp();
+					}
 				}
 			}
 		}
