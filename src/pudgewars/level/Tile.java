@@ -15,7 +15,7 @@ public class Tile implements BBOwner {
 	public final static Tile T_Dirt3 = new Tile("grass2", false, false, false, 0, 0);
 	public final static Tile T_Block = new Tile("tree", true, true, false, 0, 0);
 	public final static Tile T_Mound = new Tile("mound2", true, false, false, 0, 0);
-	public final static Tile T_Hookable = new Tile("hookable", false, false, true, 13, 15);
+	public final static Tile T_Hookable = new Tile("hookable", false, false, true, 13, 13);
 
 	public final static Tile T_Fountain0 = new Tile("fountain", 0, 0, false, false, false, 0, 0);
 	public final static Tile T_Fountain1 = new Tile("fountain", 1, 0, false, false, false, 0, 0);

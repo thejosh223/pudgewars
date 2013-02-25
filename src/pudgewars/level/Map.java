@@ -37,7 +37,7 @@ public class Map {
 					map[i][o] = Tile.T_Mound;
 				} else if (i == 0 || o == 0 || i == MAP_HEIGHT - 1 || o == MAP_WIDTH - 1) {
 					map[i][o] = Tile.T_Block;
-				} else if ((i == (int) (MAP_HEIGHT * 0.25) || i == (int) (MAP_HEIGHT * 0.75)) //
+				} else if ((i == (int) (MAP_HEIGHT * 0.25) || i == (int) (MAP_HEIGHT * 0.75) || i == (int) (MAP_HEIGHT * 0.50)) //
 						&& (o == (int) (MAP_WIDTH * 0.25) || o == (int) (MAP_WIDTH * 0.75))) {
 					map[i][o] = Tile.T_Hookable;
 				} else {

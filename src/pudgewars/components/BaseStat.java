@@ -29,8 +29,8 @@ public class BaseStat {
 
 		this.level = 0;
 
-		this.baseImage = ImageHandler.get().getImage("stats", imgIndex, 0, 16, 16);
-		this.modImage = ImageHandler.get().getImage("stats", imgIndex, 1, 16, 16);
+		this.baseImage = ImageHandler.get().getImage("stats2", imgIndex, 0, 32, 16);
+		this.modImage = ImageHandler.get().getImage("stats2", imgIndex, 1, 32, 16);
 	}
 
 	public final static int XOFF = 3;
