@@ -25,6 +25,8 @@ public class KeyHandler implements KeyListener {
 		keys.put(KeyEvent.VK_SHIFT, k.specialHook);
 
 		keys.put(KeyEvent.VK_B, k.buyMode);
+
+		keys.put(KeyEvent.VK_SPACE, k.space);
 	}
 
 	public void keyPressed(KeyEvent e) {

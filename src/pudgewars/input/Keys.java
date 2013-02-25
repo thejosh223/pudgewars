@@ -35,6 +35,7 @@ public class Keys {
 	public Key right = new Key();
 	public Key specialHook = new Key();
 	public Key buyMode = new Key();
+	public Key space = new Key();
 
 	public void tick() {
 		for (Key k : keys) {

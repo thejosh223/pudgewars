@@ -4,22 +4,26 @@ import java.awt.Image;
 
 import pudgewars.Game;
 import pudgewars.entities.PudgeEntity;
+import pudgewars.render.GUI;
 import pudgewars.util.ImageHandler;
 
 public class Stats {
 	public PudgeEntity pudge;
 
 	// Inventory Data
-	public int experience = 5;
+	public int experience = 25;
 	public boolean isOpen = false;
 	public Image[] statImages;
 	public Image[] expImages;
+	public Image[] lifeImages;
+	public Image[] hookCooldownImages;
+	public Image[] grappleCooldownImages;
 
 	// Movement Data
 	public BaseStat moveSpeed = new BaseStat(this, "MoveSpeed", 0, 3.8, 1, 1);
 
 	// Hook Data
-	public BaseStat hookSize = new BaseStat(this, "Hook Size", 5, 1, 0.25, 1);
+	public BaseStat hookSize = new BaseStat(this, "Hook Size", 5, 0.75, 0.25, 1);
 	public BaseStat hookSpeed = new BaseStat(this, "Hook Speed", 3, 8, 1, 1);
 	public BaseStat hookRange = new BaseStat(this, "Hook Range", 4, 14, 2, 1);
 	public BaseStat hookDamage = new BaseStat(this, "Hook Damage", 2, 4, 1, 1);
@@ -49,6 +53,18 @@ public class Stats {
 		expImages = new Image[4];
 		for (int i = 0; i < 4; i++)
 			expImages[i] = ImageHandler.get().getImage("exp_" + i);
+
+		// Life Images
+		lifeImages = new Image[2];
+		lifeImages[0] = ImageHandler.get().getImage("HUD_life_empty");
+		lifeImages[1] = ImageHandler.get().getImage("HUD_life_full");
+
+		hookCooldownImages = new Image[2];
+		hookCooldownImages[0] = ImageHandler.get().getImage("hook_empty");
+		hookCooldownImages[1] = ImageHandler.get().getImage("hook_full");
+		grappleCooldownImages = new Image[2];
+		grappleCooldownImages[0] = ImageHandler.get().getImage("grapple_empty");
+		grappleCooldownImages[1] = ImageHandler.get().getImage("grapple_full");
 	}
 
 	public void restoreDefaults() {
@@ -81,6 +97,38 @@ public class Stats {
 	}
 
 	public void onGUI() {
+		// Draw Life
+		GUI.partialHorizontalBar(lifeImages, 10, Game.s.height - 16, lifePercentage());
+
+		// int lifebarWidth = lifeImages[0].getWidth(null);
+		// int lifebarHeight = lifeImages[0].getHeight(null);
+		// int lifebarActual = (int) (lifeImages[0].getWidth(null) * lifePercentage());
+		// Game.s.g.drawImage(lifeImages[0], 10, Game.s.height - 10 - lifebarHeight, 10 + lifebarWidth, Game.s.height - 10, //
+		// 0, 0, lifebarWidth, lifebarHeight, null);
+		// Game.s.g.drawImage(lifeImages[1], 10, Game.s.height - 10 - lifebarHeight, 10 + lifebarActual, Game.s.height - 10, //
+		// 0, 0, lifebarActual, lifebarHeight, null);
+
+		// Hook Cooldown
+		GUI.partialHorizontalBar(hookCooldownImages, 10, Game.s.height - 32, (1 - (pudge.hookCooldown / PudgeEntity.HOOK_COOLDOWN)));
+
+		// int hookWidth = hookCooldownImages[0].getWidth(null);
+		// int hookHeight = hookCooldownImages[0].getHeight(null);
+		// int hookActual = (int) (hookWidth * (1 - (pudge.hookCooldown / PudgeEntity.HOOK_COOLDOWN)));
+		// Game.s.g.drawImage(hookCooldownImages[0], 10, Game.s.height - 20 - hookHeight - lifebarHeight, 10 + hookWidth, Game.s.height - 20 - lifebarHeight, //
+		// 0, 0, hookWidth, hookHeight, null);
+		// Game.s.g.drawImage(hookCooldownImages[1], 10, Game.s.height - 20 - hookHeight - lifebarHeight, 10 + hookActual, Game.s.height - 20 - lifebarHeight, //
+		// 0, 0, hookActual, hookHeight, null);
+
+		// Grapple Cooldown
+		GUI.partialHorizontalBar(grappleCooldownImages, 10, Game.s.height - 48, (1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
+		// int grappleWidth = grappleCooldownImages[0].getWidth(null);
+		// int grappleHeight = grappleCooldownImages[0].getHeight(null);
+		// int grappleActual = (int) (grappleWidth * (1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
+		// Game.s.g.drawImage(grappleCooldownImages[0], 10, Game.s.height - 30 - grappleHeight - hookHeight - lifebarHeight, 10 + grappleWidth, Game.s.height - 30 - lifebarHeight - hookHeight, //
+		// 0, 0, grappleWidth, grappleHeight, null);
+		// Game.s.g.drawImage(grappleCooldownImages[1], 10, Game.s.height - 30 - grappleHeight - hookHeight - lifebarHeight, 10 + grappleActual, Game.s.height - 30 - lifebarHeight - hookHeight, //
+		// 0, 0, grappleActual, grappleHeight, null);
+
 		// Draw Experience
 		int expWidth = expImages[0].getWidth(null);
 		int expHeight = expImages[0].getHeight(null);

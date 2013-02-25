@@ -5,9 +5,9 @@ import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 import pudgewars.util.Vector2;
 
-public class PullHookEntity extends HookEntity {
+public class GrappleHookEntity extends HookEntity {
 
-	public PullHookEntity(PudgeEntity e, Vector2 target) {
+	public GrappleHookEntity(PudgeEntity e, Vector2 target) {
 		super(e, "specialhook", target);
 	}
 

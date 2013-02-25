@@ -17,6 +17,11 @@ public class Tile implements BBOwner {
 	public final static Tile T_Mound = new Tile("mound2", true, false, false, 0, 0);
 	public final static Tile T_Hookable = new Tile("hookable", false, false, true, 13, 15);
 
+	public final static Tile T_Fountain0 = new Tile("fountain", 0, 0, false, false, false, 0, 0);
+	public final static Tile T_Fountain1 = new Tile("fountain", 1, 0, false, false, false, 0, 0);
+	public final static Tile T_Fountain2 = new Tile("fountain", 0, 1, false, false, false, 0, 0);
+	public final static Tile T_Fountain3 = new Tile("fountain", 1, 1, false, false, false, 0, 0);
+
 	protected String ID;
 	protected BufferedImage img;
 	protected BufferedImage post;
@@ -25,6 +30,11 @@ public class Tile implements BBOwner {
 	protected boolean hookable;
 	protected double lightWidth;
 	protected double lightHeight;
+
+	public Tile(String ID, int x, int y, boolean pudgeSolid, boolean hookSolid, boolean hookable, double lightWidth, double lightHeight) {
+		this("fountain", pudgeSolid, hookSolid, hookable, lightWidth, lightHeight);
+		img = ImageHandler.get().getImage("fountain", x, y, 16, 16);
+	}
 
 	public Tile(String ID, String post, boolean pudgeSolid, boolean hookSolid, boolean hookable, double lightWidth, double lightHeight) {
 		this(ID, pudgeSolid, hookSolid, hookable, lightWidth, lightHeight);

@@ -8,6 +8,7 @@ import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.components.Rigidbody;
 import pudgewars.entities.Entity;
+import pudgewars.entities.HealingFountainEntity;
 import pudgewars.entities.LightSourceEntity;
 import pudgewars.entities.Team;
 import pudgewars.entities.hooks.HookEntity;
@@ -52,6 +53,10 @@ public class Map {
 				}
 			}
 		}
+		map[MAP_HEIGHT / 2 - 1][MAP_WIDTH / 2 - 1] = Tile.T_Fountain0;
+		map[MAP_HEIGHT / 2 - 1][MAP_WIDTH / 2] = Tile.T_Fountain1;
+		map[MAP_HEIGHT / 2][MAP_WIDTH / 2 - 1] = Tile.T_Fountain2;
+		map[MAP_HEIGHT / 2][MAP_WIDTH / 2] = Tile.T_Fountain3;
 	}
 
 	public void update() {
@@ -90,6 +95,7 @@ public class Map {
 
 		for (double y = b.y0; y <= b.y1; y++) {
 			for (double x = b.x0; x <= b.x1; x++) {
+				if ((int) y < 0 || (int) y >= map.length || (int) x < 0 || (int) x >= map[0].length) continue;
 				Tile t = map[(int) y][(int) x];
 				if (t.blocks(b.owner)) {
 					l.add(new CollisionBox(t, (int) x, (int) y, (int) x + 1, (int) y + 1));
@@ -156,5 +162,8 @@ public class Map {
 				}
 			}
 		}
+
+		// Healing Fountain
+		entities.add(new HealingFountainEntity(new Vector2(MAP_WIDTH / 2.0, MAP_HEIGHT / 2.0)));
 	}
 }

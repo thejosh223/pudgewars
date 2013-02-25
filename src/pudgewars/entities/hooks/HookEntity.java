@@ -18,7 +18,7 @@ import pudgewars.util.Vector2;
 
 public class HookEntity extends Entity implements LightSource {
 	public final static double PIECE_DISTANCE = 1;
-	public final static double SLOW_DOWN_VECTOR = 0.5;
+	public final static double SLOW_DOWN_VECTOR = 0.9;
 
 	// Hook Speed
 	public final static float HOOK_REVERSE_MULT = 2;
@@ -38,7 +38,9 @@ public class HookEntity extends Entity implements LightSource {
 	protected boolean isRotating = true;
 
 	public HookEntity(PudgeEntity e, String s, Vector2 target) {
-		super(e.transform.position, new Vector2(e.stats.hookSize.getValue(), e.stats.hookSize.getValue()));
+		super(e.transform.position, new Vector2(1, 1));
+		this.team = e.team;
+
 		owner = e;
 		hooked = null;
 

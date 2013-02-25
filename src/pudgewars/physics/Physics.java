@@ -3,7 +3,6 @@ package pudgewars.physics;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.entities.hooks.HookPieceEntity;
-import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 
 public class Physics {

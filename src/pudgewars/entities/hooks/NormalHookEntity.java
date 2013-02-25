@@ -10,6 +10,7 @@ public class NormalHookEntity extends HookEntity {
 
 	public NormalHookEntity(PudgeEntity e, Vector2 target) {
 		super(e, "hook", target);
+		transform.scale = new Vector2(e.stats.hookSize.getValue(), e.stats.hookSize.getValue());
 	}
 
 	/*
@@ -17,10 +18,12 @@ public class NormalHookEntity extends HookEntity {
 	 */
 	public void attachPudge(PudgeEntity e) {
 		e.transform.position = transform.position.clone(); // Set the pudge as this position
-		if (e.stats.subLife(damage)) {
-			// Pudge was Killed!
-			owner.stats.experience += 2;
-			return;
+		if (!isTeammate(e)) {
+			if (e.stats.subLife(damage)) {
+				// Pudge was Killed!
+				owner.stats.experience += 2;
+				return;
+			}
 		}
 		e.canTileCollide = false;
 		e.canMove = false;

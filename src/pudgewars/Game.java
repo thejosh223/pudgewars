@@ -7,6 +7,7 @@ import pudgewars.input.Keys;
 import pudgewars.input.MouseButtons;
 import pudgewars.level.Map;
 import pudgewars.render.CursorManager;
+import pudgewars.util.Profiler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
@@ -24,7 +25,10 @@ public class Game {
 	public static Screen s;
 	public static Vector2 focus;
 
-	// private PudgeEntity player;
+	/*
+	 * Profiler
+	 */
+	public static Profiler p;
 
 	/*
 	 * Input Classes
@@ -37,6 +41,10 @@ public class Game {
 		Game.w = w;
 		Game.keyInput = k;
 		Game.mouseInput = m;
+
+		// String[] names = { "Tick", "Render", "Sleep" };
+		String[] names = { "Tick", "Render" };
+		p = new Profiler(names);
 	}
 
 	public void init() {
@@ -85,12 +93,16 @@ public class Game {
 
 			boolean ticked = false;
 			while (unprocessedSeconds > Time.getBaseTickInterval()) {
+				p.start();
 				tick();
+				p.end();
+
 				unprocessedSeconds -= Time.getBaseTickInterval();
 				ticked = true;
 
 				Time.totalTicks++;
 				if (Time.totalTicks % 60 == 0) {
+					p.printResults();
 					Window.container.setTitle("PudgeWars (fps:" + fps + ") (spd:" + (int) (sleepTime * 100 / 0.94) + "%)");
 					fps = 0;
 					sleepTime = 0;
@@ -101,8 +113,9 @@ public class Game {
 			 * Rendering
 			 */
 			if (ticked) {
-				// }
+				p.start();
 				render();
+				p.end();
 				fps++;
 			}
 

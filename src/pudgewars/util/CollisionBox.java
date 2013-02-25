@@ -16,6 +16,11 @@ public class CollisionBox {
 		owner = e;
 	}
 
+	public boolean intersects(Vector2 v) {
+		if (x1 <= v.x || x0 >= v.x || y1 <= v.y || y0 >= v.y) return false;
+		return true;
+	}
+
 	public boolean intersects(CollisionBox b) {
 		if (x1 <= b.x0 || x0 >= b.x1 || y1 <= b.y0 || y0 >= b.y1) return false;
 		return true;

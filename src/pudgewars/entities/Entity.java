@@ -17,7 +17,10 @@ public abstract class Entity implements BBOwner {
 	public String name;
 
 	// Kill Data
-	public boolean remove;
+	public boolean remove = false;
+
+	// Render Data
+	public boolean shouldRender = true;
 
 	// Team Data
 	public Team team;
@@ -87,16 +90,12 @@ public abstract class Entity implements BBOwner {
 		return transform.position.y;
 	}
 
-	public void setVerticalMovement(double vx) {
-		rigidbody.velocity.x = vx;
-	}
-
-	public void setHorizontalMovement(double vy) {
-		rigidbody.velocity.y = vy;
-	}
-
 	public void setPosition(double x, double y) {
 		transform.position.set(x, y);
+	}
+
+	public boolean isTeammate(Entity e) {
+		return e.team == team || e.team == Team.freeForAll;
 	}
 
 	/*

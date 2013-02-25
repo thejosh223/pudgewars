@@ -20,7 +20,7 @@ public class CursorManager {
 		cursors = new HashMap<String, Cursor>();
 
 		loadCursor("cursor", "Default");
-		loadCursor("cursor2", "Special");
+		loadCursor("cursor3", "Special");
 		setCursor("Default");
 	}
 

@@ -150,6 +150,10 @@ public class Rigidbody {
 		return getCollisionBox().intersects(b);
 	}
 
+	public boolean intersects(Vector2 v) {
+		return getCollisionBox().intersects(v);
+	}
+
 	public CollisionBox getCollisionBox() {
 		Vector2 v = Vector2.componentMultiply(collision, transform.scale);
 		return new CollisionBox(gameObject, transform.position.x - v.x / 2, transform.position.y - v.y / 2, //

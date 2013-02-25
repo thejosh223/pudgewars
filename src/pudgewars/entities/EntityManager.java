@@ -61,9 +61,27 @@ public class EntityManager {
 
 	public void render() {
 		map.render();
+
+		// Init shouldRender = false
+		for (int i = 0; i < entities.size(); i++)
+			entities.get(i).shouldRender = false;
+
 		for (int i = 0; i < entities.size(); i++) {
-			entities.get(i).render();
+			Vector2 v = Game.s.worldToScreenPoint(entities.get(i).transform.position);
+			for (int o = 0; o < entities.size(); o++) {
+				Entity e = entities.get(o);
+				if (e instanceof LightSource) {
+					if (e.team == Team.freeForAll || e.team == player.team) {
+						if (((LightSource) e).getLightShape().contains(v.x, v.y)) {
+							entities.get(i).shouldRender = true;
+						}
+					}
+				}
+			}
 		}
+
+		for (int i = 0; i < entities.size(); i++)
+			entities.get(i).render();
 		map.postRender();
 		renderLightmap();
 	}
@@ -75,17 +93,14 @@ public class EntityManager {
 	}
 
 	public void renderLightmap() {
-		// int lightmapMultiple = 1;
-
 		BufferedImage lightMap = new BufferedImage(Game.s.width / Window.LIGHTMAP_MULT, Game.s.height / Window.LIGHTMAP_MULT, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) lightMap.getGraphics();
 
 		// Init Drawing
-		g.setColor(Color.black);
+		g.setColor(new Color(0, 0, 0, 0.5f));
+		// g.setColor(Color.black);
 		g.fillRect(0, 0, lightMap.getWidth(), lightMap.getHeight());
-
 		g.setComposite(AlphaComposite.Clear);
-
 		for (int i = 0; i < entities.size(); i++) {
 			Entity e = entities.get(i);
 			if (e instanceof LightSource) {
@@ -98,28 +113,13 @@ public class EntityManager {
 		Game.s.g.drawImage(lightMap, 0, 0, Game.s.width, Game.s.height, null);
 	}
 
-	/*
-	 * GetEntities Function by CollisionBox
-	 * -Returns a list of entities that intersect with the given box
-	 * -NOTE: Does not take into consideration blocks()
-	 */
-	// public List<Entity> getEntitiesFromBB(CollisionBox b) {
-	// List<Entity> l = new ArrayList<Entity>();
-	// for (Entity e : entities) {
-	// if (e.intersects(b)) {
-	// l.add(e);
-	// }
-	// }
-	// return l;
-	// }
+	public List<CollisionBox> getEntityListCollisionBoxes(Vector2 v) {
+		List<CollisionBox> l = new ArrayList<CollisionBox>();
+		for (Entity e : entities)
+			if (e.rigidbody.intersects(v)) l.add(e.rigidbody.getCollisionBox());
+		return l;
+	}
 
-	/*
-	 * GetEntities Function by Entity
-	 * -Returns a list of entities that intersect with the Entity's
-	 * Bounding Box grown by 1.
-	 * -Only returns a list that is in blocks() && != entity
-	 * -Used for semiMove(vx, vy) in Entity.
-	 */
 	public List<CollisionBox> getListCollisionBoxes(Rigidbody r) {
 		CollisionBox b = r.getCollisionBox().grow(1);
 		// List<CollisionBox> l = new ArrayList<CollisionBox>();
