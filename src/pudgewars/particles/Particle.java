@@ -16,7 +16,7 @@ public class Particle {
 	public Animation ani;
 
 	public Particle(String img, int width, int height, int amt, Vector2 pos, double duration) {
-		ani = Animation.makeAnimation(img, amt, width, height, 0.25);
+		ani = Animation.makeAnimation(img, amt, width, height, duration / amt);
 		ani.startAnimation();
 		this.duration = (int) (duration * Time.TICKS_PER_SECOND); // Convert to tick count
 		this.position = pos;

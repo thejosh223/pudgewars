@@ -16,6 +16,7 @@ import pudgewars.entities.hooks.NormalHookEntity;
 import pudgewars.entities.hooks.GrappleHookEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
+import pudgewars.particles.ParticleTypes;
 import pudgewars.util.Animation;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.ImageHandler;
@@ -171,6 +172,7 @@ public class PudgeEntity extends Entity implements LightSource {
 				if (attackInterval == 0) {
 					attackInterval = 0.5;
 					targetEnemy.stats.subLife(4);
+					Game.entities.addParticle(ParticleTypes.DIE, targetEnemy, null, 0.25);
 				}
 			}
 		}

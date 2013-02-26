@@ -46,10 +46,13 @@ public class EntityManager {
 	public void addParticle(ParticleTypes p, Entity e, Vector2 pos, double duration) {
 		switch (p) {
 			case SPARKLE:
-				particles.add(new Particle("sparkle", 8, 8, 4, pos.clone(), duration));
+				particles.add(new Particle("sparkle2", 16, 16, 4, pos.clone(), duration));
 				break;
 			case FOLLOW_SPARKLE:
-				particles.add(new FollowParticle("sparkle", 8, 8, 4, e, duration));
+				particles.add(new FollowParticle("sparkle2", 16, 16, 4, e, duration));
+				break;
+			case DIE:
+				particles.add(new FollowParticle("damage", 16, 16, 2, e, duration));
 				break;
 		}
 	}
