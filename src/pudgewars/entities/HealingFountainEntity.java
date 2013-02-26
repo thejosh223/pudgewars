@@ -1,6 +1,8 @@
 package pudgewars.entities;
 
 import pudgewars.Game;
+import pudgewars.particles.Particle;
+import pudgewars.particles.ParticleTypes;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
@@ -18,11 +20,13 @@ public class HealingFountainEntity extends LightSourceEntity {
 
 	public void update() {
 		if (interval < 0) {
-			System.out.println("Magic!");
 			for (int i = 0; i < Game.entities.entities.size(); i++) {
 				Entity e = Game.entities.entities.get(i);
 				if (e.transform.position.distance(transform.position) <= HEALING_RADIUS) {
-					if (e instanceof PudgeEntity) ((PudgeEntity) e).stats.addLife(HEAL_AMOUNT);
+					if (e instanceof PudgeEntity) {
+						((PudgeEntity) e).stats.addLife(HEAL_AMOUNT);
+						Game.entities.addParticle(ParticleTypes.FOLLOW_SPARKLE, e, null, HEALING_INTERVAL);
+					}
 				}
 			}
 			interval = HEALING_INTERVAL;

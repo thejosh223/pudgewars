@@ -30,7 +30,7 @@ public class PudgeEntity extends Entity implements LightSource {
 	public final static double COLLISION_HEIGHT = 1;
 
 	public final static double HOOK_COOLDOWN = 3;
-	public final static double GRAPPLEHOOK_COOLDOWN = 20;
+	public final static double GRAPPLEHOOK_COOLDOWN = 15;
 
 	public final static double ATK_RANGE = 2;
 

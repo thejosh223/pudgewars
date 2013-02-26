@@ -37,13 +37,14 @@ public class BaseStat {
 
 	public boolean drawButtons(int x, int y) {
 		if (GUI.button(baseImage, x, y, baseImage.getWidth(null), baseImage.getHeight(null))) return true;
-		Game.s.g.drawImage(modImage, x, y, x + XOFF + level, y + modImage.getHeight(null), 0, 0, XOFF + level, modImage.getHeight(null), null);
+		Game.s.g.drawImage(modImage, x, y, x + XOFF + (int) (23 * level / 10.0), y + modImage.getHeight(null), 0, 0, XOFF + (int) (23 * level / 10.0), modImage.getHeight(null), null);
 		return false;
 	}
 
 	public void levelUp() {
 		level++;
 		cost *= 1.4;
+		stats.restoreDefaults();
 	}
 
 	public double getValue() {

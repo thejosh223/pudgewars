@@ -11,12 +11,16 @@ import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.components.Rigidbody;
 import pudgewars.level.Map;
+import pudgewars.particles.FollowParticle;
+import pudgewars.particles.Particle;
+import pudgewars.particles.ParticleTypes;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.Vector2;
 
 public class EntityManager {
 
 	public List<Entity> entities;
+	public List<Particle> particles;
 	public PudgeEntity player;
 	public Map map;
 
@@ -26,6 +30,8 @@ public class EntityManager {
 		player.name = "MainDude";
 		player.controllable = true;
 		entities.add(player);
+
+		particles = new ArrayList<Particle>();;
 
 		PudgeEntity p = new PudgeEntity(new Vector2(4, 12), Team.leftTeam);
 		p.name = "Second";
@@ -37,11 +43,23 @@ public class EntityManager {
 		map.addLightSources(entities);
 	}
 
+	public void addParticle(ParticleTypes p, Entity e, Vector2 pos, double duration) {
+		switch (p) {
+			case SPARKLE:
+				particles.add(new Particle("sparkle", 8, 8, 4, pos.clone(), duration));
+				break;
+			case FOLLOW_SPARKLE:
+				particles.add(new FollowParticle("sparkle", 8, 8, 4, e, duration));
+				break;
+		}
+	}
+
 	public void updateEntities() {
 		map.update();
-		for (int i = 0; i < entities.size(); i++) {
+		for (int i = 0; i < entities.size(); i++)
 			entities.get(i).update();
-		}
+		for (int i = 0; i < particles.size(); i++)
+			particles.get(i).update();
 	}
 
 	public void lateUpdateEntities() {
@@ -51,12 +69,17 @@ public class EntityManager {
 	}
 
 	public void killUpdateEntities() {
-		for (int i = 0; i < entities.size(); i++) {
+		for (int i = 0; i < entities.size(); i++)
 			if (entities.get(i).remove) {
 				entities.remove(i);
 				i--;
 			}
-		}
+
+		for (int i = 0; i < particles.size(); i++)
+			if (particles.get(i).remove) {
+				particles.remove(i);
+				i--;
+			}
 	}
 
 	public void render() {
@@ -82,6 +105,9 @@ public class EntityManager {
 
 		for (int i = 0; i < entities.size(); i++)
 			entities.get(i).render();
+		for (int i = 0; i < particles.size(); i++)
+			particles.get(i).render();
+
 		map.postRender();
 		renderLightmap();
 	}

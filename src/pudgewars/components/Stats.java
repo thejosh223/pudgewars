@@ -20,7 +20,7 @@ public class Stats {
 	public Image[] grappleCooldownImages;
 
 	// Movement Data
-	public BaseStat moveSpeed = new BaseStat(this, "MoveSpeed", 0, 3.8, 1, 1);
+	public BaseStat moveSpeed = new BaseStat(this, "MoveSpeed", 0, 3.8, 0.4, 1);
 
 	// Hook Data
 	public BaseStat hookSize = new BaseStat(this, "Hook Size", 5, 0.75, 0.25, 1);
