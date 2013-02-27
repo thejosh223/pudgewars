@@ -6,6 +6,7 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Vector;
 
 import pudgewars.Game;
 import pudgewars.Window;
@@ -16,6 +17,8 @@ import pudgewars.particles.Particle;
 import pudgewars.particles.ParticleTypes;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.Vector2;
+import pudgewars.components.Network;
+import pudgewars.network.ClientNode;
 
 public class EntityManager {
 
@@ -24,22 +27,65 @@ public class EntityManager {
 	public PudgeEntity player;
 	public Map map;
 
-	public EntityManager() {
+	public EntityManager(){
 		entities = new ArrayList<Entity>();
-		player = new PudgeEntity(new Vector2(4, 4), Team.leftTeam);
-		player.name = "MainDude";
-		player.controllable = true;
-		entities.add(player);
-
-		particles = new ArrayList<Particle>();;
-
-		PudgeEntity p = new PudgeEntity(new Vector2(4, 12), Team.leftTeam);
-		p.name = "Second";
-		entities.add(p);
-		entities.add(new PudgeEntity(new Vector2(20, 4), Team.rightTeam));
-		entities.add(new PudgeEntity(new Vector2(20, 12), Team.rightTeam));
-
+//<<<<<<< HEAD
+//		player = new PudgeEntity(new Vector2(4, 4), Team.leftTeam);
+//		player.name = "MainDude";
+//		player.controllable = true;
+//		entities.add(player);
+//
+//		particles = new ArrayList<Particle>();;
+//
+//		PudgeEntity p = new PudgeEntity(new Vector2(4, 12), Team.leftTeam);
+//		p.name = "Second";
+//		entities.add(p);
+//		entities.add(new PudgeEntity(new Vector2(20, 4), Team.rightTeam));
+//		entities.add(new PudgeEntity(new Vector2(20, 12), Team.rightTeam));
+//
+//=======
+//>>>>>>> origin/Network
 		map = Game.map;
+	}
+	
+	public void ServerEntityManager(Vector<ClientNode> clients){
+		int x = 0, y = 0;
+		for(int i = 0; i<clients.size(); i++){
+			if(clients.get(i).getTeam() == 0) entities.add(new PudgeEntity(new Vector2(4, 8*x++ + 4), Team.leftTeam));
+			else entities.add(new PudgeEntity(new Vector2(20, 8*y++ + 4), Team.rightTeam));
+		}
+	}
+	
+	public void ClientEntityManager(Vector2 position, Team team, boolean controllable){
+		PudgeEntity pudge = new PudgeEntity(position, team);
+		if(controllable){
+			player = pudge;
+			player.controllable = true;
+		}
+		entities.add(pudge);
+	}
+	
+	public void sendServerEntities(Vector<Network> clients){
+		for(int x = 0; x < clients.size(); x++){
+			for(int y = 0; y < entities.size(); y++){
+				boolean controllable = (x == y) ? true : false;
+				clients.get(x).sendServerPudgeEntity(new Vector2(entities.get(y).getX(),entities.get(y).getY()), entities.get(y).team, controllable);
+			}
+			clients.get(x).sendMessage("EOM");
+		}
+	}
+	
+	public void generateClientEntities(Network client){
+		String msg = client.getMessage();
+		while(!msg.equals("EOM")){
+			System.out.println(msg);
+			String parts[] = msg.split(" ");
+			Vector2 position = new Vector2(Float.parseFloat(parts[1]),Float.parseFloat(parts[2]));
+			Team team = (parts[3].equals("leftTeam")) ? Team.leftTeam : Team.rightTeam;
+			boolean controllable = (parts[4].equals("true")) ? true : false;
+			ClientEntityManager(position, team, controllable);
+			msg = client.getMessage();
+		}
 		map.addLightSources(entities);
 	}
 
@@ -112,7 +158,7 @@ public class EntityManager {
 			particles.get(i).render();
 
 		map.postRender();
-		renderLightmap();
+		//renderLightmap();
 	}
 
 	public void renderGUI() {
@@ -120,7 +166,7 @@ public class EntityManager {
 			entities.get(i).onGUI();
 		}
 	}
-
+	
 	public void renderLightmap() {
 		BufferedImage lightMap = new BufferedImage(Game.s.width / Window.LIGHTMAP_MULT, Game.s.height / Window.LIGHTMAP_MULT, BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) lightMap.getGraphics();

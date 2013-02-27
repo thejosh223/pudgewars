@@ -85,8 +85,11 @@ public class PudgeEntity extends Entity implements LightSource {
 		fullLife = ImageHandler.get().getImage("life_full");
 		emptyLife = ImageHandler.get().getImage("life_empty");
 	}
-
-	public void update() {
+	
+	public void update(){}
+	
+	public void update(int i) {
+		if(Game.positions.get(i) != null && !controllable) target = Game.positions.get(i);
 		if (rigidbody.isMoving()) ani.update();
 
 		// Stats
@@ -177,6 +180,10 @@ public class PudgeEntity extends Entity implements LightSource {
 			}
 		}
 
+		if(controllable){
+			if(target == null) Game.client.sendMessage("null");
+			else Game.client.sendMessage(target.x + " " + target.y);
+		}
 		rigidbody.updateVelocity();
 
 		// Un-comment this to have some fun!

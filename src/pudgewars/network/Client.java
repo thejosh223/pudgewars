@@ -18,6 +18,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.text.DefaultCaret;
 
+import pudgewars.ServerGame;
 import pudgewars.Window;
 
 public class Client {
@@ -203,7 +204,12 @@ public class Client {
 		            	readyButton.setVisible(true);
 		            	changeTeamButton.setEnabled(true);
 		        	}else if(msg.equals("START")){
-		        		JOptionPane.showMessageDialog(null, "Start Game");
+		        		conn.getMessage();
+		        		conn.sendMessage("STOP");
+		        		//JOptionPane.showMessageDialog(null, "Start Game");
+		        		Window w = new Window();
+		        		w.startClientGame(conn);
+		        		//System.exit(1);
 		        		//Window w = new Window();
 		        		//w.start();
 		        	}else{
