@@ -20,7 +20,7 @@ import pudgewars.util.Vector2;
 import pudgewars.components.Network;
 import pudgewars.network.ClientNode;
 
-public class EntityManager {
+public abstract class EntityManager {
 
 	public List<Entity> entities;
 	public List<Particle> particles;
@@ -65,13 +65,7 @@ public class EntityManager {
 		}
 	}
 
-	public void updateEntities() {
-		map.update();
-		for (int i = 0; i < entities.size(); i++)
-			entities.get(i).update(i);
-		for (int i = 0; i < particles.size(); i++)
-			particles.get(i).update();
-	}
+	public abstract void updateEntities();
 
 	public void lateUpdateEntities() {
 		for (int i = 0; i < entities.size(); i++) {

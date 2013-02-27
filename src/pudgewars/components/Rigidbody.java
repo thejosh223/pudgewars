@@ -45,6 +45,7 @@ public class Rigidbody {
 	/*
 	 * Movement
 	 */
+	
 	public boolean noMove() {
 		List<CollisionBox> l = Game.entities.getListCollisionBoxes(this);
 		return semiMove(l, 0, 0);

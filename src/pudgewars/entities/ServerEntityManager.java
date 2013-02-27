@@ -31,4 +31,11 @@ public class ServerEntityManager extends EntityManager{
 			clients.get(x).sendMessage("EOM");
 		}
 	}
+	
+	public void updateEntities(){
+		for (int i = 0; i < entities.size(); i++)
+			entities.get(i).update(i);
+		for (int i = 0; i < particles.size(); i++)
+			particles.get(i).update();
+	}
 }

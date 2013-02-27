@@ -36,8 +36,9 @@ public class Game {
 	public MyConnection conn;
 	public static Network client;
 	//private PudgeEntity player;
-	public static Vector<Vector2> positions;
-	
+	public static Vector<Vector2> moveTargets;
+	public static Vector<Vector2> hookTargets;
+	//public static Vector<boolean> isSpecialHook;
 	/*
 	 * Input Classes
 	 */
@@ -56,7 +57,8 @@ public class Game {
 	}
 
 	public void init(MyConnection conn) {
-		positions = new Vector<Vector2>();
+		moveTargets = new Vector<Vector2>();
+		hookTargets = new Vector<Vector2>();
 
 		map = new Map();
 		focus = new Vector2(Map.MAP_WIDTH / 2, Map.MAP_HEIGHT / 2);
@@ -140,18 +142,35 @@ public class Game {
 	}
 
 	private void tick() {
+		// get moveTargets of all players
 		String msg = client.getMessage();
 		int x = 0;
 		do{
-			positions.add(null);
-			if(msg.equals("null")) positions.set(x, null);
+			moveTargets.add(null);
+			if(msg.equals("null")) moveTargets.set(x, null);
 			else{
 				String parts[] = msg.split(" ");
-				positions.set(x, new Vector2(Float.parseFloat(parts[0]),Float.parseFloat(parts[1])));
+				moveTargets.set(x, new Vector2(Float.parseFloat(parts[0]),Float.parseFloat(parts[1])));
 			}
 			x++;
 			msg = client.getMessage();
 		}while(!msg.equals("EOM"));
+		
+		// get hookTargets of all players
+		msg = client.getMessage();
+		x = 0;
+		do{
+			hookTargets.add(null);
+			if(msg.equals("null")) hookTargets.set(x, null);
+			else{
+				String parts[] = msg.split(" ");
+				hookTargets.set(x, new Vector2(Float.parseFloat(parts[0]),Float.parseFloat(parts[1])));
+				System.out.println(msg);
+			}
+			x++;
+			msg = client.getMessage();
+		}while(!msg.equals("EOM"));
+		
 		/*
 		 * UPDATES
 		 */

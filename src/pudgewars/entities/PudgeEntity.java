@@ -86,10 +86,10 @@ public class PudgeEntity extends Entity implements LightSource {
 		emptyLife = ImageHandler.get().getImage("life_empty");
 	}
 	
-	public void update(){}
-	
-	public void update(int i) {
-		if(Game.positions.get(i) != null && !controllable) target = Game.positions.get(i);
+	public void update() {
+		if(Game.moveTargets.firstElement() != null && !controllable) target = Game.moveTargets.firstElement();
+		Game.moveTargets.remove(Game.moveTargets.firstElement());
+		
 		if (rigidbody.isMoving()) ani.update();
 
 		// Stats
@@ -102,6 +102,9 @@ public class PudgeEntity extends Entity implements LightSource {
 		}
 
 		// Controls
+		Vector2 left = null;
+		boolean isSpecialHook = false;
+		
 		if (controllable && canMove && !stats.isOpen) {
 			if (hookCooldown > 0) hookCooldown -= Time.getTickInterval();
 			if (hookCooldown < 0) hookCooldown = 0;
@@ -114,7 +117,21 @@ public class PudgeEntity extends Entity implements LightSource {
 
 			// Hover
 			if (Game.keyInput.space.isDown) Game.focus = transform.position.clone();
-
+			
+			left = Game.mouseInput.left.wasPressed();
+			if (left != null) {
+				if (!Game.keyInput.specialHook.isDown) {
+					if (hookCooldown <= 0) {
+						if (setHook(Game.s.screenToWorldPoint(left), HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
+					}else left = null;
+				} else {
+					if (grappleCooldown <= 0) {
+						isSpecialHook = true;
+						if (setHook(Game.s.screenToWorldPoint(left), HookType.GRAPPLE)) grappleCooldown = GRAPPLEHOOK_COOLDOWN;
+					}else left = null;
+				}
+			}
+			
 			Vector2 right = Game.mouseInput.right.wasPressed();
 			if (right != null) {
 				right = Game.s.screenToWorldPoint(right);
@@ -137,24 +154,28 @@ public class PudgeEntity extends Entity implements LightSource {
 				else target = targetEnemy.transform.position.clone();
 			}
 
-			Vector2 left = Game.mouseInput.left.wasPressed();
-			if (left != null) {
-				if (!Game.keyInput.specialHook.isDown) {
-					if (hookCooldown <= 0) {
-						if (setHook(Game.s.screenToWorldPoint(left), HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
-					}
-				} else {
-					if (grappleCooldown <= 0) {
-						if (setHook(Game.s.screenToWorldPoint(left), HookType.GRAPPLE)) grappleCooldown = GRAPPLEHOOK_COOLDOWN;
-					}
-				}
-			}
-
 			// Rotate the Clicker
 			if (target != null) targetRotation += -0.1;
 		}
-
-		// Target Movment
+		
+		if(!controllable){
+			left = Game.hookTargets.firstElement();
+			
+			if (left != null) {
+//				if (!Game.keyInput.specialHook.isDown) {
+//					if (hookCooldown <= 0) {
+						if (setHook(Game.s.screenToWorldPoint(left), HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
+//					}
+//				} else {
+//					if (grappleCooldown <= 0) {
+//						if (setHook(Game.s.screenToWorldPoint(left), HookType.GRAPPLE)) grappleCooldown = GRAPPLEHOOK_COOLDOWN;
+//					}
+//				}
+			}
+		}
+		Game.hookTargets.remove(Game.hookTargets.firstElement());
+		
+		// Target Movement
 		if (target != null) {
 			transform.rotateTowards(target, 0.1);
 
@@ -183,6 +204,9 @@ public class PudgeEntity extends Entity implements LightSource {
 		if(controllable){
 			if(target == null) Game.client.sendMessage("null");
 			else Game.client.sendMessage(target.x + " " + target.y);
+			
+			if(left == null) Game.client.sendMessage("null");
+			else Game.client.sendMessage(left.x + " " + left.y + " " + isSpecialHook);
 		}
 		rigidbody.updateVelocity();
 

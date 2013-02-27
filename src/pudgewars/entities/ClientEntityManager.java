@@ -32,4 +32,12 @@ public class ClientEntityManager extends EntityManager{
 		}
 		map.addLightSources(entities);
 	}
+	
+	public void updateEntities(){
+		map.update();
+		for (int i = 0; i < entities.size(); i++)
+			entities.get(i).update();
+		for (int i = 0; i < particles.size(); i++)
+			particles.get(i).update();
+	}
 }

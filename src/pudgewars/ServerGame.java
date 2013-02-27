@@ -14,8 +14,9 @@ public class ServerGame {
 	public static ServerEntityManager entities;
 	public static Map map;
 	public static Vector<Network> clients;
-	public static Vector<Vector2> moveTarget;
-	public static Vector<Vector2> hookTarget;
+	public static Vector<Vector2> moveTargets;
+	public static Vector<Vector2> hookTargets;
+	//public static Vector isSpecialHook = false;
 
 	public ServerGame(Vector<ClientNode> clients) {
 		initNetwork(clients);
@@ -26,9 +27,14 @@ public class ServerGame {
 		map = new Map();
 		gameRunning = true;
 		entities.sendServerEntities(clients);
-		moveTarget = new Vector<Vector2>();
+		moveTargets = new Vector<Vector2>();
 		for (int i = 0; i < clients.size(); i++) {
-			moveTarget.add(null);
+			moveTargets.add(null);
+		}
+		
+		hookTargets = new Vector<Vector2>();
+		for (int i = 0; i < clients.size(); i++) {
+			hookTargets.add(null);
 		}
 		// System.exit(1);
 		// cursor = new CursorManager(w);
@@ -43,11 +49,20 @@ public class ServerGame {
 				for (int i = 0; i < clients.size(); i++) {
 					//assuming that the message is for moveTarget
 					msg = clients.get(i).getMessage();
-					if (msg.equals("null")) moveTarget.set(i, null);
+					if (msg.equals("null")) moveTargets.set(i, null);
 					else {
 						String parts[] = msg.split(" ");
-						moveTarget.set(i, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
+						moveTargets.set(i, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
 					}
+					
+					msg = clients.get(i).getMessage();
+					if (msg.equals("null")) hookTargets.set(i, null);
+					else {
+						String parts[] = msg.split(" ");
+						hookTargets.set(i, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
+						//isSpecialHook = (parts[2].equals("true")) ? true : false;
+					}
+					
 				}
 			}
 		}
@@ -118,22 +133,32 @@ public class ServerGame {
 		/*
 		 * UPDATES
 		 */
+		// broadcast moveTargets of all players
 		for (int x = 0; x < clients.size(); x++) {
 			for (int y = 0; y < clients.size(); y++) {
-				if (moveTarget.get(y) != null) clients.get(x).sendMessage(moveTarget.get(y).x + " " + moveTarget.get(y).y);
+				if (moveTargets.get(y) != null) clients.get(x).sendMessage(moveTargets.get(y).x + " " + moveTargets.get(y).y);
 				else clients.get(x).sendMessage("null");
 			}
 			clients.get(x).sendMessage("EOM");
 		}
+		
+		// broadcast hookTargets of all players
+		for (int x = 0; x < clients.size(); x++) {
+			for (int y = 0; y < clients.size(); y++) {
+				if (hookTargets.get(y) != null) clients.get(x).sendMessage(hookTargets.get(y).x + " " + hookTargets.get(y).y);
+				else clients.get(x).sendMessage("null");
+			}
+			clients.get(x).sendMessage("EOM");
+		}
+		//System.out.println("Hey");
 		// Entities and Map Update
-		// entities.updateEntities();
-		// entities.lateUpdateEntities();
-		// entities.killUpdateEntities();
-		// entities.sendPosition();
-		// System.out.println("Entities: " + entities.entities.size());
+		entities.updateEntities();
+		entities.lateUpdateEntities();
+		entities.killUpdateEntities();
+		//entities.sendPosition();
+		//System.out.println("Entities: " + entities.entities.size());
 
 		// controls();
-		// Conn.getMessage();
 	}
 
 	private void initNetwork(Vector<ClientNode> clients) {
