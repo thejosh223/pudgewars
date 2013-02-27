@@ -20,7 +20,7 @@ public class Game {
 	public static final int TILE_HEIGHT = 15;
 
 	private boolean gameRunning;
-	//public static ArrayList<Entity> entities;
+	// public static ArrayList<Entity> entities;
 	public static Window w;
 	public static CursorManager cursor;
 	public static ClientEntityManager entities;
@@ -35,10 +35,10 @@ public class Game {
 
 	public MyConnection conn;
 	public static Network client;
-	//private PudgeEntity player;
+	// private PudgeEntity player;
 	public static Vector<Vector2> moveTargets;
 	public static Vector<Vector2> hookTargets;
-	//public static Vector<boolean> isSpecialHook;
+	// public static Vector<boolean> isSpecialHook;
 	/*
 	 * Input Classes
 	 */
@@ -63,11 +63,11 @@ public class Game {
 		map = new Map();
 		focus = new Vector2(Map.MAP_WIDTH / 2, Map.MAP_HEIGHT / 2);
 		gameRunning = true;
-		
+
 		client = new Network(conn);
 		entities = new ClientEntityManager();
 		entities.generateClientEntities(client);
-		
+
 		cursor = new CursorManager(w);
 		s = new Screen(Window.WIDTH, Window.HEIGHT);
 	}
@@ -116,7 +116,7 @@ public class Game {
 
 				Time.totalTicks++;
 				if (Time.totalTicks % 60 == 0) {
-					p.printResults();
+					// p.printResults();
 					Window.container.setTitle("PudgeWars (fps:" + fps + ") (spd:" + (int) (sleepTime * 100 / 0.94) + "%)");
 					fps = 0;
 					sleepTime = 0;
@@ -145,32 +145,32 @@ public class Game {
 		// get moveTargets of all players
 		String msg = client.getMessage();
 		int x = 0;
-		do{
+		do {
 			moveTargets.add(null);
-			if(msg.equals("null")) moveTargets.set(x, null);
-			else{
+			if (msg.equals("null")) moveTargets.set(x, null);
+			else {
 				String parts[] = msg.split(" ");
-				moveTargets.set(x, new Vector2(Float.parseFloat(parts[0]),Float.parseFloat(parts[1])));
+				moveTargets.set(x, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
 			}
 			x++;
 			msg = client.getMessage();
-		}while(!msg.equals("EOM"));
-		
+		} while (!msg.equals("EOM"));
+
 		// get hookTargets of all players
 		msg = client.getMessage();
 		x = 0;
-		do{
+		do {
 			hookTargets.add(null);
-			if(msg.equals("null")) hookTargets.set(x, null);
-			else{
+			if (msg.equals("null")) hookTargets.set(x, null);
+			else {
 				String parts[] = msg.split(" ");
-				hookTargets.set(x, new Vector2(Float.parseFloat(parts[0]),Float.parseFloat(parts[1])));
+				hookTargets.set(x, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
 				System.out.println(msg);
 			}
 			x++;
 			msg = client.getMessage();
-		}while(!msg.equals("EOM"));
-		
+		} while (!msg.equals("EOM"));
+
 		/*
 		 * UPDATES
 		 */

@@ -1,24 +1,26 @@
 package pudgewars;
 
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
+import pudgewars.components.Network;
 import pudgewars.entities.ServerEntityManager;
 import pudgewars.level.Map;
-import pudgewars.util.Time;
 import pudgewars.network.ClientNode;
-import pudgewars.components.Network;
+import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
 public class ServerGame {
 	private boolean gameRunning;
 	public static ServerEntityManager entities;
 	public static Map map;
-	public static Vector<Network> clients;
-	public static Vector<Vector2> moveTargets;
-	public static Vector<Vector2> hookTargets;
-	//public static Vector isSpecialHook = false;
+	public static List<Network> clients;
+	public static List<Vector2> moveTargets;
+	public static List<Vector2> hookTargets;
 
-	public ServerGame(Vector<ClientNode> clients) {
+	// public static Vector isSpecialHook = false;
+
+	public ServerGame(List<ClientNode> clients) {
 		initNetwork(clients);
 		entities = new ServerEntityManager(clients);
 	}
@@ -27,12 +29,12 @@ public class ServerGame {
 		map = new Map();
 		gameRunning = true;
 		entities.sendServerEntities(clients);
-		moveTargets = new Vector<Vector2>();
+		moveTargets = new ArrayList<Vector2>();
 		for (int i = 0; i < clients.size(); i++) {
 			moveTargets.add(null);
 		}
-		
-		hookTargets = new Vector<Vector2>();
+
+		hookTargets = new ArrayList<Vector2>();
 		for (int i = 0; i < clients.size(); i++) {
 			hookTargets.add(null);
 		}
@@ -41,35 +43,35 @@ public class ServerGame {
 		// s = new Screen(Window.WIDTH, Window.HEIGHT);
 	}
 
-	private static class handleClientMessages implements Runnable {
-		//change code to have multiple threads handling each client
+	private static class HandleClientMessages implements Runnable {
+		// change code to have multiple threads handling each client
 		public void run() {
 			String msg = null;
 			while (true) {
 				for (int i = 0; i < clients.size(); i++) {
-					//assuming that the message is for moveTarget
+					// assuming that the message is for moveTarget
 					msg = clients.get(i).getMessage();
 					if (msg.equals("null")) moveTargets.set(i, null);
 					else {
 						String parts[] = msg.split(" ");
 						moveTargets.set(i, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
 					}
-					
+
 					msg = clients.get(i).getMessage();
 					if (msg.equals("null")) hookTargets.set(i, null);
 					else {
 						String parts[] = msg.split(" ");
 						hookTargets.set(i, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
-						//isSpecialHook = (parts[2].equals("true")) ? true : false;
+						// isSpecialHook = (parts[2].equals("true")) ? true : false;
 					}
-					
+
 				}
 			}
 		}
 	}
 
 	public void gameLoop() {
-		Thread t = new Thread(new handleClientMessages());
+		Thread t = new Thread(new HandleClientMessages());
 		t.start();
 		long timeBefore = System.nanoTime();
 		long timePassed = System.nanoTime() - timeBefore;
@@ -114,11 +116,9 @@ public class ServerGame {
 			/*
 			 * Rendering
 			 */
-			if (ticked) {
-			}
-			// render();
-			// sendToAll();
-			fps++;
+			// if (ticked) {
+			// }
+			// fps++;
 			// }
 
 			try {
@@ -141,7 +141,7 @@ public class ServerGame {
 			}
 			clients.get(x).sendMessage("EOM");
 		}
-		
+
 		// broadcast hookTargets of all players
 		for (int x = 0; x < clients.size(); x++) {
 			for (int y = 0; y < clients.size(); y++) {
@@ -150,20 +150,18 @@ public class ServerGame {
 			}
 			clients.get(x).sendMessage("EOM");
 		}
-		//System.out.println("Hey");
+		// System.out.println("Hey");
 		// Entities and Map Update
 		entities.updateEntities();
 		entities.lateUpdateEntities();
 		entities.killUpdateEntities();
-		//entities.sendPosition();
-		//System.out.println("Entities: " + entities.entities.size());
-
-		// controls();
+		// entities.sendPosition();
+		// System.out.println("Entities: " + entities.entities.size());
 	}
 
-	private void initNetwork(Vector<ClientNode> clients) {
-		this.clients = new Vector<Network>();
+	private void initNetwork(List<ClientNode> clients) {
+		ServerGame.clients = new ArrayList<Network>();
 		for (int x = 0; x < clients.size(); x++)
-			this.clients.add(new Network(clients.get(x).getConnection()));
+			ServerGame.clients.add(new Network(clients.get(x).getConnection()));
 	}
 }

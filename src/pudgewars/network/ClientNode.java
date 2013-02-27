@@ -5,42 +5,39 @@ public class ClientNode {
 	private String name;
 	private String status;
 	private int team;
-	
-	public ClientNode(MyConnection conn, String name, String status, int team){
+
+	public ClientNode(MyConnection conn, String name, String status, int team) {
 		this.conn = conn;
 		this.name = name;
 		this.status = status;
 		this.team = team;
 	}
-	
-	public MyConnection getConnection(){
+
+	public MyConnection getConnection() {
 		return this.conn;
 	}
-	
-	public String getName(){
+
+	public String getName() {
 		return this.name;
 	}
-	
-	public void setName(String name){
+
+	public void setName(String name) {
 		this.name = name;
-		return;
 	}
-	
-	public String getStatus(){
+
+	public String getStatus() {
 		return this.status;
 	}
-	
-	public void setStatus(String status){
+
+	public void setStatus(String status) {
 		this.status = status;
-		return;
 	}
-	
-	public int getTeam(){
+
+	public int getTeam() {
 		return this.team;
 	}
-	
-	public void setTeam(int team){
+
+	public void setTeam(int team) {
 		this.team = team;
-		return;
 	}
 }
