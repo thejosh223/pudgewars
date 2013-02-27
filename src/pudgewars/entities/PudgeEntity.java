@@ -164,7 +164,7 @@ public class PudgeEntity extends Entity implements LightSource {
 			if (left != null) {
 //				if (!Game.keyInput.specialHook.isDown) {
 //					if (hookCooldown <= 0) {
-						if (setHook(Game.s.screenToWorldPoint(left), HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
+						if (setHook(left, HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
 //					}
 //				} else {
 //					if (grappleCooldown <= 0) {
@@ -206,7 +206,10 @@ public class PudgeEntity extends Entity implements LightSource {
 			else Game.client.sendMessage(target.x + " " + target.y);
 			
 			if(left == null) Game.client.sendMessage("null");
-			else Game.client.sendMessage(left.x + " " + left.y + " " + isSpecialHook);
+			else{
+				left = Game.s.screenToWorldPoint(left);
+				Game.client.sendMessage(left.x + " " + left.y + " " + isSpecialHook);	
+			}
 		}
 		rigidbody.updateVelocity();
 
