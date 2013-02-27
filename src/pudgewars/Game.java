@@ -4,7 +4,7 @@ import java.awt.Graphics2D;
 import java.util.Vector;
 
 import pudgewars.components.Network;
-import pudgewars.entities.EntityManager;
+import pudgewars.entities.ClientEntityManager;
 import pudgewars.input.Keys;
 import pudgewars.input.MouseButtons;
 import pudgewars.level.Map;
@@ -23,7 +23,7 @@ public class Game {
 	//public static ArrayList<Entity> entities;
 	public static Window w;
 	public static CursorManager cursor;
-	public static EntityManager entities;
+	public static ClientEntityManager entities;
 	public static Map map;
 	public static Screen s;
 	public static Vector2 focus;
@@ -63,7 +63,7 @@ public class Game {
 		gameRunning = true;
 		
 		client = new Network(conn);
-		entities = new EntityManager();
+		entities = new ClientEntityManager();
 		entities.generateClientEntities(client);
 		
 		cursor = new CursorManager(w);

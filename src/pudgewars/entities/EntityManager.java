@@ -27,86 +27,48 @@ public class EntityManager {
 	public PudgeEntity player;
 	public Map map;
 
-	public EntityManager(){
+	public EntityManager() {
 		entities = new ArrayList<Entity>();
-//<<<<<<< HEAD
-//		player = new PudgeEntity(new Vector2(4, 4), Team.leftTeam);
-//		player.name = "MainDude";
-//		player.controllable = true;
-//		entities.add(player);
-//
-//		particles = new ArrayList<Particle>();;
-//
-//		PudgeEntity p = new PudgeEntity(new Vector2(4, 12), Team.leftTeam);
-//		p.name = "Second";
-//		entities.add(p);
-//		entities.add(new PudgeEntity(new Vector2(20, 4), Team.rightTeam));
-//		entities.add(new PudgeEntity(new Vector2(20, 12), Team.rightTeam));
-//
-//=======
-//>>>>>>> origin/Network
+		// <<<<<<< HEAD
+		// player = new PudgeEntity(new Vector2(4, 4), Team.leftTeam);
+		// player.name = "MainDude";
+		// player.controllable = true;
+		// entities.add(player);
+		//
+		particles = new ArrayList<Particle>();
+		//
+		// PudgeEntity p = new PudgeEntity(new Vector2(4, 12), Team.leftTeam);
+		// p.name = "Second";
+		// entities.add(p);
+		// entities.add(new PudgeEntity(new Vector2(20, 4), Team.rightTeam));
+		// entities.add(new PudgeEntity(new Vector2(20, 12), Team.rightTeam));
+		//
+		// =======
+		// >>>>>>> origin/Network
 		map = Game.map;
 	}
-	
-	public void ServerEntityManager(Vector<ClientNode> clients){
-		int x = 0, y = 0;
-		for(int i = 0; i<clients.size(); i++){
-			if(clients.get(i).getTeam() == 0) entities.add(new PudgeEntity(new Vector2(4, 8*x++ + 4), Team.leftTeam));
-			else entities.add(new PudgeEntity(new Vector2(20, 8*y++ + 4), Team.rightTeam));
-		}
-	}
-	
-	public void ClientEntityManager(Vector2 position, Team team, boolean controllable){
-		PudgeEntity pudge = new PudgeEntity(position, team);
-		if(controllable){
-			player = pudge;
-			player.controllable = true;
-		}
-		entities.add(pudge);
-	}
-	
-	public void sendServerEntities(Vector<Network> clients){
-		for(int x = 0; x < clients.size(); x++){
-			for(int y = 0; y < entities.size(); y++){
-				boolean controllable = (x == y) ? true : false;
-				clients.get(x).sendServerPudgeEntity(new Vector2(entities.get(y).getX(),entities.get(y).getY()), entities.get(y).team, controllable);
-			}
-			clients.get(x).sendMessage("EOM");
-		}
-	}
-	
-	public void generateClientEntities(Network client){
-		String msg = client.getMessage();
-		while(!msg.equals("EOM")){
-			System.out.println(msg);
-			String parts[] = msg.split(" ");
-			Vector2 position = new Vector2(Float.parseFloat(parts[1]),Float.parseFloat(parts[2]));
-			Team team = (parts[3].equals("leftTeam")) ? Team.leftTeam : Team.rightTeam;
-			boolean controllable = (parts[4].equals("true")) ? true : false;
-			ClientEntityManager(position, team, controllable);
-			msg = client.getMessage();
-		}
-		map.addLightSources(entities);
-	}
 
-	public void addParticle(ParticleTypes p, Entity e, Vector2 pos, double duration) {
+	public void addParticle(ParticleTypes p, Entity e, Vector2 pos,
+			double duration) {
 		switch (p) {
-			case SPARKLE:
-				particles.add(new Particle("sparkle2", 16, 16, 4, pos.clone(), duration));
-				break;
-			case FOLLOW_SPARKLE:
-				particles.add(new FollowParticle("sparkle2", 16, 16, 4, e, duration));
-				break;
-			case DIE:
-				particles.add(new FollowParticle("damage", 16, 16, 2, e, duration));
-				break;
+		case SPARKLE:
+			particles.add(new Particle("sparkle2", 16, 16, 4, pos.clone(),
+					duration));
+			break;
+		case FOLLOW_SPARKLE:
+			particles
+					.add(new FollowParticle("sparkle2", 16, 16, 4, e, duration));
+			break;
+		case DIE:
+			particles.add(new FollowParticle("damage", 16, 16, 2, e, duration));
+			break;
 		}
 	}
 
 	public void updateEntities() {
 		map.update();
 		for (int i = 0; i < entities.size(); i++)
-			entities.get(i).update();
+			entities.get(i).update(i);
 		for (int i = 0; i < particles.size(); i++)
 			particles.get(i).update();
 	}
@@ -136,15 +98,17 @@ public class EntityManager {
 
 		// Init shouldRender = false
 		for (int i = 0; i < entities.size(); i++)
-			entities.get(i).shouldRender = false;
+			entities.get(i).shouldRender = true;
 
 		for (int i = 0; i < entities.size(); i++) {
-			Vector2 v = Game.s.worldToScreenPoint(entities.get(i).transform.position);
+			Vector2 v = Game.s
+					.worldToScreenPoint(entities.get(i).transform.position);
 			for (int o = 0; o < entities.size(); o++) {
 				Entity e = entities.get(o);
 				if (e instanceof LightSource) {
 					if (e.team == Team.freeForAll || e.team == player.team) {
-						if (((LightSource) e).getLightShape().contains(v.x, v.y)) {
+						if (((LightSource) e).getLightShape()
+								.contains(v.x, v.y)) {
 							entities.get(i).shouldRender = true;
 						}
 					}
@@ -166,9 +130,11 @@ public class EntityManager {
 			entities.get(i).onGUI();
 		}
 	}
-	
+
 	public void renderLightmap() {
-		BufferedImage lightMap = new BufferedImage(Game.s.width / Window.LIGHTMAP_MULT, Game.s.height / Window.LIGHTMAP_MULT, BufferedImage.TYPE_INT_ARGB);
+		BufferedImage lightMap = new BufferedImage(Game.s.width
+				/ Window.LIGHTMAP_MULT, Game.s.height / Window.LIGHTMAP_MULT,
+				BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) lightMap.getGraphics();
 
 		// Init Drawing
@@ -191,7 +157,8 @@ public class EntityManager {
 	public List<CollisionBox> getEntityListCollisionBoxes(Vector2 v) {
 		List<CollisionBox> l = new ArrayList<CollisionBox>();
 		for (Entity e : entities)
-			if (e.rigidbody.intersects(v)) l.add(e.rigidbody.getCollisionBox());
+			if (e.rigidbody.intersects(v))
+				l.add(e.rigidbody.getCollisionBox());
 		return l;
 	}
 
@@ -200,7 +167,8 @@ public class EntityManager {
 		// List<CollisionBox> l = new ArrayList<CollisionBox>();
 		List<CollisionBox> l = map.getCollisionBoxes(r);
 		for (Entity e : entities) {
-			if (e != r.gameObject && e.rigidbody.intersects(b) && b.owner.blocks(e)) {
+			if (e != r.gameObject && e.rigidbody.intersects(b)
+					&& b.owner.blocks(e)) {
 				l.add(e.rigidbody.getCollisionBox());
 			}
 		}
