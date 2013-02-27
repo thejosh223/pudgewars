@@ -87,8 +87,8 @@ public class PudgeEntity extends Entity implements LightSource {
 	}
 
 	public void update() {
-		if (Game.moveTargets.firstElement() != null && !controllable) target = Game.moveTargets.firstElement();
-		Game.moveTargets.remove(Game.moveTargets.firstElement());
+		if (Game.moveTargets.get(0) != null && !controllable) target = Game.moveTargets.get(0);
+		Game.moveTargets.remove(0);
 
 		if (rigidbody.isMoving()) ani.update();
 
@@ -159,21 +159,18 @@ public class PudgeEntity extends Entity implements LightSource {
 		}
 
 		if (!controllable) {
-			left = Game.hookTargets.firstElement();
+			left = Game.hookTargets.get(0);
 
 			if (left != null) {
-				// if (!Game.keyInput.specialHook.isDown) {
-				// if (hookCooldown <= 0) {
-				if (setHook(left, HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
-				// }
-				// } else {
-				// if (grappleCooldown <= 0) {
-				// if (setHook(Game.s.screenToWorldPoint(left), HookType.GRAPPLE)) grappleCooldown = GRAPPLEHOOK_COOLDOWN;
-				// }
-				// }
+				if (!Game.isSpecialHook.get(0)) {
+					setHook(left, HookType.NORMAL);
+				} else {
+					setHook(left, HookType.GRAPPLE);
+				}
 			}
 		}
-		Game.hookTargets.remove(Game.hookTargets.firstElement());
+		Game.hookTargets.remove(0);
+		Game.isSpecialHook.remove(0);
 
 		// Target Movement
 		if (target != null) {

@@ -17,8 +17,7 @@ public class ServerGame {
 	public static List<Network> clients;
 	public static List<Vector2> moveTargets;
 	public static List<Vector2> hookTargets;
-
-	// public static Vector isSpecialHook = false;
+	public static List<Boolean> isSpecialHook;
 
 	public ServerGame(List<ClientNode> clients) {
 		initNetwork(clients);
@@ -29,14 +28,19 @@ public class ServerGame {
 		map = new Map();
 		gameRunning = true;
 		entities.sendServerEntities(clients);
-		moveTargets = new ArrayList<Vector2>();
+		moveTargets = new ArrayList<Vector2>(10);
 		for (int i = 0; i < clients.size(); i++) {
 			moveTargets.add(null);
 		}
 
-		hookTargets = new ArrayList<Vector2>();
+		hookTargets = new ArrayList<Vector2>(10);
 		for (int i = 0; i < clients.size(); i++) {
 			hookTargets.add(null);
+		}
+		
+		isSpecialHook = new ArrayList<Boolean>(10);
+		for (int i = 0; i < clients.size(); i++) {
+			isSpecialHook.add(false);
 		}
 		// System.exit(1);
 		// cursor = new CursorManager(w);
@@ -58,11 +62,14 @@ public class ServerGame {
 					}
 
 					msg = clients.get(i).getMessage();
-					if (msg.equals("null")) hookTargets.set(i, null);
+					if (msg.equals("null")){
+						hookTargets.set(i, null);
+						isSpecialHook.set(i, false);
+					}
 					else {
 						String parts[] = msg.split(" ");
 						hookTargets.set(i, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
-						// isSpecialHook = (parts[2].equals("true")) ? true : false;
+						isSpecialHook.set(i, (parts[2].equals("true")) ? true : false);
 					}
 
 				}
@@ -124,6 +131,7 @@ public class ServerGame {
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
+				System.out.println("ERROR!");
 				e.printStackTrace();
 			}
 		}
@@ -145,7 +153,7 @@ public class ServerGame {
 		// broadcast hookTargets of all players
 		for (int x = 0; x < clients.size(); x++) {
 			for (int y = 0; y < clients.size(); y++) {
-				if (hookTargets.get(y) != null) clients.get(x).sendMessage(hookTargets.get(y).x + " " + hookTargets.get(y).y);
+				if (hookTargets.get(y) != null) clients.get(x).sendMessage(hookTargets.get(y).x + " " + hookTargets.get(y).y + " " + isSpecialHook.get(y));
 				else clients.get(x).sendMessage("null");
 			}
 			clients.get(x).sendMessage("EOM");

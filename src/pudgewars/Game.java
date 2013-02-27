@@ -1,7 +1,8 @@
 package pudgewars;
 
 import java.awt.Graphics2D;
-import java.util.Vector;
+import java.util.List;
+import java.util.ArrayList;
 
 import pudgewars.components.Network;
 import pudgewars.entities.ClientEntityManager;
@@ -36,8 +37,9 @@ public class Game {
 	public MyConnection conn;
 	public static Network client;
 	// private PudgeEntity player;
-	public static Vector<Vector2> moveTargets;
-	public static Vector<Vector2> hookTargets;
+	public static List<Vector2> moveTargets;
+	public static List<Vector2> hookTargets;
+	public static List<Boolean> isSpecialHook;
 	// public static Vector<boolean> isSpecialHook;
 	/*
 	 * Input Classes
@@ -57,9 +59,10 @@ public class Game {
 	}
 
 	public void init(MyConnection conn) {
-		moveTargets = new Vector<Vector2>();
-		hookTargets = new Vector<Vector2>();
-
+		moveTargets = new ArrayList<Vector2>(10);
+		hookTargets = new ArrayList<Vector2>(10);
+		isSpecialHook = new ArrayList<Boolean>(10);
+		
 		map = new Map();
 		focus = new Vector2(Map.MAP_WIDTH / 2, Map.MAP_HEIGHT / 2);
 		gameRunning = true;
@@ -161,11 +164,16 @@ public class Game {
 		x = 0;
 		do {
 			hookTargets.add(null);
-			if (msg.equals("null")) hookTargets.set(x, null);
+			isSpecialHook.add(false);
+			if (msg.equals("null")){
+				hookTargets.set(x, null);
+				isSpecialHook.set(x, false);
+			}
 			else {
 				String parts[] = msg.split(" ");
 				hookTargets.set(x, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
 				System.out.println(msg);
+				isSpecialHook.set(x, (parts[2].equals("true")) ? true : false);
 			}
 			x++;
 			msg = client.getMessage();
