@@ -6,7 +6,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Vector;
 
 import pudgewars.Game;
 import pudgewars.Window;
@@ -17,8 +16,6 @@ import pudgewars.particles.Particle;
 import pudgewars.particles.ParticleTypes;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.Vector2;
-import pudgewars.components.Network;
-import pudgewars.network.ClientNode;
 
 public abstract class EntityManager {
 

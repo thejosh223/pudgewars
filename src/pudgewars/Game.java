@@ -1,10 +1,8 @@
 package pudgewars;
 
 import java.awt.Graphics2D;
-import java.util.List;
-import java.util.ArrayList;
 
-import pudgewars.components.Network;
+import pudgewars.components.ClientNetwork;
 import pudgewars.entities.ClientEntityManager;
 import pudgewars.input.Keys;
 import pudgewars.input.MouseButtons;
@@ -34,12 +32,8 @@ public class Game {
 	 */
 	public static Profiler p;
 
-	public MyConnection conn;
-	public static Network client;
 	// private PudgeEntity player;
-	public static List<Vector2> moveTargets;
-	public static List<Vector2> hookTargets;
-	public static List<Boolean> isSpecialHook;
+	public static ClientNetwork net;
 	// public static Vector<boolean> isSpecialHook;
 	/*
 	 * Input Classes
@@ -59,17 +53,14 @@ public class Game {
 	}
 
 	public void init(MyConnection conn) {
-		moveTargets = new ArrayList<Vector2>(10);
-		hookTargets = new ArrayList<Vector2>(10);
-		isSpecialHook = new ArrayList<Boolean>(10);
+		net = new ClientNetwork(conn);
 		
 		map = new Map();
 		focus = new Vector2(Map.MAP_WIDTH / 2, Map.MAP_HEIGHT / 2);
 		gameRunning = true;
 
-		client = new Network(conn);
 		entities = new ClientEntityManager();
-		entities.generateClientEntities(client);
+		entities.generateClientEntities();
 
 		cursor = new CursorManager(w);
 		s = new Screen(Window.WIDTH, Window.HEIGHT);
@@ -146,38 +137,10 @@ public class Game {
 
 	private void tick() {
 		// get moveTargets of all players
-		String msg = client.getMessage();
-		int x = 0;
-		do {
-			moveTargets.add(null);
-			if (msg.equals("null")) moveTargets.set(x, null);
-			else {
-				String parts[] = msg.split(" ");
-				moveTargets.set(x, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
-			}
-			x++;
-			msg = client.getMessage();
-		} while (!msg.equals("EOM"));
+		net.getMoveTargets();
 
 		// get hookTargets of all players
-		msg = client.getMessage();
-		x = 0;
-		do {
-			hookTargets.add(null);
-			isSpecialHook.add(false);
-			if (msg.equals("null")){
-				hookTargets.set(x, null);
-				isSpecialHook.set(x, false);
-			}
-			else {
-				String parts[] = msg.split(" ");
-				hookTargets.set(x, new Vector2(Float.parseFloat(parts[0]), Float.parseFloat(parts[1])));
-				System.out.println(msg);
-				isSpecialHook.set(x, (parts[2].equals("true")) ? true : false);
-			}
-			x++;
-			msg = client.getMessage();
-		} while (!msg.equals("EOM"));
+		net.getHookTargets();
 
 		/*
 		 * UPDATES

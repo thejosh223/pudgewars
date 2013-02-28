@@ -87,8 +87,7 @@ public class PudgeEntity extends Entity implements LightSource {
 	}
 
 	public void update() {
-		if (Game.moveTargets.get(0) != null && !controllable) target = Game.moveTargets.get(0);
-		Game.moveTargets.remove(0);
+		if (Game.net.moveTargets.get(0) != null && !controllable) target = Game.net.moveTargets.get(0);
 
 		if (rigidbody.isMoving()) ani.update();
 
@@ -158,19 +157,22 @@ public class PudgeEntity extends Entity implements LightSource {
 			if (target != null) targetRotation += -0.1;
 		}
 
+		// hooking over the network
 		if (!controllable) {
-			left = Game.hookTargets.get(0);
-
+			left = Game.net.hookTargets.get(0);
 			if (left != null) {
-				if (!Game.isSpecialHook.get(0)) {
+				if (!Game.net.isSpecialHook.get(0)) {
 					setHook(left, HookType.NORMAL);
 				} else {
 					setHook(left, HookType.GRAPPLE);
 				}
 			}
 		}
-		Game.hookTargets.remove(0);
-		Game.isSpecialHook.remove(0);
+		
+		//pop them all
+		Game.net.moveTargets.remove(0);
+		Game.net.hookTargets.remove(0);
+		Game.net.isSpecialHook.remove(0);
 
 		// Target Movement
 		if (target != null) {
@@ -198,15 +200,10 @@ public class PudgeEntity extends Entity implements LightSource {
 			}
 		}
 
+		// send the movement made to the server
 		if (controllable) {
-			if (target == null) Game.client.sendMessage("null");
-			else Game.client.sendMessage(target.x + " " + target.y);
-
-			if (left == null) Game.client.sendMessage("null");
-			else {
-				left = Game.s.screenToWorldPoint(left);
-				Game.client.sendMessage(left.x + " " + left.y + " " + isSpecialHook);
-			}
+			Game.net.sendMoveTarget(target);
+			Game.net.sendHookTarget(left, isSpecialHook);
 		}
 		rigidbody.updateVelocity();
 

@@ -1,6 +1,6 @@
 package pudgewars.entities;
 
-import pudgewars.components.Network;
+import pudgewars.Game;
 import pudgewars.util.Vector2;
 
 public class ClientEntityManager extends EntityManager{
@@ -17,19 +17,8 @@ public class ClientEntityManager extends EntityManager{
 		entities.add(pudge);
 	}
 	
-	public void generateClientEntities(Network client) {
-		String msg = client.getMessage();
-		while (!msg.equals("EOM")) {
-			System.out.println(msg);
-			String parts[] = msg.split(" ");
-			Vector2 position = new Vector2(Float.parseFloat(parts[1]),
-					Float.parseFloat(parts[2]));
-			Team team = (parts[3].equals("leftTeam")) ? Team.leftTeam
-					: Team.rightTeam;
-			boolean controllable = (parts[4].equals("true")) ? true : false;
-			addClientEntity(position, team, controllable);
-			msg = client.getMessage();
-		}
+	public void generateClientEntities() {
+		Game.net.generateEntities();
 		map.addLightSources(entities);
 	}
 	

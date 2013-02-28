@@ -3,7 +3,6 @@ package pudgewars.render;
 import java.awt.Image;
 
 import pudgewars.Game;
-import pudgewars.entities.PudgeEntity;
 import pudgewars.util.ImageHandler;
 import pudgewars.util.Vector2;
 

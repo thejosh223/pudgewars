@@ -1,7 +1,6 @@
 package pudgewars.entities;
 
 import pudgewars.Game;
-import pudgewars.particles.Particle;
 import pudgewars.particles.ParticleTypes;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
