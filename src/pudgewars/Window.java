@@ -35,7 +35,7 @@ public class Window extends Canvas {
 
 	public static Game g;
 
-	public Window() {
+	public Window(MyConnection conn) {
 		// The Window
 		container = new JFrame("Pudge Wars");
 		container.setBounds(50, 50, ACTUAL_WIDTH, ACTUAL_HEIGHT);
@@ -72,14 +72,15 @@ public class Window extends Canvas {
 
 		requestFocus();
 
-		g = new Game(this, k, m);
+		g = new ClientGame(this, k, m, conn);
 		Game.w = this;
+		System.out.println("asdasd");
 	}
 
 	// ----Main Method----
-	public void startClientGame(MyConnection conn) {
-		//new Window();
-		g.init(conn);
+	public void startClientGame() {
+		System.out.println("Start Game");
+		g.init();
 		g.gameLoop();
 	}
 }

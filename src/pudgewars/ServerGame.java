@@ -3,25 +3,25 @@ package pudgewars;
 import java.util.List;
 
 import pudgewars.entities.ServerEntityManager;
-import pudgewars.level.Map;
 import pudgewars.network.ClientNode;
 import pudgewars.network.ServerNetwork;
 import pudgewars.util.Time;
 
-public class ServerGame {
-	private boolean gameRunning;
-	public static ServerEntityManager entities;
-	public static Map map;
-	public static ServerNetwork net;
+public class ServerGame extends Game {
+
+	List<ClientNode> clients;
 
 	public ServerGame(List<ClientNode> clients) {
+		super(null, null, null);
+
+		this.clients = clients;
 		net = new ServerNetwork(clients);
-		entities = new ServerEntityManager(clients);
 	}
 
 	public void init() {
-		map = new Map();
-		gameRunning = true;
+		super.init();
+		entities = new ServerEntityManager(clients);
+
 		entities.sendPudgeEntities();
 		// System.exit(1);
 		// cursor = new CursorManager(w);
@@ -29,7 +29,7 @@ public class ServerGame {
 	}
 
 	private static class HandleClientMessages implements Runnable {
-		// change code to have multiple threads handling each client
+		// TODO: change code to have multiple threads handling each client
 		public void run() {
 			while (true) {
 				net.getMoveTargets();
@@ -67,11 +67,11 @@ public class ServerGame {
 			 * Tick Controller -limits the # of ticks to TPS. -if FPS < 60, it
 			 * ticks rather than rendering.
 			 */
-			boolean ticked = false;
+			// boolean ticked = false;
 			while (unprocessedSeconds > Time.getBaseTickInterval()) {
 				tick();
 				unprocessedSeconds -= Time.getBaseTickInterval();
-				ticked = true;
+				// ticked = true;
 
 				Time.totalTicks++;
 				if (Time.totalTicks % 60 == 0) {
@@ -79,36 +79,21 @@ public class ServerGame {
 				}
 			}
 
-			/*
-			 * Rendering
-			 */
-			// if (ticked) {
-			// }
-			// fps++;
-			// }
-
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
-				System.out.println("ERROR!");
 				e.printStackTrace();
 			}
 		}
 	}
 
-	private void tick() {
-		/*
-		 * UPDATES
-		 */
+	protected void tick() {
 		// broadcast moveTargets of all players
 		net.sendMoveTargets();
 
 		// broadcast hookTargets of all players
 		net.sendHookTargets();
 
-		// Entities and Map Update
-		entities.updateEntities();
-		entities.lateUpdateEntities();
-		entities.killUpdateEntities();
+		super.tick();
 	}
 }

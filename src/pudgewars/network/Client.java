@@ -205,12 +205,8 @@ public class Client {
 					} else if (msg.equals("START")) {
 						conn.getMessage();
 						conn.sendMessage("STOP");
-						// JOptionPane.showMessageDialog(null, "Start Game");
-						Window w = new Window();
-						w.startClientGame(conn);
-						// System.exit(1);
-						// Window w = new Window();
-						// w.start();
+						Window w = new Window(conn);
+						w.startClientGame();
 					} else {
 						do {
 							chatWindow.setText(chatWindow.getText() + msg + "\n");

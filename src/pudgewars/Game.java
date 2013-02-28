@@ -2,28 +2,29 @@ package pudgewars;
 
 import java.awt.Graphics2D;
 
-import pudgewars.entities.ClientEntityManager;
+import pudgewars.entities.EntityManager;
 import pudgewars.input.Keys;
 import pudgewars.input.MouseButtons;
 import pudgewars.level.Map;
+import pudgewars.network.Network;
 import pudgewars.render.CursorManager;
 import pudgewars.util.Profiler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
-import pudgewars.network.ClientNetwork;
-import pudgewars.network.MyConnection;
 
 public class Game {
 	public static final int TILE_SIZE = 16;
 	public static final int TILE_WIDTH = 20;
 	public static final int TILE_HEIGHT = 15;
 
-	private boolean gameRunning;
-	// public static ArrayList<Entity> entities;
-	public static Window w;
+	public boolean gameRunning = true;
 	public static CursorManager cursor;
-	public static ClientEntityManager entities;
+	public static EntityManager entities;
 	public static Map map;
+	public static Network net;
+
+	// Client-side Data
+	public static Window w;
 	public static Screen s;
 	public static Vector2 focus;
 
@@ -32,9 +33,6 @@ public class Game {
 	 */
 	public static Profiler p;
 
-	// private PudgeEntity player;
-	public static ClientNetwork net;
-	// public static Vector<boolean> isSpecialHook;
 	/*
 	 * Input Classes
 	 */
@@ -52,17 +50,10 @@ public class Game {
 		p = new Profiler(names);
 	}
 
-	public void init(MyConnection conn) {
-		net = new ClientNetwork(conn);
-		
+	public void init() {
 		map = new Map();
 		focus = new Vector2(Map.MAP_WIDTH / 2, Map.MAP_HEIGHT / 2);
 		gameRunning = true;
-
-		entities = new ClientEntityManager();
-		entities.generateClientEntities();
-
-		cursor = new CursorManager(w);
 		s = new Screen(Window.WIDTH, Window.HEIGHT);
 	}
 
@@ -135,25 +126,14 @@ public class Game {
 		}
 	}
 
-	private void tick() {
-		// get moveTargets of all players
-		net.getMoveTargets();
-
-		// get hookTargets of all players
-		net.getHookTargets();
-
+	protected void tick() {
 		/*
 		 * UPDATES
 		 */
-
 		// Entities and Map Update
 		entities.updateEntities();
 		entities.lateUpdateEntities();
 		entities.killUpdateEntities();
-
-		// System.out.println("Entities: " + entities.entities.size());
-
-		controls();
 	}
 
 	private void render() {

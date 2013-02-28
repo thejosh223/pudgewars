@@ -90,11 +90,6 @@ public class PudgeEntity extends Entity implements LightSource {
 
 		if (rigidbody.isMoving()) ani.update();
 
-		// Stats
-		if (Game.keyInput.buyMode.wasPressed()) {
-			stats.isOpen ^= true; // Cool way to NOT
-		}
-
 		if (!canMove) {
 			target = null;
 		}
@@ -104,6 +99,11 @@ public class PudgeEntity extends Entity implements LightSource {
 		boolean isSpecialHook = false;
 
 		if (controllable && canMove && !stats.isOpen) {
+			// Stats
+			if (Game.keyInput.buyMode.wasPressed()) {
+				stats.isOpen ^= true; // Cool way to NOT
+			}
+
 			if (hookCooldown > 0) hookCooldown -= Time.getTickInterval();
 			if (hookCooldown < 0) hookCooldown = 0;
 			if (grappleCooldown > 0) grappleCooldown -= Time.getTickInterval();
@@ -158,20 +158,20 @@ public class PudgeEntity extends Entity implements LightSource {
 
 		// hooking over the network
 		if (!controllable) {
-			left = Game.net.hookTargets.get(0);
-			if (left != null) {
-				if (!Game.net.isSpecialHook.get(0)) {
-					setHook(left, HookType.NORMAL);
-				} else {
-					setHook(left, HookType.GRAPPLE);
-				}
-			}
+			// left = Game.net.hookTargets.get(0);
+			// if (left != null) {
+			// if (!Game.net.isSpecialHook.get(0)) {
+			// setHook(left, HookType.NORMAL);
+			// } else {
+			// setHook(left, HookType.GRAPPLE);
+			// }
+			// }
 		}
 
 		// pop them all
-		Game.net.moveTargets.remove(0);
-		Game.net.hookTargets.remove(0);
-		Game.net.isSpecialHook.remove(0);
+		// Game.net.moveTargets.remove(0);
+		// Game.net.hookTargets.remove(0);
+		// Game.net.isSpecialHook.remove(0);
 
 		// Target Movement
 		if (target != null) {
@@ -310,7 +310,14 @@ public class PudgeEntity extends Entity implements LightSource {
 	}
 
 	public void setNetworkString(String s) {
-		// String[] t = s.split(":");
+		String[] t = s.split(":");
+		transform.position.setNetString(t[0]);
+		rigidbody.velocity.setNetString(t[1]);
+		if (t[2].equals("null")) {
+			target = null;
+		} else {
+			target.setNetString(t[2]);
+		}
 	}
 
 	/*

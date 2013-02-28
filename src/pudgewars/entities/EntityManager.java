@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pudgewars.Game;
+import pudgewars.ServerGame;
 import pudgewars.Window;
 import pudgewars.components.Rigidbody;
 import pudgewars.level.Map;
@@ -78,11 +79,11 @@ public abstract class EntityManager {
 			for (int o = 0; o < entities.size(); o++) {
 				Entity e = entities.get(o);
 				if (e instanceof LightSource) {
-					if (e.team == Team.freeForAll || e.team == player.team) {
-						if (((LightSource) e).getLightShape().contains(v.x, v.y)) {
-							entities.get(i).shouldRender = true;
-						}
-					}
+					// if (e.team == Team.freeForAll || e.team == player.team) {
+					// if (((LightSource) e).getLightShape().contains(v.x, v.y)) {
+					// entities.get(i).shouldRender = true;
+					// }
+					// }
 				}
 			}
 		}
@@ -140,5 +141,14 @@ public abstract class EntityManager {
 			}
 		}
 		return l;
+	}
+
+	public void addClientEntity(Vector2 position, Team team, boolean controllable) {
+	}
+
+	public void generateClientEntities() {
+	}
+
+	public void sendPudgeEntities() {
 	}
 }

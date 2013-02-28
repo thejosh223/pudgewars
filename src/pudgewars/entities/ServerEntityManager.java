@@ -2,7 +2,7 @@ package pudgewars.entities;
 
 import java.util.List;
 
-import pudgewars.ServerGame;
+import pudgewars.Game;
 import pudgewars.network.ClientNode;
 import pudgewars.util.Vector2;
 
@@ -18,13 +18,13 @@ public class ServerEntityManager extends EntityManager {
 		}
 	}
 
-	public void sendPudgeEntities(){
-		ServerGame.net.sendPudgeEntities(entities);
+	public void sendPudgeEntities() {
+		Game.net.sendPudgeEntities(entities);
 	}
-	
+
 	public void updateEntities() {
 		for (int i = 0; i < entities.size(); i++)
-			entities.get(i).update(i);
+			entities.get(i).update();
 		for (int i = 0; i < particles.size(); i++)
 			particles.get(i).update();
 	}

@@ -82,9 +82,15 @@ public abstract class Entity implements BBOwner {
 	 * Network
 	 */
 	public String getNetworkString() {
-		return null;
+		String s = "";
+		s += transform.position.getNetString();
+		s += ":" + rigidbody.velocity.getNetString();
+		return s;
 	}
 
 	public void setNetworkString(String s) {
+		String[] t = s.split(":");
+		transform.position.setNetString(t[0]);
+		rigidbody.velocity.setNetString(t[1]);
 	}
 }
