@@ -1,6 +1,5 @@
 package pudgewars.entities;
 
-import pudgewars.Game;
 import pudgewars.components.Rigidbody;
 import pudgewars.components.Transform;
 import pudgewars.interfaces.BBOwner;
@@ -37,63 +36,17 @@ public abstract class Entity implements BBOwner {
 	}
 
 	public abstract void update();
-	
+
 	public abstract void render();
 
-	public void update(int i){}
-	
 	public void onGUI() {
 	}
 
 	public void lateUpdate() {
 	}
 
-	// public abstract void collides(Entity e);
-
 	public void kill() {
 		remove = true;
-	}
-
-	public boolean[] isWorldCollision(double tx, double ty) {
-		if (Game.map.isCollides(tx, ty, this)) {
-			boolean xCol = Game.map.isCollides(tx, transform.position.y, this);
-			boolean yCol = Game.map.isCollides(transform.position.x, ty, this);
-
-			return new boolean[] { xCol, yCol };
-		}
-		return new boolean[] { false, false };
-	}
-
-	public Entity isEntityCollision(double tx, double ty) {
-		for (int i = 0; i < Game.entities.entities.size(); i++) {
-			Entity e = Game.entities.entities.get(i);
-			if (e != this) {
-				// TODO!
-				// if (new Rectangle2D.Double( //
-				// tx - rigidbody.collision.x / 2, //
-				// ty - rigidbody.collision.y / 2, //
-				// rigidbody.collision.x, //
-				// rigidbody.collision.y).intersects(e.rigidbody.getCollisionBox())) {
-				// return e;
-				// }
-			}
-		}
-		return null;
-	}
-
-	public void isCollides(Entity e) {
-	}
-
-	public double getX() {
-		return transform.position.x;
-	}
-
-	public double getY() {
-		return transform.position.y;
-	}
-
-	public void setPosition(double x, double y) {
-		transform.position.set(x, y);
 	}
 
 	public boolean isTeammate(Entity e) {
@@ -103,6 +56,7 @@ public abstract class Entity implements BBOwner {
 	/*
 	 * Collisions
 	 */
+
 	public final boolean blocks(BBOwner b) {
 		return b.shouldBlock(this) && this.shouldBlock(b);
 	}
@@ -124,4 +78,13 @@ public abstract class Entity implements BBOwner {
 	public void collides(Tile t, double vx, double vy) {
 	}
 
+	/*
+	 * Network
+	 */
+	public String getNetworkString() {
+		return null;
+	}
+
+	public void setNetworkString(String s) {
+	}
 }

@@ -67,6 +67,16 @@ public class Vector2 {
 		System.out.println("V: " + x + ", " + y);
 	}
 
+	public String getNetString() {
+		return x + " " + y;
+	}
+
+	public void setNetString(String s) {
+		String[] t = s.split(" ");
+		x = Double.parseDouble(t[0]);
+		y = Double.parseDouble(t[1]);
+	}
+
 	public static Vector2 componentMultiply(Vector2 a, Vector2 b) {
 		return new Vector2(a.x * b.x, a.y * b.y);
 	}

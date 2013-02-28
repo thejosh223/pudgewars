@@ -44,7 +44,7 @@ public class HookPieceEntity extends Entity {
 		switch (movementScheme) {
 			case FORWARD:
 				if (next == null) {
-					if (Point.distance(transform.position.x, transform.position.y, owner.getX(), owner.getY()) >= HookEntity.PIECE_DISTANCE) {
+					if (transform.position.distance(owner.transform.position) >= HookEntity.PIECE_DISTANCE) {
 						HookPieceEntity e = new HookPieceEntity(owner, hook, this);
 						next = e;
 						Game.entities.entities.add(e);

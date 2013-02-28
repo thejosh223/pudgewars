@@ -1,4 +1,4 @@
-package pudgewars.components;
+package pudgewars.network;
 
 import java.util.ArrayList;
 import java.util.List;

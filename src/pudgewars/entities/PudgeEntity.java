@@ -1,6 +1,5 @@
 package pudgewars.entities;
 
-import java.awt.BasicStroke;
 import java.awt.Image;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
@@ -10,10 +9,10 @@ import java.util.List;
 import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.components.Stats;
+import pudgewars.entities.hooks.GrappleHookEntity;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.entities.hooks.HookType;
 import pudgewars.entities.hooks.NormalHookEntity;
-import pudgewars.entities.hooks.GrappleHookEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 import pudgewars.particles.ParticleTypes;
@@ -168,8 +167,8 @@ public class PudgeEntity extends Entity implements LightSource {
 				}
 			}
 		}
-		
-		//pop them all
+
+		// pop them all
 		Game.net.moveTargets.remove(0);
 		Game.net.hookTargets.remove(0);
 		Game.net.isSpecialHook.remove(0);
@@ -210,12 +209,6 @@ public class PudgeEntity extends Entity implements LightSource {
 		// Un-comment this to have some fun!
 		// isHooking = false;
 	}
-
-	final static int LIFESTROKE_DEPTH = 3;
-	final static BasicStroke LIFESTROKE = new BasicStroke(LIFESTROKE_DEPTH);
-
-	final static int ARC_STARTANGLE = 135;
-	final static int FULL_LIFE_ARC = 180;
 
 	public void render() {
 		if (!shouldRender) return;
@@ -305,6 +298,24 @@ public class PudgeEntity extends Entity implements LightSource {
 		System.out.println("Pudge was Killed");
 	}
 
+	/*
+	 * Network
+	 */
+	public String getNetworkString() {
+		String s = "";
+		s += transform.position.getNetString();
+		s += ":" + rigidbody.velocity.getNetString();
+		s += ":" + target == null ? "null" : target.getNetString();
+		return s;
+	}
+
+	public void setNetworkString(String s) {
+		// String[] t = s.split(":");
+	}
+
+	/*
+	 * Light Source
+	 */
 	public Shape getLightShape() {
 		Vector2 v = Game.s.worldToScreenPoint(transform.position);
 		v.scale(1.0 / Window.LIGHTMAP_MULT);

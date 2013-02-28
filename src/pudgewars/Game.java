@@ -2,7 +2,6 @@ package pudgewars;
 
 import java.awt.Graphics2D;
 
-import pudgewars.components.ClientNetwork;
 import pudgewars.entities.ClientEntityManager;
 import pudgewars.input.Keys;
 import pudgewars.input.MouseButtons;
@@ -11,6 +10,7 @@ import pudgewars.render.CursorManager;
 import pudgewars.util.Profiler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
+import pudgewars.network.ClientNetwork;
 import pudgewars.network.MyConnection;
 
 public class Game {

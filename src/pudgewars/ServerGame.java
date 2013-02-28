@@ -2,10 +2,10 @@ package pudgewars;
 
 import java.util.List;
 
-import pudgewars.components.ServerNetwork;
 import pudgewars.entities.ServerEntityManager;
 import pudgewars.level.Map;
 import pudgewars.network.ClientNode;
+import pudgewars.network.ServerNetwork;
 import pudgewars.util.Time;
 
 public class ServerGame {
@@ -13,7 +13,7 @@ public class ServerGame {
 	public static ServerEntityManager entities;
 	public static Map map;
 	public static ServerNetwork net;
-	
+
 	public ServerGame(List<ClientNode> clients) {
 		net = new ServerNetwork(clients);
 		entities = new ServerEntityManager(clients);
@@ -46,7 +46,6 @@ public class ServerGame {
 		float unprocessedSeconds = 0;
 
 		// FPS Counter
-		int fps = 0;
 		tick();
 
 		while (gameRunning) {
@@ -77,7 +76,6 @@ public class ServerGame {
 				Time.totalTicks++;
 				if (Time.totalTicks % 60 == 0) {
 					// Window.container.setTitle("PudgeWars (fps:" + fps + ")");
-					fps = 0;
 				}
 			}
 
@@ -107,7 +105,7 @@ public class ServerGame {
 
 		// broadcast hookTargets of all players
 		net.sendHookTargets();
-		
+
 		// Entities and Map Update
 		entities.updateEntities();
 		entities.lateUpdateEntities();
