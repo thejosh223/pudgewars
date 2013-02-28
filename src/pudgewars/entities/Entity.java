@@ -24,6 +24,9 @@ public abstract class Entity implements BBOwner {
 	// Team Data
 	public Team team;
 
+	// Network Data
+	public int networkID;
+
 	public Entity(Vector2 position) {
 		this(position, Vector2.ZERO.clone());
 	}
@@ -82,7 +85,7 @@ public abstract class Entity implements BBOwner {
 	 * Network
 	 */
 	public String getNetworkString() {
-		String s = "";
+		String s = "" + networkID + ":";
 		s += transform.position.getNetString();
 		s += ":" + rigidbody.velocity.getNetString();
 		return s;

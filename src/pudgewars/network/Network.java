@@ -20,6 +20,9 @@ public class Network {
 	public void getEntityData() {
 	}
 
+	public void sendEntityData() {
+	}
+
 	public void sendPudgeEntities(List<Entity> entities) {
 	}
 

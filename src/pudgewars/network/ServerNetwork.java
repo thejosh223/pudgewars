@@ -34,6 +34,8 @@ public class ServerNetwork extends Network {
 	}
 
 	public void getMoveTargets() {
+		System.out.println("Received move target!");
+
 		for (int i = 0; i < serverConn.size(); i++) {
 			moveTargets.add(null);
 			String msg = serverConn.get(i).getMessage();

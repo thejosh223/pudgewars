@@ -21,17 +21,14 @@ public class ServerGame extends Game {
 	public void init() {
 		super.init();
 		entities = new ServerEntityManager(clients);
-
 		entities.sendPudgeEntities();
-		// System.exit(1);
-		// cursor = new CursorManager(w);
-		// s = new Screen(Window.WIDTH, Window.HEIGHT);
 	}
 
 	private static class HandleClientMessages implements Runnable {
 		// TODO: change code to have multiple threads handling each client
 		public void run() {
 			while (true) {
+				// net.getEntityData();
 				net.getMoveTargets();
 				net.getHookTargets();
 			}
@@ -88,11 +85,13 @@ public class ServerGame extends Game {
 	}
 
 	protected void tick() {
+		net.sendEntityData();
+
 		// broadcast moveTargets of all players
-		net.sendMoveTargets();
+		// net.sendMoveTargets();
 
 		// broadcast hookTargets of all players
-		net.sendHookTargets();
+		// net.sendHookTargets();
 
 		super.tick();
 	}

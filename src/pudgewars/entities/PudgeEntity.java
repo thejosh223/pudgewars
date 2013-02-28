@@ -86,7 +86,7 @@ public class PudgeEntity extends Entity implements LightSource {
 	}
 
 	public void update() {
-		if (Game.net.moveTargets.get(0) != null && !controllable) target = Game.net.moveTargets.get(0);
+		// if (Game.net.moveTargets.get(0) != null && !controllable) target = Game.net.moveTargets.get(0);
 
 		if (rigidbody.isMoving()) ani.update();
 
