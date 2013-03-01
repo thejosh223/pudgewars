@@ -10,7 +10,7 @@ public class Network {
 	public List<Vector2> moveTargets;
 	public List<Vector2> hookTargets;
 	public List<Boolean> isSpecialHook;
-
+	
 	public Network() {
 		moveTargets = new ArrayList<Vector2>();
 		hookTargets = new ArrayList<Vector2>();
@@ -22,7 +22,10 @@ public class Network {
 
 	public void sendEntityData() {
 	}
-
+	
+	public void sendEntityData(String msg) {
+	}
+	
 	public void sendPudgeEntities(List<Entity> entities) {
 	}
 

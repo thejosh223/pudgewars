@@ -95,8 +95,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		}
 
 		// Controls
-		Vector2 left = null;
-		boolean isSpecialHook = false;
+		boolean actionCommitted = false;
 
 		if (controllable && canMove && !stats.isOpen) {
 			// Stats
@@ -116,17 +115,18 @@ public class PudgeEntity extends Entity implements LightSource {
 			// Hover
 			if (Game.keyInput.space.isDown) Game.focus = transform.position.clone();
 
-			left = Game.mouseInput.left.wasPressed();
+			Vector2 left = Game.mouseInput.left.wasPressed();
 			if (left != null) {
 				if (!Game.keyInput.specialHook.isDown) {
 					if (hookCooldown <= 0) {
 						if (setHook(Game.s.screenToWorldPoint(left), HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
-					} else left = null;
+						actionCommitted = true;
+					}
 				} else {
 					if (grappleCooldown <= 0) {
-						isSpecialHook = true;
 						if (setHook(Game.s.screenToWorldPoint(left), HookType.GRAPPLE)) grappleCooldown = GRAPPLEHOOK_COOLDOWN;
-					} else left = null;
+						actionCommitted = true;
+					}
 				}
 			}
 
@@ -150,6 +150,8 @@ public class PudgeEntity extends Entity implements LightSource {
 
 				if (targetEnemy == null) target = right;
 				else target = targetEnemy.transform.position.clone();
+				
+				actionCommitted = true;
 			}
 
 			// Rotate the Clicker
@@ -176,7 +178,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		// Target Movement
 		if (target != null) {
 			transform.rotateTowards(target, 0.1);
-
+			
 			double dist = transform.position.distance(target);
 			if (dist < rigidbody.velocity.magnitude() * Time.getTickInterval()) {
 				rigidbody.velocity = new Vector2(0, 0);
@@ -184,6 +186,7 @@ public class PudgeEntity extends Entity implements LightSource {
 			} else {
 				rigidbody.setDirection(target);
 			}
+			actionCommitted = true;
 		}
 
 		// Attacking
@@ -200,9 +203,10 @@ public class PudgeEntity extends Entity implements LightSource {
 		}
 
 		// send the movement made to the server
-		if (controllable) {
-			Game.net.sendMoveTarget(target);
-			Game.net.sendHookTarget(left, isSpecialHook);
+		if (controllable && actionCommitted) {
+			//Game.net.sendMoveTarget(target);
+			//Game.net.sendHookTarget(left, isSpecialHook);
+			Game.net.sendEntityData(getNetworkString());
 		}
 		rigidbody.updateVelocity();
 
@@ -304,8 +308,9 @@ public class PudgeEntity extends Entity implements LightSource {
 	public String getNetworkString() {
 		String s = "";
 		s += transform.position.getNetString();
-		s += ":" + rigidbody.velocity.getNetString();
-		s += ":" + target == null ? "null" : target.getNetString();
+		s += ":" + rigidbody.velocity.getNetString() + ":";
+		s += (target == null) ? "null" : target.getNetString();
+		s += ":" + team;
 		return s;
 	}
 
@@ -316,6 +321,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		if (t[2].equals("null")) {
 			target = null;
 		} else {
+			System.out.println("t2: " + t[2]);
 			target.setNetString(t[2]);
 		}
 	}

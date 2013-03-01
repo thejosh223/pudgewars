@@ -12,6 +12,21 @@ public class ClientNetwork extends Network {
 		this.clientConn = conn;
 	}
 
+	public void sendEntityData(String msg){
+		System.out.println(msg);
+		clientConn.sendMessage(msg);
+	}
+	
+	public void getEntityData(){
+		String msg;
+		while(!(msg = clientConn.getMessage()).equals("EOM")){
+			String t[] = msg.split(":");
+			int index = Integer.parseInt(t[0]);
+			if(Game.entities.entities.size()-1 < index) Game.entities.addClientEntity(msg);
+			else Game.entities.entities.get(index).setNetworkString(t[1] + ":" + t[2] + ":" + t[3]);
+		}
+	}
+	
 	public void generateEntities() {
 		String msg = clientConn.getMessage();
 		while (!msg.equals("EOM")) {
@@ -20,7 +35,7 @@ public class ClientNetwork extends Network {
 			Vector2 position = new Vector2(Float.parseFloat(parts[1]), Float.parseFloat(parts[2]));
 			Team team = (parts[3].equals("leftTeam")) ? Team.leftTeam : Team.rightTeam;
 			boolean controllable = (parts[4].equals("true")) ? true : false;
-			Game.entities.addClientEntity(position, team, controllable);
+			//Game.entities.addClientEntity(position, team, controllable);
 			msg = clientConn.getMessage();
 		}
 	}

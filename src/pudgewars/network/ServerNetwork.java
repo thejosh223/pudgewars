@@ -3,6 +3,7 @@ package pudgewars.network;
 import java.util.ArrayList;
 import java.util.List;
 
+import pudgewars.Game;
 import pudgewars.entities.Entity;
 import pudgewars.util.Vector2;
 
@@ -19,6 +20,18 @@ public class ServerNetwork extends Network {
 			moveTargets.add(null);
 			hookTargets.add(null);
 			isSpecialHook.add(false);
+		}
+	}
+	
+	public void sendEntityData(){
+		//System.out.println("Sending Server Data");
+		for (int x = 0; x < serverConn.size(); x++) {
+			for(int y = 0; y < Game.entities.entities.size(); y++){
+				boolean controllable = (x == y) ? true : false;
+				serverConn.get(x).sendMessage(y + ":" + Game.entities.entities.get(y).getNetworkString() + ":" + controllable);
+				//System.out.println(y + ":" + Game.entities.entities.get(y).getNetworkString() + ":" + controllable);
+			}
+			serverConn.get(x).sendMessage("EOM");
 		}
 	}
 
