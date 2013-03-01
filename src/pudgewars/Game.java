@@ -23,7 +23,7 @@ public class Game {
 	public static Map map;
 	public static Network net;
 
-	// Client-side Data
+	// Client-side Data (this is null on the ServerGame)
 	public static Window w;
 	public static Screen s;
 	public static Vector2 focus;

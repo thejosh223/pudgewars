@@ -10,10 +10,12 @@ import pudgewars.interfaces.BBOwner;
 import pudgewars.util.ImageHandler;
 
 public class Tile implements BBOwner {
-	public final static Tile T_Dirt1 = new Tile("grass1", false, false, false, 0, 0);
-	public final static Tile T_Dirt2 = new Tile("grass3", false, false, false, 0, 0);
-	public final static Tile T_Dirt3 = new Tile("grass2", false, false, false, 0, 0);
-	public final static Tile T_Block = new Tile("tree", true, true, false, 0, 0);
+	public final static Tile T_Dirt1 = new Tile("grass", 0, 0, false, false, false, 0, 0);
+	public final static Tile T_Dirt2 = new Tile("grass", 1, 0, false, false, false, 0, 0);
+	public final static Tile T_Dirt3 = new Tile("grass", 2, 0, false, false, false, 0, 0);
+	public final static Tile T_Dirt4 = new Tile("grass", 3, 0, false, false, false, 0, 0);
+	public final static Tile T_Dirt5 = new Tile("grass", 4, 0, false, false, false, 0, 0);
+	public final static Tile T_Block = new Tile("tree_wall", true, true, false, 0, 0);
 	public final static Tile T_Mound = new Tile("mound2", true, false, false, 0, 0);
 	public final static Tile T_Hookable = new Tile("hookable", false, false, true, 13, 13);
 
@@ -32,8 +34,8 @@ public class Tile implements BBOwner {
 	protected double lightHeight;
 
 	public Tile(String ID, int x, int y, boolean pudgeSolid, boolean hookSolid, boolean hookable, double lightWidth, double lightHeight) {
-		this("fountain", pudgeSolid, hookSolid, hookable, lightWidth, lightHeight);
-		img = ImageHandler.get().getImage("fountain", x, y, 16, 16);
+		this(ID, pudgeSolid, hookSolid, hookable, lightWidth, lightHeight);
+		img = ImageHandler.get().getImage(ID, x, y, 16, 16);
 	}
 
 	public Tile(String ID, String post, boolean pudgeSolid, boolean hookSolid, boolean hookable, double lightWidth, double lightHeight) {

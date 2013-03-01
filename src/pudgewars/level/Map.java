@@ -42,13 +42,17 @@ public class Map {
 					map[i][o] = Tile.T_Hookable;
 				} else {
 					// map[i][o] = Tile.T_Dirt1;
-					int r = new Random().nextInt(3);
+					int r = new Random().nextInt(5);
 					if (r == 0) {
 						map[i][o] = Tile.T_Dirt1;
 					} else if (r == 1) {
 						map[i][o] = Tile.T_Dirt2;
-					} else {
+					} else if (r == 2) {
 						map[i][o] = Tile.T_Dirt3;
+					} else if (r == 3) {
+						map[i][o] = Tile.T_Dirt4;
+					} else {
+						map[i][o] = Tile.T_Dirt5;
 					}
 				}
 			}
@@ -58,7 +62,7 @@ public class Map {
 		map[MAP_HEIGHT / 2][MAP_WIDTH / 2 - 1] = Tile.T_Fountain2;
 		map[MAP_HEIGHT / 2][MAP_WIDTH / 2] = Tile.T_Fountain3;
 	}
-	
+
 	public void update() {
 		// Scrolling of the Map
 		double vx = 0;
@@ -88,7 +92,7 @@ public class Map {
 			Game.focus.set(Game.focus.x, Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2.0);
 		}
 	}
-	
+
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {
 		CollisionBox b = r.getCollisionBox().grow(1);
 		List<CollisionBox> l = new ArrayList<CollisionBox>();
