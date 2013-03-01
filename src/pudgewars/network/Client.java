@@ -104,8 +104,7 @@ public class Client {
 				}
 			}
 		});
-		// JScrollPane messageScroll = new JScrollPane(message);
-		// messageScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		
 		message.setBounds(10, 320, 350, 35);
 		pane.add(message);
 

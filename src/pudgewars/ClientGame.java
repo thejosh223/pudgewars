@@ -20,19 +20,13 @@ public class ClientGame extends Game {
 
 		entities = new ClientEntityManager();
 		entities.generateClientEntities();
+		
 	}
 
 	protected void tick() {
 		net.getEntityData();
 
-		// get moveTargets of all players
-		// net.getMoveTargets();
-
-		// get hookTargets of all players
-		// net.getHookTargets();
-
 		super.tick();
-
 		controls();
 	}
 }

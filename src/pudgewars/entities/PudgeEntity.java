@@ -86,8 +86,6 @@ public class PudgeEntity extends Entity implements LightSource {
 	}
 
 	public void update() {
-		// if (Game.net.moveTargets.get(0) != null && !controllable) target = Game.net.moveTargets.get(0);
-
 		if (rigidbody.isMoving()) ani.update();
 
 		if (!canMove) {
@@ -158,23 +156,6 @@ public class PudgeEntity extends Entity implements LightSource {
 			if (target != null) targetRotation += -0.1;
 		}
 
-		// hooking over the network
-		if (!controllable) {
-			// left = Game.net.hookTargets.get(0);
-			// if (left != null) {
-			// if (!Game.net.isSpecialHook.get(0)) {
-			// setHook(left, HookType.NORMAL);
-			// } else {
-			// setHook(left, HookType.GRAPPLE);
-			// }
-			// }
-		}
-
-		// pop them all
-		// Game.net.moveTargets.remove(0);
-		// Game.net.hookTargets.remove(0);
-		// Game.net.isSpecialHook.remove(0);
-
 		// Target Movement
 		if (target != null) {
 			transform.rotateTowards(target, 0.1);
@@ -185,8 +166,7 @@ public class PudgeEntity extends Entity implements LightSource {
 				target = null;
 			} else {
 				rigidbody.setDirection(target);
-			}
-			actionCommitted = true;
+			}	
 		}
 
 		// Attacking
@@ -204,8 +184,6 @@ public class PudgeEntity extends Entity implements LightSource {
 
 		// send the movement made to the server
 		if (controllable && actionCommitted) {
-			//Game.net.sendMoveTarget(target);
-			//Game.net.sendHookTarget(left, isSpecialHook);
 			Game.net.sendEntityData(getNetworkString());
 		}
 		rigidbody.updateVelocity();
