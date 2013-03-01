@@ -10,11 +10,11 @@ import pudgewars.interfaces.BBOwner;
 import pudgewars.util.ImageHandler;
 
 public class Tile implements BBOwner {
-	public final static Tile T_Dirt1 = new Tile("grass", 0, 0, false, false, false, 0, 0);
-	public final static Tile T_Dirt2 = new Tile("grass", 1, 0, false, false, false, 0, 0);
-	public final static Tile T_Dirt3 = new Tile("grass", 2, 0, false, false, false, 0, 0);
-	public final static Tile T_Dirt4 = new Tile("grass", 3, 0, false, false, false, 0, 0);
-	public final static Tile T_Dirt5 = new Tile("grass", 4, 0, false, false, false, 0, 0);
+	public final static Tile T_Dirt1 = new Tile("grass-2", 0, 0, false, false, false, 0, 0);
+	public final static Tile T_Dirt2 = new Tile("grass-2", 1, 0, false, false, false, 0, 0);
+	public final static Tile T_Dirt3 = new Tile("grass-2", 2, 0, false, false, false, 0, 0);
+	public final static Tile T_Dirt4 = new Tile("grass-2", 3, 0, false, false, false, 0, 0);
+	public final static Tile T_Dirt5 = new Tile("grass-2", 4, 0, false, false, false, 0, 0);
 	public final static Tile T_Block = new Tile("tree_wall", true, true, false, 0, 0);
 	public final static Tile T_Mound = new Tile("mound2", true, false, false, 0, 0);
 	public final static Tile T_Hookable = new Tile("hookable", false, false, true, 13, 13);
