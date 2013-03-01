@@ -23,7 +23,7 @@ public class ClientNetwork extends Network {
 			String t[] = msg.split(":");
 			int index = Integer.parseInt(t[0]);
 			if(Game.entities.entities.size()-1 < index) Game.entities.addClientEntity(msg);
-			else Game.entities.entities.get(index).setNetworkString(t[1] + ":" + t[2] + ":" + t[3]);
+			else if(!t[5].equals("true")) Game.entities.entities.get(index).setNetworkString(t[1] + ":" + t[2] + ":" + t[3]);
 		}
 	}
 	

@@ -321,7 +321,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		if (t[2].equals("null")) {
 			target = null;
 		} else {
-			System.out.println("t2: " + t[2]);
+			target = new Vector2(0,0);
 			target.setNetString(t[2]);
 		}
 	}
