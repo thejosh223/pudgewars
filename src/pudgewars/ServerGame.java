@@ -4,7 +4,9 @@ import java.util.List;
 
 import pudgewars.entities.ServerEntityManager;
 import pudgewars.network.ClientNode;
+import pudgewars.network.Network;
 import pudgewars.network.ServerNetwork;
+import pudgewars.network.ClientNetwork;
 import pudgewars.util.Time;
 
 public class ServerGame extends Game {
@@ -21,23 +23,37 @@ public class ServerGame extends Game {
 	public void init() {
 		super.init();
 		entities = new ServerEntityManager(clients);
-		entities.sendPudgeEntities();
+		
+		//net.sendEntityData();
 	}
 
-	private static class HandleClientMessages implements Runnable {
-		// TODO: change code to have multiple threads handling each client
+	private static class handleClientMessages implements Runnable {
+		private ClientNode client;
+		int index;
+		
+		public handleClientMessages(ClientNode client, int index){
+			this.client = client;
+			this.index = index;
+		}
+		
 		public void run() {
 			while (true) {
-				// net.getEntityData();
-				net.getMoveTargets();
-				net.getHookTargets();
+				String msg = client.getConnection().getMessage();
+				System.out.println(msg);
+				entities.entities.get(index).setNetworkString(msg);
+				//net.getMoveTargets();
+				//net.getHookTargets();
 			}
 		}
 	}
 
 	public void gameLoop() {
-		Thread t = new Thread(new HandleClientMessages());
-		t.start();
+		// Have separate threads listening to each client
+		for(int x = 0; x< clients.size(); x++){
+			Thread t = new Thread(new handleClientMessages(clients.get(x), x));
+			t.start();
+		}
+		
 		long timeBefore = System.nanoTime();
 		long timePassed = System.nanoTime() - timeBefore;
 		float unprocessedSeconds = 0;

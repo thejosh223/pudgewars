@@ -143,7 +143,7 @@ public abstract class EntityManager {
 		return l;
 	}
 
-	public void addClientEntity(Vector2 position, Team team, boolean controllable) {
+	public void addClientEntity(String msg) {
 	}
 
 	public void generateClientEntities() {
