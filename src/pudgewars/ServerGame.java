@@ -4,9 +4,7 @@ import java.util.List;
 
 import pudgewars.entities.ServerEntityManager;
 import pudgewars.network.ClientNode;
-import pudgewars.network.Network;
 import pudgewars.network.ServerNetwork;
-import pudgewars.network.ClientNetwork;
 import pudgewars.util.Time;
 
 public class ServerGame extends Game {
@@ -23,8 +21,6 @@ public class ServerGame extends Game {
 	public void init() {
 		super.init();
 		entities = new ServerEntityManager(clients);
-		
-		//net.sendEntityData();
 	}
 
 	private static class handleClientMessages implements Runnable {
@@ -41,8 +37,6 @@ public class ServerGame extends Game {
 				String msg = client.getConnection().getMessage();
 				System.out.println(msg);
 				entities.entities.get(index).setNetworkString(msg);
-				//net.getMoveTargets();
-				//net.getHookTargets();
 			}
 		}
 	}
@@ -101,14 +95,8 @@ public class ServerGame extends Game {
 	}
 
 	protected void tick() {
-		net.sendEntityData();
-
-		// broadcast moveTargets of all players
-		// net.sendMoveTargets();
-
-		// broadcast hookTargets of all players
-		// net.sendHookTargets();
-
 		super.tick();
+		
+		net.sendEntityData();
 	}
 }
