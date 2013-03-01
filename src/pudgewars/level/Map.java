@@ -27,6 +27,7 @@ public class Map {
 	public final static double SCROLL_SPEED = 10; // tiles / second
 
 	private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
+	private int[][] mapData = new int[MAP_HEIGHT][MAP_WIDTH];
 
 	public Map() {
 		for (int i = 0; i < map.length; i++) {

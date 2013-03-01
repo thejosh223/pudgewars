@@ -1,0 +1,32 @@
+Assets for Pudge Wars
+
+-- Living Stuff --
+Player Sprite
+-A Cowboy on a Pony
+-Cowboy is wearing a cowboy hat so you don't see their body (or maybe you do, or at least part of it)
+-Animation Needed (4-8 frame)
+
+Cow Sprite (Still Pending Implementation)
+-A cow.
+-Animation Needed (2-8 frames)
+
+-- Level / World --
+Grass Tiles
+-Grass. It's simple.
+-A couple of different versions (3+) of tiles to break the grid-layout.
+-I just had this idea to animate the grass a little bit (I can do this actually)
+	-Each tile will randomly update after a random amount of time to make it look like the grass is swaying (?)
+
+Fence Tiles
+-Fence to separate the two sides from each other.
+-Only one is really needed, unless you want to make it so that some fences are beaten up (or simply different), thats cool too.
+
+Center Area Thing
+-Possibly have a stream of water going down the center
+-Only one set is really needed, but it will be animated.
+	-What I am going to do is have each tile be the same, but I will animate them at different times giving the illusion of movement.
+	-Please note that the animations might not need to be coherent, meaning frame A does not necessarily need to be followed by frame B.
+		- The animation will probably be random so frames may go like 2-4-3-1-2-3-4. Hence, don't make the different animations coherent.
+
+Center Healing Thing
+-Possibly a Hay-Bail? Giant Tree with Apples?
