@@ -1,5 +1,16 @@
 Assets for Pudge Wars
 
+-- GUI --
+Upgrade Buttons
+-Move Speed
+-Life
+-Hook/Lasso Damage
+-Hook/Lasso Speed
+-Hook/Lasso Range
+-Hook/Lasso Size
+
+Title Screen
+
 -- Living Stuff --
 Player Sprite
 -A Cowboy on a Pony
@@ -9,6 +20,27 @@ Player Sprite
 Cow Sprite (Still Pending Implementation)
 -A cow.
 -Animation Needed (2-8 frames)
+
+-- Other Entities --
+Hook Piece
+-This is the chain links when the hook is fired.
+-This will probably need to have some sort of rope texture, which means I will have to refactor the code to allow for extended textures.
+	-Possibly hold off on this for now.
+
+Normal Hook
+-This is what the lasso will be.
+-I can either rotate it in code, or you can animate it if you want it to look more dynamic rather than just a simple image rotation.
+
+Grappling Hook
+-This is the hook that will allow you to grapple to the opposing side of the map.
+-This may might be a lasso also, but I think it might be better if we distinguish it somehow. Maybe a bigger lasso, or a different colour.
+
+-- Particulars (aka. Particles) --
+Healing Particles
+-If we use a hay-bail, then the hay splashing everywhere
+
+Attack Particle(s)
+-Something to show when one player attacks another.
 
 -- Level / World --
 Grass Tiles
