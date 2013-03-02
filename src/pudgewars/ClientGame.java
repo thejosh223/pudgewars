@@ -21,11 +21,19 @@ public class ClientGame extends Game {
 		entities = new ClientEntityManager();
 		entities.generateClientEntities();
 		
+		Thread t = new Thread(new getEntityData());
+		t.start();
 	}
 
+	private static class getEntityData implements Runnable {
+		public void run() {
+			while(true){
+				net.getEntityData();
+			}
+		}
+	}
+		
 	protected void tick() {
-		net.getEntityData();
-
 		super.tick();
 		controls();
 	}

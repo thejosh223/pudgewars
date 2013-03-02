@@ -294,12 +294,15 @@ public class PudgeEntity extends Entity implements LightSource {
 
 	public void setNetworkString(String s) {
 		String[] t = s.split(":");
+		if(!t[0].equals(transform.position.getNetString())){
+			System.out.println("Server corrected client position from " + transform.position.getNetString() + " to " + t[0]);
+		}
 		transform.position.setNetString(t[0]);
 		rigidbody.velocity.setNetString(t[1]);
-		if (t[2].equals("null")) {
+		if (t[2].equals("null") && target == null) {
 			target = null;
-		} else {
-			target = new Vector2(0, 0);
+		} else if(!t[2].equals("null")){
+			target = new Vector2();
 			target.setNetString(t[2]);
 		}
 	}
