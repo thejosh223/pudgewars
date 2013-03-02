@@ -12,6 +12,7 @@ public class Transform {
 
 	public Vector2 position;
 	public Vector2 scale;
+	public Vector2 drawScale;
 	public double rotation;
 
 	public Transform(Entity e) {
@@ -27,6 +28,7 @@ public class Transform {
 		this.position = position.clone();
 		this.rotation = rotation;
 		this.scale = scale.clone();
+		this.drawScale = new Vector2(1, 1);
 	}
 
 	public void rotateTowards(Vector2 target, double amt) {
@@ -47,8 +49,8 @@ public class Transform {
 		Vector2 v = Game.s.worldToScreenPoint(position);
 
 		AffineTransform a = new AffineTransform();
-		a.translate((int) (v.x - (Game.TILE_SIZE * scale.x) / 2), (int) (v.y - (Game.TILE_SIZE * scale.y) / 2));
-		a.rotate(rotation, (Game.TILE_SIZE * scale.x) / 2, (Game.TILE_SIZE * scale.y) / 2);
+		a.translate((int) (v.x - (Game.TILE_SIZE * scale.x * drawScale.x) / 2), (int) (v.y - (Game.TILE_SIZE * scale.y * drawScale.x) / 2));
+		a.rotate(rotation, (Game.TILE_SIZE * scale.x * drawScale.x) / 2, (Game.TILE_SIZE * scale.y * drawScale.x) / 2);
 		a.scale(scale.x, scale.y);
 
 		return a;

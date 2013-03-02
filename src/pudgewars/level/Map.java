@@ -1,5 +1,8 @@
 package pudgewars.level;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -13,6 +16,7 @@ import pudgewars.entities.LightSourceEntity;
 import pudgewars.entities.Team;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.util.CollisionBox;
+import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
@@ -29,16 +33,27 @@ public class Map {
 	// Map Updates
 	public final static int TILEUPDATES_PERTICK = 4; // # of tiles updated per tick
 
+	// Map Data
 	private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
 	private int[][] mapData = new int[MAP_HEIGHT][MAP_WIDTH];
+
+	// Minimap
+	private Image minimapBase;
+	private BufferedImage minimap;
 
 	public Map() {
 		Random r = new Random();
 
-		// Init Whole Map
+		/*
+		 * Level
+		 */
+		// Set Grass, Boundaries, Hookables
 		for (int i = 0; i < map.length; i++)
 			for (int o = 0; o < map[0].length; o++)
-				if (i == 0 || o == 0 || i == MAP_HEIGHT - 1 || o == MAP_WIDTH - 1) map[i][o] = Tile.T_Block;
+				if (i == 0) map[i][o] = Tile.TREE[2];
+				else if (o == 0) map[i][o] = Tile.TREE[1];
+				else if (i == MAP_HEIGHT - 1) map[i][o] = Tile.TREE[0];
+				else if (o == MAP_WIDTH - 1) map[i][o] = Tile.TREE[3];
 				else if ((i == (int) (MAP_HEIGHT * 0.25) || i == (int) (MAP_HEIGHT * 0.75) || i == (int) (MAP_HEIGHT * 0.50)) //
 						&& (o == (int) (MAP_WIDTH * 0.25) || o == (int) (MAP_WIDTH * 0.75))) map[i][o] = Tile.T_Hookable;
 				else map[i][o] = Tile.GRASS[r.nextInt(Tile.GRASS.length)];
@@ -61,6 +76,12 @@ public class Map {
 		for (int i = 0; i < map.length; i++)
 			for (int o = 0; o < map[0].length; o++)
 				mapData[i][o] = r.nextInt(100);
+
+		/*
+		 * Minimap
+		 */
+		minimapBase = ImageHandler.get().getImage("minimap");
+		minimap = new BufferedImage(minimapBase.getWidth(null), minimapBase.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 	}
 
 	public void update() {
@@ -115,7 +136,10 @@ public class Map {
 	}
 
 	public void onGUI() {
-		
+		Graphics2D g = (Graphics2D) minimap.getGraphics();
+		g.drawImage(minimapBase, 0, 0, null);
+
+		Game.s.g.drawImage(minimap, 10, 10, minimap.getWidth(), minimap.getHeight(), null);
 	}
 
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {

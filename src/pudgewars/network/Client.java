@@ -104,7 +104,7 @@ public class Client {
 				}
 			}
 		});
-		
+
 		message.setBounds(10, 320, 350, 35);
 		pane.add(message);
 

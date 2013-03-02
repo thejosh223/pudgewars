@@ -64,6 +64,8 @@ public class PudgeEntity extends Entity implements LightSource {
 	public PudgeEntity(Vector2 position, Team team) {
 		super(position, new Vector2(COLLISION_WIDTH, COLLISION_HEIGHT));
 
+		transform.drawScale = new Vector2(2, 2);
+
 		this.team = team;
 
 		canTileCollide = true;
@@ -75,7 +77,7 @@ public class PudgeEntity extends Entity implements LightSource {
 
 		rigidbody.physicsSlide = true;
 
-		ani = Animation.makeAnimation("pudge3", 8, 16, 16, 0.05);
+		ani = Animation.makeAnimation("horse", 8, 32, 32, 0.05);
 		ani.startAnimation();
 
 		clicker = ImageHandler.get().getImage("selector");
@@ -294,14 +296,14 @@ public class PudgeEntity extends Entity implements LightSource {
 
 	public void setNetworkString(String s) {
 		String[] t = s.split(":");
-		if(!t[0].equals(transform.position.getNetString())){
+		if (!t[0].equals(transform.position.getNetString())) {
 			System.out.println("Server corrected client position from " + transform.position.getNetString() + " to " + t[0]);
 		}
 		transform.position.setNetString(t[0]);
 		rigidbody.velocity.setNetString(t[1]);
 		if (t[2].equals("null") && target == null) {
 			target = null;
-		} else if(!t[2].equals("null")){
+		} else if (!t[2].equals("null")) {
 			target = new Vector2();
 			target.setNetString(t[2]);
 		}

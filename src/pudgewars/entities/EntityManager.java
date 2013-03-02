@@ -98,9 +98,8 @@ public abstract class EntityManager {
 	}
 
 	public void renderGUI() {
-		for (int i = 0; i < entities.size(); i++) {
+		for (int i = 0; i < entities.size(); i++)
 			entities.get(i).onGUI();
-		}
 		map.onGUI();
 	}
 
