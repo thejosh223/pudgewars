@@ -17,7 +17,7 @@ import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
 public class Map {
-	public final static int MAP_WIDTH = 26;
+	public final static int MAP_WIDTH = 30;
 	public final static int MAP_HEIGHT = 30;
 	public final static int DIVISION_WIDTH = 2; // This should always be even.
 

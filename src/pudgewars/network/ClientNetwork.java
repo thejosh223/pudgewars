@@ -11,7 +11,7 @@ public class ClientNetwork extends Network {
 	}
 
 	public void sendEntityData(String msg){
-		System.out.println(msg);
+		//System.out.println(msg);
 		clientConn.sendMessage(msg);
 	}
 	
