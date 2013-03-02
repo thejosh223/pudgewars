@@ -11,48 +11,46 @@ import pudgewars.util.ImageHandler;
 
 public class Tile implements BBOwner {
 	public final static Tile[] GRASS = //
-	{ new Tile("grass-2", 0, 0, false, false, false), //
-			new Tile("grass-2", 1, 0, false, false, false), //
-			new Tile("grass-2", 2, 0, false, false, false), //
-			new Tile("grass-2", 3, 0, false, false, false), //
-			new Tile("grass-2", 4, 0, false, false, false) };
+	{ new Tile("grass-2", 0, 1, false, false, false), //
+			new Tile("grass-2", 1, 1, false, false, false), //
+			new Tile("grass-2", 2, 1, false, false, false), //
+			new Tile("grass-2", 3, 1, false, false, false), //
+			new Tile("grass-2", 4, 1, false, false, false) };
 
 	public final static Tile[] FOUNTAIN = //
-	{ new Tile("fountain", 0, 0, false, false, false), //
-			new Tile("fountain", 1, 0, false, false, false), //
-			new Tile("fountain", 0, 1, false, false, false), //
-			new Tile("fountain", 1, 1, false, false, false) };
+	{ new Tile("fountain", 0, 1, false, false, false), //
+			new Tile("fountain", 1, 1, false, false, false), //
+			new Tile("fountain", 2, 1, false, false, false), //
+			new Tile("fountain", 3, 1, false, false, false) };
 
-	public final static Tile T_Block = new Tile("tree_wall", 0, 0, true, true, false);
-	public final static Tile T_Mound = new Tile("mound2", 0, 0, true, false, false);
-	public final static Tile T_Hookable = new LightTile("hookable", 0, 0, false, false, true, 13, 13);
+	public final static Tile WATER = new Tile("water", 0, 5, false, false, false);
+	
+	public final static Tile T_Block = new Tile("tree_wall", 0, 1, true, true, false);
+	public final static Tile T_Mound = new Tile("mound2", 0, 1, true, false, false);
+	public final static Tile T_Hookable = new LightTile("hookable", 0, 1, false, false, true, 13, 13);
 
 	protected String ID;
-	protected BufferedImage img;
-	protected BufferedImage post;
+	protected BufferedImage[] img;
 	protected boolean pudgeSolid;
 	protected boolean hookSolid;
 	protected boolean hookable;
 
-	public Tile(String ID, int x1, int y1, String post, int x2, int y2, boolean pudgeSolid, boolean hookSolid, boolean hookable) {
-		this(ID, x1, y1, pudgeSolid, hookSolid, hookable);
-		this.post = ImageHandler.get().getImage(post, x2, y2, 16, 16);
-	}
-
-	public Tile(String ID, int x, int y, boolean pudgeSolid, boolean hookSolid, boolean hookable) {
+	public Tile(String ID, int x, int numAnim, boolean pudgeSolid, boolean hookSolid, boolean hookable) {
 		this.ID = ID;
 		this.pudgeSolid = pudgeSolid;
 		this.hookSolid = hookSolid;
 		this.hookable = hookable;
-		img = ImageHandler.get().getImage(ID, x, y, 16, 16);
+
+		img = new BufferedImage[numAnim];
+		for (int i = 0; i < numAnim; i++)
+			img[i] = ImageHandler.get().getImage(ID, x, i, 16, 16);
 	}
 
-	public void render(int x, int y) {
-		Game.s.g.drawImage(img, x, y, null);
+	public void render(int x, int y, int tileData) {
+		Game.s.g.drawImage(img[tileData % img.length], x, y, null);
 	}
 
 	public void postRender(int x, int y) {
-		if (post != null) Game.s.g.drawImage(post, x, y, null);
 	}
 
 	/*

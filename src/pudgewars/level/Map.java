@@ -33,26 +33,34 @@ public class Map {
 	private int[][] mapData = new int[MAP_HEIGHT][MAP_WIDTH];
 
 	public Map() {
+		Random r = new Random();
+
+		// Init Whole Map
+		for (int i = 0; i < map.length; i++)
+			for (int o = 0; o < map[0].length; o++)
+				if (i == 0 || o == 0 || i == MAP_HEIGHT - 1 || o == MAP_WIDTH - 1) map[i][o] = Tile.T_Block;
+				else if ((i == (int) (MAP_HEIGHT * 0.25) || i == (int) (MAP_HEIGHT * 0.75) || i == (int) (MAP_HEIGHT * 0.50)) //
+						&& (o == (int) (MAP_WIDTH * 0.25) || o == (int) (MAP_WIDTH * 0.75))) map[i][o] = Tile.T_Hookable;
+				else map[i][o] = Tile.GRASS[r.nextInt(Tile.GRASS.length)];
+
+		int o1 = (MAP_WIDTH - DIVISION_WIDTH) / 2 - 1;
+		int o2 = (MAP_WIDTH + DIVISION_WIDTH) / 2;
 		for (int i = 0; i < map.length; i++) {
-			for (int o = 0; o < map[0].length; o++) {
-				if (o + 1 == (MAP_WIDTH - DIVISION_WIDTH) / 2) {
-					map[i][o] = Tile.T_Mound;
-				} else if (o == (MAP_WIDTH + DIVISION_WIDTH) / 2) {
-					map[i][o] = Tile.T_Mound;
-				} else if (i == 0 || o == 0 || i == MAP_HEIGHT - 1 || o == MAP_WIDTH - 1) {
-					map[i][o] = Tile.T_Block;
-				} else if ((i == (int) (MAP_HEIGHT * 0.25) || i == (int) (MAP_HEIGHT * 0.75) || i == (int) (MAP_HEIGHT * 0.50)) //
-						&& (o == (int) (MAP_WIDTH * 0.25) || o == (int) (MAP_WIDTH * 0.75))) {
-					map[i][o] = Tile.T_Hookable;
-				} else {
-					map[i][o] = Tile.GRASS[new Random().nextInt(5)];
-				}
-			}
+			map[i][o1] = Tile.T_Mound;
+			for (int o = o1 + 1; o < o2; o++)
+				map[i][o] = Tile.WATER;
+			map[i][o2] = Tile.T_Mound;
 		}
+
+		// Fountain
 		map[MAP_HEIGHT / 2 - 1][MAP_WIDTH / 2 - 1] = Tile.FOUNTAIN[0];
 		map[MAP_HEIGHT / 2 - 1][MAP_WIDTH / 2] = Tile.FOUNTAIN[1];
 		map[MAP_HEIGHT / 2][MAP_WIDTH / 2 - 1] = Tile.FOUNTAIN[2];
 		map[MAP_HEIGHT / 2][MAP_WIDTH / 2] = Tile.FOUNTAIN[3];
+
+		for (int i = 0; i < map.length; i++)
+			for (int o = 0; o < map[0].length; o++)
+				mapData[i][o] = r.nextInt(100);
 	}
 
 	public void update() {
@@ -82,8 +90,32 @@ public class Map {
 		Random r = new Random();
 		for (int i = 0; i < TILEUPDATES_PERTICK; i++) {
 			int t = r.nextInt(MAP_WIDTH * MAP_HEIGHT);
-			mapData[t / MAP_HEIGHT][t % MAP_HEIGHT]++;
+			mapData[t / MAP_WIDTH][t % MAP_WIDTH]++;
 		}
+	}
+
+	public void render() {
+		int dx = (int) (Window.CENTER_X - (Game.focus.x * Game.TILE_SIZE));
+		int dy = (int) (Window.CENTER_Y - (Game.focus.y * Game.TILE_SIZE));
+		for (int i = 0; i < MAP_HEIGHT; i++) {
+			for (int o = 0; o < MAP_WIDTH; o++) {
+				map[i][o].render(dx + o * Game.TILE_SIZE, dy + i * Game.TILE_SIZE, mapData[i][o]);
+			}
+		}
+	}
+
+	public void postRender() {
+		int dx = (int) (Window.CENTER_X - (Game.focus.x * Game.TILE_SIZE));
+		int dy = (int) (Window.CENTER_Y - (Game.focus.y * Game.TILE_SIZE));
+		for (int i = 0; i < MAP_HEIGHT; i++) {
+			for (int o = 0; o < MAP_WIDTH; o++) {
+				map[i][o].postRender(dx + o * Game.TILE_SIZE, dy + i * Game.TILE_SIZE);
+			}
+		}
+	}
+
+	public void onGUI() {
+		
 	}
 
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {
@@ -127,26 +159,6 @@ public class Map {
 			}
 		}
 		return false;
-	}
-
-	public void render() {
-		int dx = (int) (Window.CENTER_X - (Game.focus.x * Game.TILE_SIZE));
-		int dy = (int) (Window.CENTER_Y - (Game.focus.y * Game.TILE_SIZE));
-		for (int i = 0; i < MAP_HEIGHT; i++) {
-			for (int o = 0; o < MAP_WIDTH; o++) {
-				map[i][o].render(dx + o * Game.TILE_SIZE, dy + i * Game.TILE_SIZE);
-			}
-		}
-	}
-
-	public void postRender() {
-		int dx = (int) (Window.CENTER_X - (Game.focus.x * Game.TILE_SIZE));
-		int dy = (int) (Window.CENTER_Y - (Game.focus.y * Game.TILE_SIZE));
-		for (int i = 0; i < MAP_HEIGHT; i++) {
-			for (int o = 0; o < MAP_WIDTH; o++) {
-				map[i][o].postRender(dx + o * Game.TILE_SIZE, dy + i * Game.TILE_SIZE);
-			}
-		}
 	}
 
 	public void addLightSources(List<Entity> entities) {

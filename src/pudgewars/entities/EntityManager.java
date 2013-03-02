@@ -101,6 +101,7 @@ public abstract class EntityManager {
 		for (int i = 0; i < entities.size(); i++) {
 			entities.get(i).onGUI();
 		}
+		map.onGUI();
 	}
 
 	public void renderLightmap() {
