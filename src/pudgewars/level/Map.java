@@ -26,6 +26,9 @@ public class Map {
 	public final static double SCROLLBAR_Y = (1.0 / 3) * 0.25;
 	public final static double SCROLL_SPEED = 10; // tiles / second
 
+	// Map Updates
+	public final static int TILEUPDATES_PERTICK = 4; // # of tiles updated per tick
+
 	private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
 	private int[][] mapData = new int[MAP_HEIGHT][MAP_WIDTH];
 
@@ -42,55 +45,44 @@ public class Map {
 						&& (o == (int) (MAP_WIDTH * 0.25) || o == (int) (MAP_WIDTH * 0.75))) {
 					map[i][o] = Tile.T_Hookable;
 				} else {
-					// map[i][o] = Tile.T_Dirt1;
-					int r = new Random().nextInt(5);
-					if (r == 0) {
-						map[i][o] = Tile.T_Dirt1;
-					} else if (r == 1) {
-						map[i][o] = Tile.T_Dirt2;
-					} else if (r == 2) {
-						map[i][o] = Tile.T_Dirt3;
-					} else if (r == 3) {
-						map[i][o] = Tile.T_Dirt4;
-					} else {
-						map[i][o] = Tile.T_Dirt5;
-					}
+					map[i][o] = Tile.GRASS[new Random().nextInt(5)];
 				}
 			}
 		}
-		map[MAP_HEIGHT / 2 - 1][MAP_WIDTH / 2 - 1] = Tile.T_Fountain0;
-		map[MAP_HEIGHT / 2 - 1][MAP_WIDTH / 2] = Tile.T_Fountain1;
-		map[MAP_HEIGHT / 2][MAP_WIDTH / 2 - 1] = Tile.T_Fountain2;
-		map[MAP_HEIGHT / 2][MAP_WIDTH / 2] = Tile.T_Fountain3;
+		map[MAP_HEIGHT / 2 - 1][MAP_WIDTH / 2 - 1] = Tile.FOUNTAIN[0];
+		map[MAP_HEIGHT / 2 - 1][MAP_WIDTH / 2] = Tile.FOUNTAIN[1];
+		map[MAP_HEIGHT / 2][MAP_WIDTH / 2 - 1] = Tile.FOUNTAIN[2];
+		map[MAP_HEIGHT / 2][MAP_WIDTH / 2] = Tile.FOUNTAIN[3];
 	}
 
 	public void update() {
-		// Scrolling of the Map
+		/*
+		 * Map Scrolling
+		 */
 		double vx = 0;
 		double vy = 0;
-		if (Game.mouseInput.mousePosition.y >= 0 && Game.mouseInput.mousePosition.y < SCROLLBAR_Y || Game.keyInput.up.isDown) {
-			vy = -SCROLL_SPEED;
-		} else if (Game.mouseInput.mousePosition.y >= 1 - SCROLLBAR_Y && Game.mouseInput.mousePosition.y < 1 || Game.keyInput.down.isDown) {
-			vy = SCROLL_SPEED;
-		}
+		// Scrolling
+		if (Game.mouseInput.mousePosition.x >= 0 && Game.mouseInput.mousePosition.x < SCROLLBAR_X || Game.keyInput.left.isDown) vx = -SCROLL_SPEED;
+		else if (Game.mouseInput.mousePosition.x >= 1 - SCROLLBAR_Y && Game.mouseInput.mousePosition.x < 1 || Game.keyInput.right.isDown) vx = SCROLL_SPEED;
+		if (Game.mouseInput.mousePosition.y >= 0 && Game.mouseInput.mousePosition.y < SCROLLBAR_Y || Game.keyInput.up.isDown) vy = -SCROLL_SPEED;
+		else if (Game.mouseInput.mousePosition.y >= 1 - SCROLLBAR_Y && Game.mouseInput.mousePosition.y < 1 || Game.keyInput.down.isDown) vy = SCROLL_SPEED;
 
-		if (Game.mouseInput.mousePosition.x >= 0 && Game.mouseInput.mousePosition.x < SCROLLBAR_X || Game.keyInput.left.isDown) {
-			vx = -SCROLL_SPEED;
-		} else if (Game.mouseInput.mousePosition.x >= 1 - SCROLLBAR_Y && Game.mouseInput.mousePosition.x < 1 || Game.keyInput.right.isDown) {
-			vx = SCROLL_SPEED;
-		}
+		// Set Focus
 		Game.focus.set(Game.focus.x + Time.getTickInterval() * vx, Game.focus.y + Time.getTickInterval() * vy);
 
-		if (Game.focus.x < Game.TILE_WIDTH / 2.0) {
-			Game.focus.set(Game.TILE_WIDTH / 2.0, Game.focus.y);
-		} else if (Game.focus.x > Map.MAP_WIDTH - Game.TILE_WIDTH / 2.0) {
-			Game.focus.set(Map.MAP_WIDTH - Game.TILE_WIDTH / 2.0, Game.focus.y);
-		}
+		// Boundary Checks
+		if (Game.focus.x < Game.TILE_WIDTH / 2.0) Game.focus.set(Game.TILE_WIDTH / 2.0, Game.focus.y);
+		else if (Game.focus.x > Map.MAP_WIDTH - Game.TILE_WIDTH / 2.0) Game.focus.set(Map.MAP_WIDTH - Game.TILE_WIDTH / 2.0, Game.focus.y);
+		if (Game.focus.y < Game.TILE_HEIGHT / 2.0) Game.focus.set(Game.focus.x, Game.TILE_HEIGHT / 2.0);
+		else if (Game.focus.y > Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2.0) Game.focus.set(Game.focus.x, Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2.0);
 
-		if (Game.focus.y < Game.TILE_HEIGHT / 2.0) {
-			Game.focus.set(Game.focus.x, Game.TILE_HEIGHT / 2.0);
-		} else if (Game.focus.y > Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2.0) {
-			Game.focus.set(Game.focus.x, Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2.0);
+		/*
+		 * Map Updates
+		 */
+		Random r = new Random();
+		for (int i = 0; i < TILEUPDATES_PERTICK; i++) {
+			int t = r.nextInt(MAP_WIDTH * MAP_HEIGHT);
+			mapData[t / MAP_HEIGHT][t % MAP_HEIGHT]++;
 		}
 	}
 
@@ -160,10 +152,11 @@ public class Map {
 	public void addLightSources(List<Entity> entities) {
 		for (int i = 0; i < MAP_HEIGHT; i++) {
 			for (int o = 0; o < MAP_WIDTH; o++) {
-				if (map[i][o].lightWidth > 0 && map[i][o].lightHeight > 0) {
+				if (map[i][o] instanceof LightTile) {
+					LightTile t = ((LightTile) map[i][o]);
 					entities.add(new LightSourceEntity(new Vector2(o + 0.5, i + 0.5), //
 							o < MAP_WIDTH / 2 ? Team.leftTeam : Team.rightTeam, //
-							map[i][o].lightWidth, map[i][o].lightHeight));
+							t.lightWidth, t.lightHeight));
 				}
 			}
 		}

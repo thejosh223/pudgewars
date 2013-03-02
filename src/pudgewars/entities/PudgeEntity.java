@@ -148,7 +148,7 @@ public class PudgeEntity extends Entity implements LightSource {
 
 				if (targetEnemy == null) target = right;
 				else target = targetEnemy.transform.position.clone();
-				
+
 				actionCommitted = true;
 			}
 
@@ -159,14 +159,14 @@ public class PudgeEntity extends Entity implements LightSource {
 		// Target Movement
 		if (target != null) {
 			transform.rotateTowards(target, 0.1);
-			
+
 			double dist = transform.position.distance(target);
 			if (dist < rigidbody.velocity.magnitude() * Time.getTickInterval()) {
 				rigidbody.velocity = new Vector2(0, 0);
 				target = null;
 			} else {
 				rigidbody.setDirection(target);
-			}	
+			}
 		}
 
 		// Attacking
@@ -299,7 +299,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		if (t[2].equals("null")) {
 			target = null;
 		} else {
-			target = new Vector2(0,0);
+			target = new Vector2(0, 0);
 			target.setNetString(t[2]);
 		}
 	}

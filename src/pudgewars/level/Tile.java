@@ -10,19 +10,22 @@ import pudgewars.interfaces.BBOwner;
 import pudgewars.util.ImageHandler;
 
 public class Tile implements BBOwner {
-	public final static Tile T_Dirt1 = new Tile("grass-2", 0, 0, false, false, false, 0, 0);
-	public final static Tile T_Dirt2 = new Tile("grass-2", 1, 0, false, false, false, 0, 0);
-	public final static Tile T_Dirt3 = new Tile("grass-2", 2, 0, false, false, false, 0, 0);
-	public final static Tile T_Dirt4 = new Tile("grass-2", 3, 0, false, false, false, 0, 0);
-	public final static Tile T_Dirt5 = new Tile("grass-2", 4, 0, false, false, false, 0, 0);
-	public final static Tile T_Block = new Tile("tree_wall", 0, 0, true, true, false, 0, 0);
-	public final static Tile T_Mound = new Tile("mound2", 0, 0, true, false, false, 0, 0);
-	public final static Tile T_Hookable = new Tile("hookable", 0, 0, false, false, true, 13, 13);
+	public final static Tile[] GRASS = //
+	{ new Tile("grass-2", 0, 0, false, false, false), //
+			new Tile("grass-2", 1, 0, false, false, false), //
+			new Tile("grass-2", 2, 0, false, false, false), //
+			new Tile("grass-2", 3, 0, false, false, false), //
+			new Tile("grass-2", 4, 0, false, false, false) };
 
-	public final static Tile T_Fountain0 = new Tile("fountain", 0, 0, false, false, false, 0, 0);
-	public final static Tile T_Fountain1 = new Tile("fountain", 1, 0, false, false, false, 0, 0);
-	public final static Tile T_Fountain2 = new Tile("fountain", 0, 1, false, false, false, 0, 0);
-	public final static Tile T_Fountain3 = new Tile("fountain", 1, 1, false, false, false, 0, 0);
+	public final static Tile[] FOUNTAIN = //
+	{ new Tile("fountain", 0, 0, false, false, false), //
+			new Tile("fountain", 1, 0, false, false, false), //
+			new Tile("fountain", 0, 1, false, false, false), //
+			new Tile("fountain", 1, 1, false, false, false) };
+
+	public final static Tile T_Block = new Tile("tree_wall", 0, 0, true, true, false);
+	public final static Tile T_Mound = new Tile("mound2", 0, 0, true, false, false);
+	public final static Tile T_Hookable = new LightTile("hookable", 0, 0, false, false, true, 13, 13);
 
 	protected String ID;
 	protected BufferedImage img;
@@ -30,27 +33,18 @@ public class Tile implements BBOwner {
 	protected boolean pudgeSolid;
 	protected boolean hookSolid;
 	protected boolean hookable;
-	protected double lightWidth;
-	protected double lightHeight;
 
-	public Tile(String ID, int x, int y, boolean pudgeSolid, boolean hookSolid, boolean hookable, double lightWidth, double lightHeight) {
-		this(ID, pudgeSolid, hookSolid, hookable, lightWidth, lightHeight);
-		img = ImageHandler.get().getImage(ID, x, y, 16, 16);
+	public Tile(String ID, int x1, int y1, String post, int x2, int y2, boolean pudgeSolid, boolean hookSolid, boolean hookable) {
+		this(ID, x1, y1, pudgeSolid, hookSolid, hookable);
+		this.post = ImageHandler.get().getImage(post, x2, y2, 16, 16);
 	}
 
-	public Tile(String ID, String post, boolean pudgeSolid, boolean hookSolid, boolean hookable, double lightWidth, double lightHeight) {
-		this(ID, pudgeSolid, hookSolid, hookable, lightWidth, lightHeight);
-		this.post = ImageHandler.get().getImage(post);
-	}
-
-	public Tile(String ID, boolean pudgeSolid, boolean hookSolid, boolean hookable, double lightWidth, double lightHeight) {
+	public Tile(String ID, int x, int y, boolean pudgeSolid, boolean hookSolid, boolean hookable) {
 		this.ID = ID;
 		this.pudgeSolid = pudgeSolid;
 		this.hookSolid = hookSolid;
 		this.hookable = hookable;
-		this.lightWidth = lightWidth;
-		this.lightHeight = lightHeight;
-		img = ImageHandler.get().getImage(ID);
+		img = ImageHandler.get().getImage(ID, x, y, 16, 16);
 	}
 
 	public void render(int x, int y) {
@@ -61,6 +55,9 @@ public class Tile implements BBOwner {
 		if (post != null) Game.s.g.drawImage(post, x, y, null);
 	}
 
+	/*
+	 * Collision Detection!
+	 */
 	public boolean isPudgeSolid() {
 		return pudgeSolid;
 	}
@@ -73,9 +70,6 @@ public class Tile implements BBOwner {
 		return hookable;
 	}
 
-	/*
-	 * Collision Detection!
-	 */
 	public final boolean blocks(BBOwner b) {
 		return b.shouldBlock(this) && this.shouldBlock(b);
 	}
