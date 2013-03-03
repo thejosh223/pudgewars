@@ -1,10 +1,9 @@
 package pudgewars.entities.hooks;
 
-import java.awt.Point;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
 import pudgewars.Game;
-import pudgewars.Window;
 import pudgewars.entities.Entity;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.util.ImageHandler;
@@ -18,7 +17,7 @@ public class HookPieceEntity extends Entity {
 	private HookEntity hook;
 	private HookPieceEntity next;
 	private HookPieceEntity prev;
-	private BufferedImage img;
+	private BufferedImage[] img;
 
 	public HookPieceEntity(PudgeEntity e, HookEntity h, HookPieceEntity p) {
 		super(e.transform.position);
@@ -34,7 +33,9 @@ public class HookPieceEntity extends Entity {
 		// Default Movement Behaviour
 		setMovementType(MovementScheme.FORWARD);
 
-		img = ImageHandler.get().getImage("hookpiece");
+		img = new BufferedImage[4];
+		for (int i = 0; i < img.length; i++)
+			img[i] = ImageHandler.get().getImage("rope", i, 0, 4, 4);
 	}
 
 	public void update() {
@@ -105,8 +106,47 @@ public class HookPieceEntity extends Entity {
 	}
 
 	public void render() {
-		Game.s.g.drawImage(img, (int) (Window.CENTER_X - (Game.focus.x - transform.position.x) * Game.TILE_SIZE - img.getWidth(null) / 2), //
-				(int) (Window.CENTER_Y - (Game.focus.y - transform.position.y) * Game.TILE_SIZE - img.getHeight(null) / 2), null);
+		// Draw the links between THIS and NEXT
+		if (next != null) renderBetweenLinks(next.transform.position);
+
+		// Draw the links between THIS and HOOK
+		if (prev == null) renderBetweenLinks(hook.transform.position);
+
+		// Draw this link
+		double angle = 0;
+		if (prev == null) angle = Math.PI - Math.atan2(transform.position.x - hook.transform.position.x, transform.position.y - hook.transform.position.y);
+		else if (next != null) angle = Math.PI - Math.atan2(transform.position.x - next.transform.position.x, transform.position.y - next.transform.position.y);
+		else angle = Math.PI - Math.atan2(transform.position.x - owner.transform.position.x, transform.position.y - owner.transform.position.y);
+
+		Vector2 v = Game.s.worldToScreenPoint(transform.position);
+		AffineTransform a = new AffineTransform();
+		a.translate((int) (v.x - img[0].getWidth() / 2), (int) (v.y - img[0].getHeight() / 2));
+		a.rotate(angle, img[0].getWidth() / 2, img[0].getHeight() / 2);
+		Game.s.g.drawImage(img[0], a, null);
+	}
+
+	private void renderBetweenLinks(Vector2 target) {
+		double levelDist = transform.position.distance(target);
+		double screenDist = levelDist * Game.TILE_SIZE;
+		int count = (int) (screenDist / img[0].getWidth()) + 1;
+
+		Vector2 levelSlope = Vector2.subtract(transform.position, target);
+		levelSlope.normalize();
+		levelSlope.scale(levelDist / count);
+		Vector2 pos = transform.position.clone();
+		pos.add(levelSlope);
+
+		double angle = Math.PI - Math.atan2(transform.position.x - target.x, transform.position.y - target.y);
+
+		for (int i = 0; i < count; i++) {
+			Vector2 v = Game.s.worldToScreenPoint(pos);
+			AffineTransform a = new AffineTransform();
+			a.translate((int) (v.x - img[0].getWidth() / 2), (int) (v.y - img[0].getHeight() / 2));
+			a.rotate(angle, img[0].getWidth() / 2, img[0].getHeight() / 2);
+
+			Game.s.g.drawImage(img[i % img.length], a, null);
+			pos.add(levelSlope);
+		}
 	}
 
 	public PudgeEntity getOwner() {

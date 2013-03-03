@@ -89,4 +89,16 @@ public class Vector2 {
 		return Vector2.distance(new Vector2(x1, y1), new Vector2(x2, y2));
 	}
 
+	public static Vector2 add(Vector2 a, Vector2 b) {
+		return new Vector2(a.x + b.x, a.y + b.y);
+	}
+
+	public static Vector2 subtract(Vector2 a, Vector2 b) {
+		return new Vector2(b.x - a.x, b.y - a.y);
+	}
+
+	public static Vector2 scale(Vector2 v, double s) {
+		return new Vector2(v.x * s, v.y * s);
+	}
+
 }

@@ -31,7 +31,7 @@ public class Map {
 	public final static double SCROLL_SPEED = 10; // tiles / second
 
 	// Map Updates
-	public final static int TILEUPDATES_PERTICK = 4; // # of tiles updated per tick
+	public final static int TILEUPDATES_PERTICK = 32; // # of tiles updated per tick
 
 	// Map Data
 	private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];

@@ -77,7 +77,7 @@ public class PudgeEntity extends Entity implements LightSource {
 
 		rigidbody.physicsSlide = true;
 
-		ani = Animation.makeAnimation("horse", 8, 32, 32, 0.05);
+		ani = Animation.makeAnimation("horse2", 8, 32, 32, 0.05);
 		ani.startAnimation();
 
 		clicker = ImageHandler.get().getImage("selector");
