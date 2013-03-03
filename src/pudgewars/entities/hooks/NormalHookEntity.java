@@ -1,5 +1,6 @@
 package pudgewars.entities.hooks;
 
+import pudgewars.Game;
 import pudgewars.entities.Entity;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
@@ -66,5 +67,19 @@ public class NormalHookEntity extends HookEntity {
 				}
 			}
 		}
+	}
+	
+	public String getNetworkString() {
+		String s = "NORMALHOOK:" + Game.entities.entities.indexOf(owner) + ":";
+		s += (target == null) ? "null" : target.getNetString();
+		s += ":" + transform.position.getNetString();
+		s += ":" + rigidbody.velocity.getNetString();
+		return s;
+	}
+
+	public void setNetworkString(String s) {
+		String[] t = s.split(":");
+		transform.position.setNetString(t[0]);
+		rigidbody.velocity.setNetString(t[1]);
 	}
 }

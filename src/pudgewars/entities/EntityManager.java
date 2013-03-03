@@ -142,8 +142,25 @@ public abstract class EntityManager {
 		}
 		return l;
 	}
+	
+	public int containsHook(int ownerIndex, String click){
+		String[] u = click.split(" ");
+		Vector2 target = new Vector2(Float.parseFloat(u[0]),Float.parseFloat(u[1]));
+		for(int x = 0; x < entities.size(); x++){
+			String net = entities.get(x).getNetworkString();
+			String[] t = net.split(":");
+			if(t[0].equals("NORMALHOOK") || t[0].equals("GRAPPLEHOOK")){
+				u = t[2].split(" ");
+				if(Integer.parseInt(t[1]) == ownerIndex && target.x == Float.parseFloat(u[0]) && target.y == Float.parseFloat(u[1])) return x;
+			}
+		}
+		return -1;
+	}
 
-	public void addClientEntity(String msg) {
+	public void addPudgeEntity(String msg) {
+	}
+	
+	public void addHookEntity(String msg) {
 	}
 
 	public void generateClientEntities() {

@@ -55,6 +55,9 @@ public class PudgeEntity extends Entity implements LightSource {
 	protected PudgeEntity targetEnemy;
 	protected Vector2 target;
 	protected double targetRotation;
+	
+	protected Vector2 hookTarget;
+	protected boolean isGrapple;
 
 	// Rendering
 	protected Animation ani;
@@ -96,6 +99,8 @@ public class PudgeEntity extends Entity implements LightSource {
 
 		// Controls
 		boolean actionCommitted = false;
+		hookTarget = null;
+		isGrapple = false;
 
 		if (controllable && canMove && !stats.isOpen) {
 			// Stats
@@ -120,11 +125,14 @@ public class PudgeEntity extends Entity implements LightSource {
 				if (!Game.keyInput.specialHook.isDown) {
 					if (hookCooldown <= 0) {
 						if (setHook(Game.s.screenToWorldPoint(left), HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
+						hookTarget = Game.s.screenToWorldPoint(left);
 						actionCommitted = true;
 					}
 				} else {
 					if (grappleCooldown <= 0) {
 						if (setHook(Game.s.screenToWorldPoint(left), HookType.GRAPPLE)) grappleCooldown = GRAPPLEHOOK_COOLDOWN;
+						hookTarget = Game.s.screenToWorldPoint(left);
+						isGrapple = true;
 						actionCommitted = true;
 					}
 				}
@@ -290,13 +298,15 @@ public class PudgeEntity extends Entity implements LightSource {
 		s += transform.position.getNetString();
 		s += ":" + rigidbody.velocity.getNetString() + ":";
 		s += (target == null) ? "null" : target.getNetString();
-		s += ":" + team;
+		s += ":" + team + ":";
+		s += (hookTarget == null) ? "null" : hookTarget.getNetString();
+		s += ":" + isGrapple;
 		return s;
 	}
 
 	public void setNetworkString(String s) {
 		String[] t = s.split(":");
-		System.out.println(s);
+		
 		transform.position.setNetString(t[1]);
 		rigidbody.velocity.setNetString(t[2]);
 		if (t[3].equals("null")) {
@@ -304,6 +314,13 @@ public class PudgeEntity extends Entity implements LightSource {
 		} else {
 			target = new Vector2();
 			target.setNetString(t[3]);
+		}
+		
+		if(!t[5].equals("null")){ 
+			String[] u = t[5].split(" ");
+			Vector2 hookTarget = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
+			if(t[6].equals("false")) setHook(hookTarget, HookType.NORMAL);
+			else setHook(hookTarget, HookType.GRAPPLE);
 		}
 	}
 

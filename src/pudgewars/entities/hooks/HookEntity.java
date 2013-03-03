@@ -36,6 +36,8 @@ public class HookEntity extends Entity implements LightSource {
 	// Render
 	protected Image img;
 	protected boolean isRotating = true;
+	
+	public Vector2 target;
 
 	public HookEntity(PudgeEntity e, String s, Vector2 target) {
 		super(e.transform.position, new Vector2(1, 1));
@@ -48,6 +50,8 @@ public class HookEntity extends Entity implements LightSource {
 		rigidbody.speed = e.stats.hookSpeed.getValue();
 		this.damage = (int) e.stats.hookDamage.getValue();
 
+		this.target = target;
+		
 		rigidbody.physicsSlide = false;
 		rigidbody.setDirection(target);
 
@@ -195,4 +199,8 @@ public class HookEntity extends Entity implements LightSource {
 		Shape circle = new Ellipse2D.Double(v.x - r, v.y - r, r * 2, r * 2);
 		return circle;
 	}
+	
+	/*
+	 * Network
+	 */
 }
