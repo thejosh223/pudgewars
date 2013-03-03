@@ -8,7 +8,7 @@ import pudgewars.network.ServerNetwork;
 import pudgewars.util.Time;
 
 public class ServerGame extends Game {
-
+	private static Object lock = new Object();
 	List<ClientNode> clients;
 
 	public ServerGame(List<ClientNode> clients) {
@@ -34,9 +34,11 @@ public class ServerGame extends Game {
 		
 		public void run() {
 			while (true) {
+				//System.out.println(msg);
 				String msg = client.getConnection().getMessage();
-				System.out.println(msg);
-				entities.entities.get(index).setNetworkString(msg);
+				synchronized(lock){
+					entities.entities.get(index).setNetworkString(msg);
+				}
 			}
 		}
 	}
@@ -95,8 +97,9 @@ public class ServerGame extends Game {
 	}
 
 	protected void tick() {
-		super.tick();
-		
-		net.sendEntityData();
+		synchronized(lock){
+			super.tick();
+			net.sendEntityData();
+		}
 	}
 }

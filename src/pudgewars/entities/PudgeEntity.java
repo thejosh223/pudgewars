@@ -286,7 +286,7 @@ public class PudgeEntity extends Entity implements LightSource {
 	 * Network
 	 */
 	public String getNetworkString() {
-		String s = "";
+		String s = "PUDGE:";
 		s += transform.position.getNetString();
 		s += ":" + rigidbody.velocity.getNetString() + ":";
 		s += (target == null) ? "null" : target.getNetString();
@@ -296,16 +296,14 @@ public class PudgeEntity extends Entity implements LightSource {
 
 	public void setNetworkString(String s) {
 		String[] t = s.split(":");
-		if (!t[0].equals(transform.position.getNetString())) {
-			System.out.println("Server corrected client position from " + transform.position.getNetString() + " to " + t[0]);
-		}
-		transform.position.setNetString(t[0]);
-		rigidbody.velocity.setNetString(t[1]);
-		if (t[2].equals("null") && target == null) {
+		System.out.println(s);
+		transform.position.setNetString(t[1]);
+		rigidbody.velocity.setNetString(t[2]);
+		if (t[3].equals("null")) {
 			target = null;
-		} else if (!t[2].equals("null")) {
+		} else {
 			target = new Vector2();
-			target.setNetString(t[2]);
+			target.setNetString(t[3]);
 		}
 	}
 
