@@ -23,7 +23,7 @@ public class HealingFountainEntity extends LightSourceEntity {
 				Entity e = Game.entities.entities.get(i);
 				if (e.transform.position.distance(transform.position) <= HEALING_RADIUS) {
 					if (e instanceof PudgeEntity) {
-						((PudgeEntity) e).stats.addLife(HEAL_AMOUNT);
+						if(!((PudgeEntity) e).controllable) ((PudgeEntity) e).stats.addLife(HEAL_AMOUNT);
 						Game.entities.addParticle(ParticleTypes.FOLLOW_SPARKLE, e, null, HEALING_INTERVAL);
 					}
 				}
