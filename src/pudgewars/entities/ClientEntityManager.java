@@ -11,7 +11,7 @@ public class ClientEntityManager extends EntityManager {
 	}
 
 	public void addPudgeEntity(String msg) {
-		System.out.println("GENERATE! " + msg);
+		System.out.println("PUDGE GENERATED! >> " + msg);
 		String t[] = msg.split(":");
 		String u[] = t[2].split(" ");
 		Vector2 position = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
@@ -28,6 +28,7 @@ public class ClientEntityManager extends EntityManager {
 	}
 	
 	public void addHookEntity(String msg) {
+		System.out.println("HOOK GENERATED! >> " + msg);
 		String t[] = msg.split(":");
 		String[] u = t[3].split(" ");
 		Vector2 click = new Vector2(Float.parseFloat(u[0]),Float.parseFloat(u[1]));
