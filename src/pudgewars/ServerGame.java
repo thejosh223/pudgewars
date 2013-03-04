@@ -14,6 +14,7 @@ public class ServerGame extends Game {
 	public ServerGame(List<ClientNode> clients) {
 		super(null, null, null);
 
+		isServer = true;
 		this.clients = clients;
 		net = new ServerNetwork(clients);
 	}

@@ -17,6 +17,8 @@ public class Game {
 	public static final int TILE_WIDTH = 20;
 	public static final int TILE_HEIGHT = 15;
 
+	public static boolean isServer;
+	
 	public boolean gameRunning = true;
 	public static CursorManager cursor;
 	public static EntityManager entities;
