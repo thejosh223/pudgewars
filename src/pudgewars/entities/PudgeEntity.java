@@ -143,21 +143,7 @@ public class PudgeEntity extends Entity implements LightSource {
 				right = Game.s.screenToWorldPoint(right);
 
 				// See if right clicked on any player
-				List<CollisionBox> l = Game.entities.getEntityListCollisionBoxes(right);
-				targetEnemy = null;
-				for (CollisionBox b : l) {
-					if (b.owner instanceof PudgeEntity && b.owner != this) {
-						PudgeEntity p = (PudgeEntity) b.owner;
-						if (!this.isTeammate(p) && p.shouldRender) {
-							System.out.println("Clicked on: " + p.name);
-							targetEnemy = p;
-							break;
-						}
-					}
-				}
-
-				if (targetEnemy == null) target = right;
-				else target = targetEnemy.transform.position.clone();
+				clickedOnPlayer(right);
 
 				actionCommitted = true;
 			}
@@ -201,7 +187,24 @@ public class PudgeEntity extends Entity implements LightSource {
 		// Un-comment this to have some fun!
 		// isHooking = false;
 	}
+	public void clickedOnPlayer(Vector2 right){
+		List<CollisionBox> l = Game.entities.getEntityListCollisionBoxes(right);
+		targetEnemy = null;
+		for (CollisionBox b : l) {
+			if (b.owner instanceof PudgeEntity && b.owner != this) {
+				PudgeEntity p = (PudgeEntity) b.owner;
+				if (!this.isTeammate(p) && p.shouldRender) {
+					System.out.println("Clicked on: " + p.name);
+					targetEnemy = p;
+					break;
+				}
+			}
+		}
 
+		if (targetEnemy == null) target = right;
+		else target = targetEnemy.transform.position.clone();
+	}
+	
 	public void render() {
 		if (!shouldRender) return;
 
@@ -301,6 +304,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		s += ":" + team + ":";
 		s += (hookTarget == null) ? "null" : hookTarget.getNetString();
 		s += ":" + isGrapple;
+		s += ":" + this.stats.life();
 		return s;
 	}
 
@@ -314,6 +318,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		} else {
 			target = new Vector2();
 			target.setNetString(t[3]);
+			clickedOnPlayer(target);
 		}
 		
 		if(!t[5].equals("null")){ 
@@ -322,6 +327,8 @@ public class PudgeEntity extends Entity implements LightSource {
 			if(t[6].equals("false")) setHook(hookTarget, HookType.NORMAL);
 			else setHook(hookTarget, HookType.GRAPPLE);
 		}
+		
+		this.stats.set_life(Integer.parseInt(t[7]));
 	}
 
 	/*

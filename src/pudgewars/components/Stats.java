@@ -71,6 +71,10 @@ public class Stats {
 	/*
 	 * Life
 	 */
+	public void set_life(int life) {
+		this._life = life;
+	}
+	
 	public int life() {
 		return _life;
 	}

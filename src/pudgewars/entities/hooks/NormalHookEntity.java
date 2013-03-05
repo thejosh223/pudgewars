@@ -39,6 +39,7 @@ public class NormalHookEntity extends HookEntity {
 		hooked.canTileCollide = true;
 		hooked.canMove = true;
 		hooked.attachedHook = null;
+		hooked.stats.restoreDefaults();
 		hooked = null;
 	}
 
