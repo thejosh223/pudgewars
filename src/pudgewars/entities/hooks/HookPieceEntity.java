@@ -35,7 +35,7 @@ public class HookPieceEntity extends Entity {
 
 		img = new BufferedImage[4];
 		for (int i = 0; i < img.length; i++)
-			img[i] = ImageHandler.get().getImage("rope", i, 0, 4, 4);
+			img[i] = ImageHandler.get().getImage("newrope", i, 0, 4, 4);
 	}
 
 	public void update() {
@@ -110,7 +110,7 @@ public class HookPieceEntity extends Entity {
 		if (next != null) renderBetweenLinks(next.transform.position);
 
 		// Draw the links between THIS and HOOK
-		if (prev == null) renderBetweenLinks(hook.transform.position);
+		if (prev == null) renderBetweenLinks(hook.getKnotPosition());
 
 		// Draw this link
 		double angle = 0;

@@ -36,7 +36,7 @@ public class HookEntity extends Entity implements LightSource {
 	// Render
 	protected Image img;
 	protected boolean isRotating = true;
-	
+
 	public Vector2 target;
 
 	public HookEntity(PudgeEntity e, String s, Vector2 target) {
@@ -51,7 +51,7 @@ public class HookEntity extends Entity implements LightSource {
 		this.damage = (int) e.stats.hookDamage.getValue();
 
 		this.target = target;
-		
+
 		rigidbody.physicsSlide = false;
 		rigidbody.setDirection(target);
 
@@ -62,7 +62,8 @@ public class HookEntity extends Entity implements LightSource {
 
 	public void update() {
 		// Spinning Animation
-		if (isRotating) transform.rotation = Rotation.clampRotation(transform.rotation - 0.4);
+		if (isRotating) transform.rotation = Rotation.clampRotation(transform.rotation - 0.025);
+		System.out.println(transform.rotation);
 
 		// Movement
 		rigidbody.updateVelocity();
@@ -122,12 +123,12 @@ public class HookEntity extends Entity implements LightSource {
 	}
 
 	public void render() {
-		// Game.s.g.drawImage(img, (int) (Window.CENTER_X - (Game.focus.x -
-		// transform.position.x) * Game.TILE_SIZE - img.getWidth(null) / 2), //
-		// (int) (Window.CENTER_Y - (Game.focus.y - transform.position.y) *
-		// Game.TILE_SIZE - img.getHeight(null) / 2), null);
-
 		Game.s.g.drawImage(img, transform.getAffineTransformation(), null);
+	}
+
+	public Vector2 getKnotPosition() {
+		return new Vector2(transform.position.x + -Math.sin(transform.rotation) * transform.drawScale.x / 2, //
+				transform.position.y + -Math.cos(transform.rotation) * transform.drawScale.y / 2);
 	}
 
 	public void setMovementType(MovementScheme m) {
@@ -199,7 +200,7 @@ public class HookEntity extends Entity implements LightSource {
 		Shape circle = new Ellipse2D.Double(v.x - r, v.y - r, r * 2, r * 2);
 		return circle;
 	}
-	
+
 	/*
 	 * Network
 	 */

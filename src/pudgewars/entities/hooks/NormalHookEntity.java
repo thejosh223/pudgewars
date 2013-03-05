@@ -10,8 +10,9 @@ import pudgewars.util.Vector2;
 public class NormalHookEntity extends HookEntity {
 
 	public NormalHookEntity(PudgeEntity e, Vector2 target) {
-		super(e, "hook", target);
+		super(e, "lasso3", target);
 		transform.scale = new Vector2(e.stats.hookSize.getValue(), e.stats.hookSize.getValue());
+		transform.drawScale = new Vector2(2, 2);
 	}
 
 	/*
@@ -69,7 +70,7 @@ public class NormalHookEntity extends HookEntity {
 			}
 		}
 	}
-	
+
 	public String getNetworkString() {
 		String s = "NORMALHOOK:" + Game.entities.entities.indexOf(owner) + ":";
 		s += (target == null) ? "null" : target.getNetString();
