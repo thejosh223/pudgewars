@@ -62,8 +62,7 @@ public class HookEntity extends Entity implements LightSource {
 
 	public void update() {
 		// Spinning Animation
-		if (isRotating) transform.rotation = Rotation.clampRotation(transform.rotation - 0.025);
-		System.out.println(transform.rotation);
+		if (isRotating) transform.rotation = Rotation.clampRotation(transform.rotation - 0.1);
 
 		// Movement
 		rigidbody.updateVelocity();
@@ -127,8 +126,8 @@ public class HookEntity extends Entity implements LightSource {
 	}
 
 	public Vector2 getKnotPosition() {
-		return new Vector2(transform.position.x + -Math.sin(transform.rotation) * transform.drawScale.x / 2, //
-				transform.position.y + -Math.cos(transform.rotation) * transform.drawScale.y / 2);
+		return new Vector2(transform.position.x + Math.cos(transform.rotation + Math.PI) * transform.drawScale.x / 2, //
+				transform.position.y + Math.sin(transform.rotation + Math.PI) * transform.drawScale.y / 2);
 	}
 
 	public void setMovementType(MovementScheme m) {
