@@ -62,3 +62,8 @@ Center Area Thing
 
 Center Healing Thing
 -Possibly a Hay-Bail? Giant Tree with Apples?
+
+Grapple-able Things
+-There will be 3 of these things on each of the sides of the map.
+-You will have a special hook that will allow you to grab onto it.
+-I think it might look good if these were the hay-bails, because itll look like the map is really on a farm.

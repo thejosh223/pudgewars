@@ -11,6 +11,7 @@ import pudgewars.Game;
 import pudgewars.ServerGame;
 import pudgewars.Window;
 import pudgewars.components.Rigidbody;
+import pudgewars.entities.hooks.HookEntity;
 import pudgewars.level.Map;
 import pudgewars.particles.FollowParticle;
 import pudgewars.particles.Particle;
@@ -72,18 +73,17 @@ public abstract class EntityManager {
 
 		// Init shouldRender = false
 		for (int i = 0; i < entities.size(); i++)
-			entities.get(i).shouldRender = true;
+			entities.get(i).shouldRender = false;
 
 		for (int i = 0; i < entities.size(); i++) {
-			Vector2 v = Game.s.worldToScreenPoint(entities.get(i).transform.position);
+			Entity other = entities.get(i);
+			Vector2 v = Game.s.worldToScreenPoint(other.transform.position);
 			for (int o = 0; o < entities.size(); o++) {
-				Entity e = entities.get(o);
-				if (e instanceof LightSource) {
-					// if (e.team == Team.freeForAll || e.team == player.team) {
-					// if (((LightSource) e).getLightShape().contains(v.x, v.y)) {
-					// entities.get(i).shouldRender = true;
-					// }
-					// }
+				Entity lightSourceTemp = entities.get(o);
+				if (player.isTeammate(lightSourceTemp) && lightSourceTemp instanceof LightSource) {
+					if (((LightSource) lightSourceTemp).getLightShape().contains(v.x, v.y)) {
+						other.shouldRender = true;
+					}
 				}
 			}
 		}
@@ -94,7 +94,7 @@ public abstract class EntityManager {
 			particles.get(i).render();
 
 		map.postRender();
-		// renderLightmap();
+		renderLightmap();
 	}
 
 	public void renderGUI() {
@@ -142,16 +142,16 @@ public abstract class EntityManager {
 		}
 		return l;
 	}
-	
-	public int containsHook(int ownerIndex, String click){
+
+	public int containsHook(int ownerIndex, String click) {
 		String[] u = click.split(" ");
-		Vector2 target = new Vector2(Float.parseFloat(u[0]),Float.parseFloat(u[1]));
-		for(int x = 0; x < entities.size(); x++){
+		Vector2 target = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
+		for (int x = 0; x < entities.size(); x++) {
 			String net = entities.get(x).getNetworkString();
 			String[] t = net.split(":");
-			if(t[0].equals("NORMALHOOK") || t[0].equals("GRAPPLEHOOK")){
+			if (t[0].equals("NORMALHOOK") || t[0].equals("GRAPPLEHOOK")) {
 				u = t[2].split(" ");
-				if(Integer.parseInt(t[1]) == ownerIndex && target.x == Float.parseFloat(u[0]) && target.y == Float.parseFloat(u[1])) return x;
+				if (Integer.parseInt(t[1]) == ownerIndex && target.x == Float.parseFloat(u[0]) && target.y == Float.parseFloat(u[1])) return x;
 			}
 		}
 		return -1;
@@ -159,7 +159,7 @@ public abstract class EntityManager {
 
 	public void addPudgeEntity(String msg) {
 	}
-	
+
 	public void addHookEntity(String msg) {
 	}
 

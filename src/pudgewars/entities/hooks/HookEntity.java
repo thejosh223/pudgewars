@@ -42,6 +42,7 @@ public class HookEntity extends Entity implements LightSource {
 	public HookEntity(PudgeEntity e, String s, Vector2 target) {
 		super(e.transform.position, new Vector2(1, 1));
 		this.team = e.team;
+		System.out.println("Instanted: " + team.name());
 
 		owner = e;
 		hooked = null;
@@ -62,7 +63,7 @@ public class HookEntity extends Entity implements LightSource {
 
 	public void update() {
 		// Spinning Animation
-		if (isRotating) transform.rotation = Rotation.clampRotation(transform.rotation - 0.1);
+		if (isRotating) transform.rotation = Rotation.clampRotation(transform.rotation + 0.2);
 
 		// Movement
 		rigidbody.updateVelocity();
@@ -122,6 +123,8 @@ public class HookEntity extends Entity implements LightSource {
 	}
 
 	public void render() {
+		if (!shouldRender) return;
+
 		Game.s.g.drawImage(img, transform.getAffineTransformation(), null);
 	}
 

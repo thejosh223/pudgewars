@@ -26,9 +26,9 @@ public class LightSourceEntity extends Entity implements LightSource {
 	}
 
 	public Shape getLightShape() {
+		// Old Method
 		Vector2 v = Game.s.worldToScreenPoint(transform.position);
 		v.scale(1.0 / Window.LIGHTMAP_MULT);
-		// Rectangle2D rect = new Rectangle2D.Double(v.x - width / 2, v.y - height / 2, width, height);
 		Ellipse2D rect = new Ellipse2D.Double(v.x - width / 2, v.y - height / 2, width, height);
 		return rect;
 	}

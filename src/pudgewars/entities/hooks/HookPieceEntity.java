@@ -110,7 +110,7 @@ public class HookPieceEntity extends Entity {
 		if (next != null) renderBetweenLinks(next.transform.position);
 
 		// Draw the links between THIS and HOOK
-		if (prev == null) renderBetweenLinks(hook.getKnotPosition());
+		// if (prev == null) renderBetweenLinks(hook.getKnotPosition());
 
 		// Draw this link
 		double angle = 0;
