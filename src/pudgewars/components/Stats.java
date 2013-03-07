@@ -23,7 +23,7 @@ public class Stats {
 	public BaseStat moveSpeed = new BaseStat(this, "MoveSpeed", 0, 3.8, 0.4, 1);
 
 	// Hook Data
-	public BaseStat hookSize = new BaseStat(this, "Hook Size", 5, 0.75, 0.25, 1);
+	public BaseStat hookSize = new BaseStat(this, "Hook Size", 5, 0.75, 0.1, 1);
 	public BaseStat hookSpeed = new BaseStat(this, "Hook Speed", 3, 8, 1, 1);
 	public BaseStat hookRange = new BaseStat(this, "Hook Range", 4, 14, 2, 1);
 	public BaseStat hookDamage = new BaseStat(this, "Hook Damage", 2, 4, 1, 1);
@@ -132,7 +132,7 @@ public class Stats {
 		if (isOpen) {
 			for (int i = 0; i < CharStat.length; i++) {
 				if (ref[i].drawButtons(10, 10 + i * (16 + 4))) {
-					if (ref[i].cost <= experience) {
+					if (ref[i].getCost() <= experience) {
 						experience -= ref[i].getCost();
 						ref[i].setLevel(ref[i].level + 1);
 						pudge.shouldSendNetworkData = true;

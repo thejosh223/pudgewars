@@ -93,6 +93,11 @@ public class PudgeEntity extends Entity implements LightSource {
 	public void update() {
 		if (rigidbody.isMoving()) ani.update();
 
+		if (Game.isServer) {
+			System.out.println(stats.getNetString());
+			stats.restoreDefaults();
+		}
+
 		if (!canMove) target = null;
 
 		// Stats

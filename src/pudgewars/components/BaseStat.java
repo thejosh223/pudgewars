@@ -14,9 +14,9 @@ public class BaseStat {
 	public Image baseImage;
 	public Image modImage;
 
-	public double baseValue;
-	public double increment;
-	public double cost;
+	private double baseValue;
+	private double increment;
+	private double cost;
 
 	public int level;
 
@@ -46,12 +46,12 @@ public class BaseStat {
 		stats.restoreDefaults();
 	}
 
-	public double getCost() {
-		return cost * Math.pow(1.4, level);
+	public int getCost() {
+		return (int) (cost * Math.pow(1.5, level));
 	}
 
 	public double getValue() {
-		return baseValue + increment * Math.pow(cost, level);
+		return baseValue + increment * level;
 	}
 
 	public String getNetString() {
