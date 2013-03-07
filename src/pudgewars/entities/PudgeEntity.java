@@ -95,11 +95,6 @@ public class PudgeEntity extends Entity implements LightSource {
 	public void update() {
 		if (rigidbody.isMoving()) ani.update();
 
-		// if (Game.isServer) {
-		// System.out.println(stats.getNetString());
-		// stats.restoreDefaults();
-		// }
-
 		if (!canMove) target = null;
 
 		// Stats
@@ -132,6 +127,8 @@ public class PudgeEntity extends Entity implements LightSource {
 						hookTarget = Game.s.screenToWorldPoint(left);
 						shouldSendNetworkData = true;
 					}
+
+					canEntityCollide = true;
 				} else {
 					if (grappleCooldown <= 0) {
 						if (setHook(Game.s.screenToWorldPoint(left), HookType.GRAPPLE)) grappleCooldown = GRAPPLEHOOK_COOLDOWN;
@@ -269,8 +266,8 @@ public class PudgeEntity extends Entity implements LightSource {
 	 */
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return true;
-		if (canEntityCollide) {
-			if (b instanceof PudgeEntity) return true;
+		if (b instanceof PudgeEntity) {
+			return canEntityCollide ? true : isHooking;
 		}
 		if (canTileCollide) {
 			if (b instanceof Tile) {
