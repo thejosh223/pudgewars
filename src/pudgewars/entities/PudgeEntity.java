@@ -55,7 +55,7 @@ public class PudgeEntity extends Entity implements LightSource {
 	protected PudgeEntity targetEnemy;
 	protected Vector2 target;
 	protected double targetRotation;
-	
+
 	protected Vector2 hookTarget;
 	protected boolean isGrapple;
 
@@ -93,21 +93,18 @@ public class PudgeEntity extends Entity implements LightSource {
 	public void update() {
 		if (rigidbody.isMoving()) ani.update();
 
-		if (!canMove) {
-			target = null;
+		if (!canMove) target = null;
+
+		// Stats
+		if (controllable && Game.keyInput.buyMode.wasPressed()) {
+			stats.isOpen ^= true; // Cool way to NOT
 		}
 
 		// Controls
-		boolean actionCommitted = false;
 		hookTarget = null;
 		isGrapple = false;
 
 		if (controllable && canMove && !stats.isOpen) {
-			// Stats
-			if (Game.keyInput.buyMode.wasPressed()) {
-				stats.isOpen ^= true; // Cool way to NOT
-			}
-
 			if (hookCooldown > 0) hookCooldown -= Time.getTickInterval();
 			if (hookCooldown < 0) hookCooldown = 0;
 			if (grappleCooldown > 0) grappleCooldown -= Time.getTickInterval();
@@ -126,14 +123,14 @@ public class PudgeEntity extends Entity implements LightSource {
 					if (hookCooldown <= 0) {
 						if (setHook(Game.s.screenToWorldPoint(left), HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
 						hookTarget = Game.s.screenToWorldPoint(left);
-						actionCommitted = true;
+						shouldSendNetworkData = true;
 					}
 				} else {
 					if (grappleCooldown <= 0) {
 						if (setHook(Game.s.screenToWorldPoint(left), HookType.GRAPPLE)) grappleCooldown = GRAPPLEHOOK_COOLDOWN;
 						hookTarget = Game.s.screenToWorldPoint(left);
 						isGrapple = true;
-						actionCommitted = true;
+						shouldSendNetworkData = true;
 					}
 				}
 			}
@@ -145,7 +142,7 @@ public class PudgeEntity extends Entity implements LightSource {
 				// See if right clicked on any player
 				clickedOnPlayer(right);
 
-				actionCommitted = true;
+				shouldSendNetworkData = true;
 			}
 
 			// Rotate the Clicker
@@ -179,15 +176,13 @@ public class PudgeEntity extends Entity implements LightSource {
 		}
 
 		// send the movement made to the server
-		if (controllable && actionCommitted) {
-			Game.net.sendEntityData(getNetworkString());
-		}
+		// if (controllable && actionCommitted) {
+		// Game.net.sendEntityData(getNetworkString());
+		// }
 		rigidbody.updateVelocity();
-
-		// Un-comment this to have some fun!
-		// isHooking = false;
 	}
-	public void clickedOnPlayer(Vector2 right){
+
+	public void clickedOnPlayer(Vector2 right) {
 		List<CollisionBox> l = Game.entities.getEntityListCollisionBoxes(right);
 		targetEnemy = null;
 		for (CollisionBox b : l) {
@@ -204,7 +199,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		if (targetEnemy == null) target = right;
 		else target = targetEnemy.transform.position.clone();
 	}
-	
+
 	public void render() {
 		if (!shouldRender) return;
 
@@ -296,6 +291,13 @@ public class PudgeEntity extends Entity implements LightSource {
 	/*
 	 * Network
 	 */
+
+	public void sendNetworkData() {
+		if (controllable) {
+			super.sendNetworkData();
+		}
+	}
+
 	public String getNetworkString() {
 		String s = "PUDGE:";
 		s += transform.position.getNetString();
@@ -304,13 +306,13 @@ public class PudgeEntity extends Entity implements LightSource {
 		s += ":" + team + ":";
 		s += (hookTarget == null) ? "null" : hookTarget.getNetString();
 		s += ":" + isGrapple;
-		s += ":" + this.stats.life();
+		s += ":" + stats.getNetString();
 		return s;
 	}
 
 	public void setNetworkString(String s) {
 		String[] t = s.split(":");
-		
+
 		transform.position.setNetString(t[1]);
 		rigidbody.velocity.setNetString(t[2]);
 		if (t[3].equals("null")) {
@@ -320,15 +322,15 @@ public class PudgeEntity extends Entity implements LightSource {
 			target.setNetString(t[3]);
 			clickedOnPlayer(target);
 		}
-		
-		if(!t[5].equals("null")){ 
+
+		if (!t[5].equals("null")) {
 			String[] u = t[5].split(" ");
 			Vector2 hookTarget = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
-			if(t[6].equals("false")) setHook(hookTarget, HookType.NORMAL);
+			if (t[6].equals("false")) setHook(hookTarget, HookType.NORMAL);
 			else setHook(hookTarget, HookType.GRAPPLE);
 		}
-		
-		this.stats.set_life(Integer.parseInt(t[7]));
+
+		this.stats.setNetString(t[7]);
 	}
 
 	/*

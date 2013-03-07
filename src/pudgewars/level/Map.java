@@ -139,7 +139,7 @@ public class Map {
 		Graphics2D g = (Graphics2D) minimap.getGraphics();
 		g.drawImage(minimapBase, 0, 0, null);
 
-		Game.s.g.drawImage(minimap, 10, 10, minimap.getWidth(), minimap.getHeight(), null);
+		// Game.s.g.drawImage(minimap, 10, 10, minimap.getWidth(), minimap.getHeight(), null);
 	}
 
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {

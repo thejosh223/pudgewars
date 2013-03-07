@@ -1,5 +1,6 @@
 package pudgewars.entities;
 
+import pudgewars.Game;
 import pudgewars.components.Rigidbody;
 import pudgewars.components.Transform;
 import pudgewars.interfaces.BBOwner;
@@ -26,6 +27,7 @@ public abstract class Entity implements BBOwner {
 
 	// Network Data
 	public int networkID;
+	public boolean shouldSendNetworkData = false;
 
 	public Entity(Vector2 position) {
 		this(position, Vector2.ZERO.clone());
@@ -84,6 +86,13 @@ public abstract class Entity implements BBOwner {
 	/*
 	 * Network
 	 */
+	public void sendNetworkData() {
+		if (shouldSendNetworkData) {
+			Game.net.sendEntityData(getNetworkString());
+			shouldSendNetworkData = false;
+		}
+	}
+
 	public String getNetworkString() {
 		String s = "" + networkID + ":";
 		s += transform.position.getNetString();

@@ -9,7 +9,7 @@ import pudgewars.render.CursorManager;
 
 public class ClientGame extends Game {
 	private static Object lock = new Object();
-	
+
 	public ClientGame(Window w, Keys k, MouseButtons m, MyConnection conn) {
 		super(w, k, m);
 		net = new ClientNetwork(conn);
@@ -21,26 +21,31 @@ public class ClientGame extends Game {
 
 		entities = new ClientEntityManager();
 		entities.generateClientEntities();
-		
+
 		Thread t = new Thread(new getEntityData());
 		t.start();
 	}
 
 	private static class getEntityData implements Runnable {
 		public void run() {
-			while(true){
+			while (true) {
 				net.clearBuffer();
-				synchronized(lock) {
+				synchronized (lock) {
 					net.getEntityData();
 				}
 			}
 		}
 	}
-		
+
 	protected void tick() {
-		synchronized(lock){
+		synchronized (lock) {
 			super.tick();
 			controls();
 		}
+	}
+
+	protected void postRender() {
+		super.postRender();
+		entities.sendNetworkData();
 	}
 }

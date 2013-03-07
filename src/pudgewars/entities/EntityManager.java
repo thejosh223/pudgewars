@@ -8,10 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pudgewars.Game;
-import pudgewars.ServerGame;
 import pudgewars.Window;
 import pudgewars.components.Rigidbody;
-import pudgewars.entities.hooks.HookEntity;
 import pudgewars.level.Map;
 import pudgewars.particles.FollowParticle;
 import pudgewars.particles.Particle;
@@ -167,5 +165,8 @@ public abstract class EntityManager {
 	}
 
 	public void sendPudgeEntities() {
+	}
+
+	public void sendNetworkData() {
 	}
 }

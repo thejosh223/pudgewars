@@ -106,6 +106,8 @@ public class HookPieceEntity extends Entity {
 	}
 
 	public void render() {
+		if (!shouldRender) return;
+
 		// Draw the links between THIS and NEXT
 		if (next != null) renderBetweenLinks(next.transform.position);
 

@@ -41,13 +41,24 @@ public class BaseStat {
 		return false;
 	}
 
-	public void levelUp() {
-		level++;
-		cost *= 1.4;
+	public void setLevel(int level) {
+		this.level = level;
 		stats.restoreDefaults();
 	}
 
+	public double getCost() {
+		return cost * Math.pow(1.4, level);
+	}
+
 	public double getValue() {
-		return baseValue + increment * level;
+		return baseValue + increment * Math.pow(cost, level);
+	}
+
+	public String getNetString() {
+		return "" + level;
+	}
+
+	public void setNetString(String s) {
+		this.level = Integer.parseInt(s);
 	}
 }

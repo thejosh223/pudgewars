@@ -27,17 +27,17 @@ public class ServerGame extends Game {
 	private static class handleClientMessages implements Runnable {
 		private ClientNode client;
 		int index;
-		
-		public handleClientMessages(ClientNode client, int index){
+
+		public handleClientMessages(ClientNode client, int index) {
 			this.client = client;
 			this.index = index;
 		}
-		
+
 		public void run() {
 			while (true) {
-				//System.out.println(msg);
 				String msg = client.getConnection().getMessage();
-				synchronized(lock){
+				System.out.println(msg);
+				synchronized (lock) {
 					entities.entities.get(index).setNetworkString(msg);
 				}
 			}
@@ -46,11 +46,11 @@ public class ServerGame extends Game {
 
 	public void gameLoop() {
 		// Have separate threads listening to each client
-		for(int x = 0; x< clients.size(); x++){
+		for (int x = 0; x < clients.size(); x++) {
 			Thread t = new Thread(new handleClientMessages(clients.get(x), x));
 			t.start();
 		}
-		
+
 		long timeBefore = System.nanoTime();
 		long timePassed = System.nanoTime() - timeBefore;
 		float unprocessedSeconds = 0;
@@ -98,7 +98,7 @@ public class ServerGame extends Game {
 	}
 
 	protected void tick() {
-		synchronized(lock){
+		synchronized (lock) {
 			super.tick();
 			net.sendEntityData();
 		}

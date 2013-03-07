@@ -120,6 +120,8 @@ public class Game {
 				fps++;
 			}
 
+			postRender();
+
 			try {
 				Thread.sleep(1);
 			} catch (InterruptedException e) {
@@ -138,7 +140,7 @@ public class Game {
 		entities.killUpdateEntities();
 	}
 
-	private void render() {
+	protected void render() {
 		// Render Map and Entities
 		entities.render();
 		// Render GUI
@@ -147,6 +149,9 @@ public class Game {
 		// Flips the page between the two buffers
 		s.drawToGraphics((Graphics2D) Window.strategy.getDrawGraphics());
 		Window.strategy.show();
+	}
+
+	protected void postRender() {
 	}
 
 	public void controls() {

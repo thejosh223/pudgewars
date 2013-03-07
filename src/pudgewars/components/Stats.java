@@ -69,12 +69,30 @@ public class Stats {
 	}
 
 	/*
+	 * Network
+	 */
+	public String getNetString() {
+		String s = experience + "]" + _life;
+		for (int i = 0; i < ref.length; i++)
+			s += "]" + ref[i].getNetString();
+		return s;
+	}
+
+	public void setNetString(String s) {
+		String[] t = s.split("]");
+		experience = Integer.parseInt(t[0]);
+		_life = Integer.parseInt(t[1]);
+		for (int i = 2; i < ref.length + 2; i++)
+			ref[i - 2].setNetString(t[i]);
+	}
+
+	/*
 	 * Life
 	 */
 	public void set_life(int life) {
 		this._life = life;
 	}
-	
+
 	public int life() {
 		return _life;
 	}
@@ -115,8 +133,9 @@ public class Stats {
 			for (int i = 0; i < CharStat.length; i++) {
 				if (ref[i].drawButtons(10, 10 + i * (16 + 4))) {
 					if (ref[i].cost <= experience) {
-						experience -= ref[i].cost;
-						ref[i].levelUp();
+						experience -= ref[i].getCost();
+						ref[i].setLevel(ref[i].level + 1);
+						pudge.shouldSendNetworkData = true;
 					}
 				}
 			}
