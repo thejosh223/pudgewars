@@ -28,6 +28,7 @@ public class NormalHookEntity extends HookEntity {
 			}
 		}
 		e.canTileCollide = false;
+		// e.canEntityCollide = true;
 		e.canMove = false;
 		e.attachedHook = this;
 
@@ -38,6 +39,7 @@ public class NormalHookEntity extends HookEntity {
 
 	public void detachPudge() {
 		hooked.canTileCollide = true;
+		// hooked.canEntityCollide = false;
 		hooked.canMove = true;
 		hooked.attachedHook = null;
 		hooked.stats.restoreDefaults();

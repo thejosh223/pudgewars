@@ -45,6 +45,7 @@ public class PudgeEntity extends Entity implements LightSource {
 	public boolean isHooking;
 	public boolean canMove;
 	public boolean canTileCollide;
+	public boolean canEntityCollide;
 	public NormalHookEntity attachedHook;
 
 	// Attacking
@@ -72,6 +73,7 @@ public class PudgeEntity extends Entity implements LightSource {
 		this.team = team;
 
 		canTileCollide = true;
+		canEntityCollide = true;
 		canMove = true;
 
 		stats = new Stats(this);
@@ -93,10 +95,10 @@ public class PudgeEntity extends Entity implements LightSource {
 	public void update() {
 		if (rigidbody.isMoving()) ani.update();
 
-		if (Game.isServer) {
-			System.out.println(stats.getNetString());
-			stats.restoreDefaults();
-		}
+		// if (Game.isServer) {
+		// System.out.println(stats.getNetString());
+		// stats.restoreDefaults();
+		// }
 
 		if (!canMove) target = null;
 
@@ -267,7 +269,9 @@ public class PudgeEntity extends Entity implements LightSource {
 	 */
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return true;
-		if (b instanceof PudgeEntity) return true;
+		if (canEntityCollide) {
+			if (b instanceof PudgeEntity) return true;
+		}
 		if (canTileCollide) {
 			if (b instanceof Tile) {
 				if (((Tile) b).isPudgeSolid()) return true;

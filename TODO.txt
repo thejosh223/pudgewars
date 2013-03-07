@@ -2,6 +2,7 @@ To Do List
 Priority/Importance = 1(High) - 4(Low)
 Difficulty = A(High) - D(Low)
 
+----------- TODO -----------
 
 1B - Killing of Entities
 1B - Respawning
@@ -9,13 +10,13 @@ Difficulty = A(High) - D(Low)
 	- scores++
 
 2A - Cows are Hookable
-2B - Stats working properly
-	- When you kill, exp++
 2C - Better Art
 	- Water
 	- Hay Hookables
 	- Fountain Thing
 	- Stats
+2D - When you kill, you get more exp
+	- To be tested after killing + respawning is done
 
 3A - Special Hooks
 	- Dragging Damage
@@ -24,11 +25,17 @@ Difficulty = A(High) - D(Low)
 	- Pure Damage Hook
 3D - Displaying of Scores
 3D - Outside Lookable Area
+
 4A - Powerups
 	- Invisibility
 	- Speed Up
 	- Double Hook (?)
-
 4B - Full Screen Mode
 4B - Minimap w/ Fog of War
 4D - Add Game Timer
+4D - Add Dust Particles for Movement
+4D - Add Cowboy Bouncing
+
+----------- DONE -----------
+
+2B - Stats working properly
