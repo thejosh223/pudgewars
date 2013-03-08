@@ -22,12 +22,16 @@ public class ClientEntityManager extends EntityManager {
 		PudgeEntity pudge = new PudgeEntity(position, team);
 		pudge.ClientID = Integer.parseInt(t[2]);
 		pudge.wasUpdated = true;
-		
+
 		if (controllable) {
 			player = pudge;
 			player.controllable = true;
 		}
 		entities.add(pudge);
+	}
+
+	public void addCowEntity(String msg) {
+		
 	}
 
 	public void addHookEntity(String msg) {
@@ -44,14 +48,14 @@ public class ClientEntityManager extends EntityManager {
 		Game.net.getEntityData();
 		map.addLightSources(entities);
 	}
-	
-	public void removeUnupdatedEntities(){
+
+	public void removeUnupdatedEntities() {
 		Game.showRespawningScreen = true;
 		for (int x = 0; x < entities.size(); x++) {
 			Entity e = Game.entities.entities.get(x);
-			if(e instanceof PudgeEntity){
-				if(((PudgeEntity) e).controllable) Game.showRespawningScreen = false;
-				if(!e.wasUpdated) e.remove = true;
+			if (e instanceof PudgeEntity) {
+				if (((PudgeEntity) e).controllable) Game.showRespawningScreen = false;
+				if (!e.wasUpdated) e.remove = true;
 				else e.wasUpdated = false;
 			}
 		}
