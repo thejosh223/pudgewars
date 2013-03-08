@@ -121,15 +121,24 @@ public class Stats {
 		if (experience < 0) experience = 0;
 	}
 
+	/*
+	 * GUI
+	 */
+	public final static int LEFT_PADDING = Game.TILE_SIZE / 2;
+	public final static int BOT_PADDING = Game.TILE_SIZE / 2;
+	public final static int BAR_PADDING = Game.TILE_SIZE / 2;
+
 	public void onGUI() {
+		int barHeight = lifeImages[0].getHeight(null);
+
 		// Draw Life
-		GUI.partialHorizontalBar(lifeImages, 10, Game.s.height - 16, lifePercentage());
+		GUI.partialHorizontalBar(lifeImages, LEFT_PADDING, Game.s.height - (BOT_PADDING + barHeight), lifePercentage());
 
 		// Hook Cooldown
-		GUI.partialHorizontalBar(hookCooldownImages, 10, Game.s.height - 32, (1 - (pudge.hookCooldown / PudgeEntity.HOOK_COOLDOWN)));
+		GUI.partialHorizontalBar(hookCooldownImages, LEFT_PADDING, Game.s.height - (BOT_PADDING + barHeight * 2 + BAR_PADDING), (1 - (pudge.hookCooldown / PudgeEntity.HOOK_COOLDOWN)));
 
 		// Grapple Cooldown
-		GUI.partialHorizontalBar(grappleCooldownImages, 10, Game.s.height - 48, (1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
+		GUI.partialHorizontalBar(grappleCooldownImages, LEFT_PADDING, Game.s.height - (BOT_PADDING + barHeight * 3 + BAR_PADDING * 2), (1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
 
 		// Draw Experience
 		Image tImg[] = { expImages[(int) (experience / 10)], expImages[(int) (experience / 10) + 1] };

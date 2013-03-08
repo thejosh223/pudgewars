@@ -2,7 +2,6 @@ package pudgewars.entities;
 
 import java.util.List;
 
-import pudgewars.Game;
 import pudgewars.network.ClientNode;
 import pudgewars.util.Vector2;
 
@@ -10,7 +9,7 @@ public class ServerEntityManager extends EntityManager {
 	public ServerEntityManager(List<ClientNode> clients) {
 		super();
 
-		// Add the Pudge Entities to the list
+		// Add the Pudge Entities
 		int x = 0, y = 0;
 		for (int i = 0; i < clients.size(); i++) {
 			PudgeEntity p;
@@ -19,12 +18,16 @@ public class ServerEntityManager extends EntityManager {
 			p.ClientID = i;
 			entities.add(p);
 		}
+
+		// Add Cow Entities
+		
+
 		map.addLightSources(entities);
 	}
 
-	public void sendPudgeEntities() {
-		Game.net.sendPudgeEntities(entities);
-	}
+	// public void sendPudgeEntities() {
+	// Game.net.sendPudgeEntities(entities);
+	// }
 
 	public void updateEntities() {
 		for (int i = 0; i < entities.size(); i++)
@@ -32,8 +35,7 @@ public class ServerEntityManager extends EntityManager {
 		for (int i = 0; i < particles.size(); i++)
 			particles.get(i).update();
 	}
-	
-	public void respawn(){
-		
+
+	public void respawn() {
 	}
 }

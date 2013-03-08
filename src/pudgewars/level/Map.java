@@ -45,7 +45,7 @@ public class Map {
 	public Image[] respawnImages;
 	public double RESPAWN_INTERVAL = 4;
 	public double respawnInterval = RESPAWN_INTERVAL;
-	
+
 	public Map() {
 		Random r = new Random();
 
@@ -87,7 +87,7 @@ public class Map {
 		 */
 		minimapBase = ImageHandler.get().getImage("minimap");
 		minimap = new BufferedImage(minimapBase.getWidth(null), minimapBase.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-		
+
 		// Respawn Images
 		respawnImages = new Image[2];
 		respawnImages[0] = ImageHandler.get().getImage("respawn_empty");
@@ -146,14 +146,25 @@ public class Map {
 	}
 
 	public void onGUI() {
+		/*
+		 * Minimap
+		 */
 		Graphics2D g = (Graphics2D) minimap.getGraphics();
 		g.drawImage(minimapBase, 0, 0, null);
-
-		if(Game.showRespawningScreen){
-			respawnInterval -= Time.getTickInterval();
-			GUI.partialHorizontalBar(respawnImages, (Game.s.width/2) - (respawnImages[0].getWidth(null) / 2), (Game.s.height/2) - (respawnImages[0].getHeight(null) / 2), 1 - (respawnInterval/RESPAWN_INTERVAL));
-		}else respawnInterval = RESPAWN_INTERVAL;
 		// Game.s.g.drawImage(minimap, 10, 10, minimap.getWidth(), minimap.getHeight(), null);
+
+		/*
+		 * Respawning
+		 */
+		if (Game.showRespawningScreen) {
+			respawnInterval -= Time.getTickInterval();
+			GUI.partialHorizontalBar(respawnImages, (Game.s.width / 2) - (respawnImages[0].getWidth(null) / 2), (Game.s.height / 2) - (respawnImages[0].getHeight(null) / 2), 1 - (respawnInterval / RESPAWN_INTERVAL));
+		} else respawnInterval = RESPAWN_INTERVAL;
+
+		/*
+		 * Clock
+		 */
+		
 	}
 
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {
