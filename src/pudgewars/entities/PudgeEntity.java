@@ -178,8 +178,11 @@ public class PudgeEntity extends Entity implements LightSource {
 			if (targetEnemy.transform.position.distance(transform.position) < ATK_RANGE) {
 				if (attackInterval == 0) {
 					attackInterval = 0.5;
-					targetEnemy.stats.subLife(4);
 					Game.entities.addParticle(ParticleTypes.DIE, targetEnemy, null, 0.25);
+					if(targetEnemy.stats.subLife(4)){
+						stats.addExp(2);
+						targetEnemy = null;
+					}
 				}
 			}
 		}

@@ -14,8 +14,6 @@ Difficulty = A(High) - D(Low)
 	- Hay Hookables
 	- Fountain Thing
 	- Stats
-2D - When you kill, you get more exp
-	- To be tested after killing + respawning is done
 
 3A - Special Hooks
 	- Dragging Damage
@@ -39,6 +37,7 @@ Difficulty = A(High) - D(Low)
 
 2B - Stats working properly
 1B - Killing of Entities
+2D - When you kill, you get more exp
 
 ------PARTIALLY DONE--------
 
