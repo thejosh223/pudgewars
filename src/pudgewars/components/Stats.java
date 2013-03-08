@@ -117,7 +117,7 @@ public class Stats {
 
 	public void addExp(int amt) {
 		experience += amt;
-		if (experience > (expImages.length - 1) * 10) experience = (expImages.length - 1 * 10);
+		if (experience > (expImages.length - 1) * 10) experience = ((expImages.length - 1) * 10);
 		if (experience < 0) experience = 0;
 	}
 
@@ -132,9 +132,14 @@ public class Stats {
 		GUI.partialHorizontalBar(grappleCooldownImages, 10, Game.s.height - 48, (1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
 
 		// Draw Experience
-		Image tImg[] = { expImages[(int) (experience / 10)], expImages[(int) (experience / 10) + 1] };
-		GUI.partialHorizontalBar(tImg, (Game.s.width - expImages[0].getWidth(null)) / 2, Game.s.height - expImages[0].getHeight(null), ((((int) experience) % 10) / 10.0));
-
+		if(experience < 30){
+			Image tImg[] = { expImages[(int) (experience / 10)], expImages[(int) (experience / 10) + 1] };
+			GUI.partialHorizontalBar(tImg, (Game.s.width - expImages[0].getWidth(null)) / 2, Game.s.height - expImages[0].getHeight(null), ((((int) experience) % 10) / 10.0));
+		}else{
+			Image tImg[] = { expImages[(int) (experience / 10)], expImages[(int) (experience / 10)] };
+			GUI.partialHorizontalBar(tImg, (Game.s.width - expImages[0].getWidth(null)) / 2, Game.s.height - expImages[0].getHeight(null), ((((int) experience)) / 10.0));
+		}
+		
 		if (isOpen) {
 			for (int i = 0; i < CharStat.length; i++) {
 				if (ref[i].drawButtons(10, 10 + i * (16 + 4))) {
