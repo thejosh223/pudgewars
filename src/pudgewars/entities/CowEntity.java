@@ -1,17 +1,24 @@
 package pudgewars.entities;
 
+import java.awt.Image;
+import java.awt.geom.AffineTransform;
+import java.util.Random;
+
 import pudgewars.Game;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.entities.hooks.NormalHookEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 import pudgewars.util.Animation;
+import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
 public class CowEntity extends Entity {
 	public final static double COLLISION_WIDTH = 1;
 	public final static double COLLISION_HEIGHT = 1;
+
+	protected Image clicker;
 
 	// Hooking
 	public boolean canMove;
@@ -41,15 +48,19 @@ public class CowEntity extends Entity {
 		ani = Animation.makeAnimation("cow", 8, 32, 32, 0.05);
 		ani.startAnimation();
 
+		clicker = ImageHandler.get().getImage("selector");
 		target = null;
 	}
 
 	public void update() {
 		if (rigidbody.isMoving()) ani.update();
 
-		rigidbody.updateVelocity();
-
 		if (!canMove) target = null;
+
+		Random r = new Random();
+		if (r.nextInt(60) == 1) {
+			target = Vector2.add(transform.position, new Vector2(r.nextInt(3) - 1, r.nextInt(3) - 1));
+		}
 
 		// Target Movement
 		if (target != null) {
@@ -63,6 +74,9 @@ public class CowEntity extends Entity {
 				rigidbody.setDirection(target);
 			}
 		}
+
+		rigidbody.updateVelocity();
+		transform.position.println();
 	}
 
 	public void render() {
@@ -70,6 +84,14 @@ public class CowEntity extends Entity {
 
 		// Draw Pudge
 		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
+
+		if (target != null) {
+			Vector2 targetLocation = Game.s.worldToScreenPoint(target);
+			AffineTransform a = new AffineTransform();
+			a.translate((int) (targetLocation.x - clicker.getWidth(null) / 2), (int) (targetLocation.y - clicker.getHeight(null) / 2));
+			Game.s.g.drawImage(clicker, a, null);
+		}
+
 	}
 
 	/*
@@ -111,7 +133,6 @@ public class CowEntity extends Entity {
 		s += transform.position.getNetString();
 		s += ":" + rigidbody.velocity.getNetString() + ":";
 		s += (target == null) ? "null" : target.getNetString();
-		s += ":" + team + ":";
 		return s;
 	}
 

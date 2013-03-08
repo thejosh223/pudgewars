@@ -31,7 +31,18 @@ public class ClientEntityManager extends EntityManager {
 	}
 
 	public void addCowEntity(String msg) {
-		
+		System.out.println("COW GENERATED! >> " + msg);
+		String t[] = msg.split(":");
+		Vector2 position = new Vector2(t[3]);
+
+		// Team team = (t[6].equals("leftTeam")) ? Team.leftTeam : Team.rightTeam;
+		// boolean controllable = (t[0].equals("true")) ? true : false;
+
+		CowEntity c = new CowEntity(position, Team.noTeam);
+		c.ClientID = Integer.parseInt(t[2]);
+		c.wasUpdated = true;
+
+		entities.add(c);
 	}
 
 	public void addHookEntity(String msg) {

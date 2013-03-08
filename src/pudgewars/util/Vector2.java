@@ -16,6 +16,10 @@ public class Vector2 {
 		this.y = y;
 	}
 
+	public Vector2(String s) {
+		setNetString(s);
+	}
+
 	public void set(double x, double y) {
 		this.x = x;
 		this.y = y;
