@@ -34,7 +34,7 @@ public class PudgeEntity extends Entity implements LightSource {
 
 	public final static double ATK_RANGE = 2;
 	
-	public final static double RESPAWN_INTERVAL = 2;
+	public final static double RESPAWN_INTERVAL = 4;
 
 	public Stats stats;
 
@@ -67,6 +67,7 @@ public class PudgeEntity extends Entity implements LightSource {
 	protected Image fullLife;
 	protected Image emptyLife;
 	
+	// Respawning
 	public double respawnInterval = RESPAWN_INTERVAL;
 
 	public PudgeEntity(Vector2 position, Team team) {
@@ -91,7 +92,7 @@ public class PudgeEntity extends Entity implements LightSource {
 
 		clicker = ImageHandler.get().getImage("selector");
 		target = null;
-
+		
 		fullLife = ImageHandler.get().getImage("life_full");
 		emptyLife = ImageHandler.get().getImage("life_empty");
 	}

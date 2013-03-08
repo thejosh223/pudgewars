@@ -46,9 +46,11 @@ public class ClientEntityManager extends EntityManager {
 	}
 	
 	public void removeUnupdatedEntities(){
+		Game.showRespawningScreen = true;
 		for (int x = 0; x < entities.size(); x++) {
 			Entity e = Game.entities.entities.get(x);
 			if(e instanceof PudgeEntity){
+				if(((PudgeEntity) e).controllable) Game.showRespawningScreen = false;
 				if(!e.wasUpdated) e.remove = true;
 				else e.wasUpdated = false;
 			}

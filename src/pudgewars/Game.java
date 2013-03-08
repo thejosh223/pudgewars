@@ -19,6 +19,8 @@ public class Game {
 
 	public static boolean isServer;
 
+	public static boolean showRespawningScreen = false;
+
 	public boolean gameRunning = true;
 	public static CursorManager cursor;
 	public static EntityManager entities;
