@@ -11,7 +11,7 @@ public class Stats {
 	public PudgeEntity pudge;
 
 	// Inventory Data
-	public int experience = 25;
+	private int experience = 25;
 	public boolean isOpen = false;
 	public Image[] statImages;
 	public Image[] expImages;
@@ -113,6 +113,12 @@ public class Stats {
 			return true;
 		}
 		return false;
+	}
+
+	public void addExp(int amt) {
+		experience += amt;
+		if (experience > (expImages.length - 1) * 10) experience = (expImages.length - 1 * 10);
+		if (experience < 0) experience = 0;
 	}
 
 	public void onGUI() {

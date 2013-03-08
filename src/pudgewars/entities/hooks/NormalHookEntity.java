@@ -23,7 +23,7 @@ public class NormalHookEntity extends HookEntity {
 		if (!isTeammate(e)) {
 			if (e.stats.subLife(damage)) {
 				// Pudge was Killed!
-				owner.stats.experience += 2;
+				owner.stats.addExp(2);
 				return;
 			}
 		}
