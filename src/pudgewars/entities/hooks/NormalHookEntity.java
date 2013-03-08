@@ -74,7 +74,7 @@ public class NormalHookEntity extends HookEntity {
 	}
 
 	public String getNetworkString() {
-		String s = "NORMALHOOK:" + Game.entities.entities.indexOf(owner) + ":";
+		String s = "NORMALHOOK:" + owner.ClientID + ":";
 		s += (target == null) ? "null" : target.getNetString();
 		s += ":" + transform.position.getNetString();
 		s += ":" + rigidbody.velocity.getNetString();

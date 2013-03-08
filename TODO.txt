@@ -4,7 +4,6 @@ Difficulty = A(High) - D(Low)
 
 ----------- TODO -----------
 
-1B - Killing of Entities
 1B - Respawning
 	- Death Timer
 	- scores++
@@ -39,3 +38,8 @@ Difficulty = A(High) - D(Low)
 ----------- DONE -----------
 
 2B - Stats working properly
+1B - Killing of Entities
+
+------PARTIALLY DONE--------
+
+1B - Respawning notes: death timer not yet displayed and scores not updated

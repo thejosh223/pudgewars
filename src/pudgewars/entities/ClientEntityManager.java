@@ -18,9 +18,11 @@ public class ClientEntityManager extends EntityManager {
 
 		Team team = (t[6].equals("leftTeam")) ? Team.leftTeam : Team.rightTeam;
 
-		boolean controllable = (t[1].equals("true")) ? true : false;
+		boolean controllable = (t[0].equals("true")) ? true : false;
 		PudgeEntity pudge = new PudgeEntity(position, team);
-
+		pudge.ClientID = Integer.parseInt(t[2]);
+		pudge.wasUpdated = true;
+		
 		if (controllable) {
 			player = pudge;
 			player.controllable = true;
@@ -31,16 +33,26 @@ public class ClientEntityManager extends EntityManager {
 	public void addHookEntity(String msg) {
 		System.out.println("HOOK GENERATED! >> " + msg);
 		String t[] = msg.split(":");
-		String[] u = t[4].split(" ");
+		String[] u = t[3].split(" ");
 		Vector2 click = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
-		Entity p = Game.entities.entities.get(Integer.parseInt(t[3]));
-		Entity e = (t[2].equals("NORMALHOOK")) ? new NormalHookEntity((PudgeEntity) p, click) : new GrappleHookEntity((PudgeEntity) p, click);
+		Entity p = Game.entities.entities.get(containsPudge(Integer.parseInt(t[2])));
+		Entity e = (t[1].equals("NORMALHOOK")) ? new NormalHookEntity((PudgeEntity) p, click) : new GrappleHookEntity((PudgeEntity) p, click);
 		Game.entities.entities.add(e);
 	}
 
 	public void generateClientEntities() {
 		Game.net.getEntityData();
 		map.addLightSources(entities);
+	}
+	
+	public void removeUnupdatedEntities(){
+		for (int x = 0; x < entities.size(); x++) {
+			Entity e = Game.entities.entities.get(x);
+			if(e instanceof PudgeEntity){
+				if(!e.wasUpdated) e.remove = true;
+				else e.wasUpdated = false;
+			}
+		}
 	}
 
 	public void updateEntities() {

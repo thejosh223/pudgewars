@@ -20,12 +20,14 @@ import pudgewars.util.Vector2;
 public abstract class EntityManager {
 
 	public List<Entity> entities;
+	public List<Entity> respawnEntities;
 	public List<Particle> particles;
 	public PudgeEntity player;
 	public Map map;
 
 	public EntityManager() {
 		entities = new ArrayList<Entity>();
+		respawnEntities = new ArrayList<Entity>();
 		particles = new ArrayList<Particle>();
 		map = Game.map;
 	}
@@ -55,6 +57,7 @@ public abstract class EntityManager {
 	public void killUpdateEntities() {
 		for (int i = 0; i < entities.size(); i++)
 			if (entities.get(i).remove) {
+				if(entities.get(i).respawning) respawnEntities.add(entities.get(i));
 				entities.remove(i);
 				i--;
 			}
@@ -66,12 +69,27 @@ public abstract class EntityManager {
 			}
 	}
 
+	public void updateRespawnEntities(){
+		for (int i = 0; i < respawnEntities.size(); i++) {
+			respawnEntities.get(i).update();
+			if(respawnEntities.get(i).respawn){
+				System.out.println("hey");
+				respawnEntities.get(i).respawn = false;
+				respawnEntities.get(i).respawning = false;
+				entities.add(respawnEntities.get(i));
+				respawnEntities.remove(i);
+				i--;
+			}
+		}
+	}
+	
 	public void render() {
 		map.render();
 
 		// Init shouldRender = false
 		for (int i = 0; i < entities.size(); i++)
-			entities.get(i).shouldRender = false;
+			entities.get(i).shouldRender = true;
+			//entities.get(i).shouldRender = false;
 
 		for (int i = 0; i < entities.size(); i++) {
 			Entity other = entities.get(i);
@@ -92,7 +110,7 @@ public abstract class EntityManager {
 			particles.get(i).render();
 
 		map.postRender();
-		renderLightmap();
+		//renderLightmap();
 	}
 
 	public void renderGUI() {
@@ -141,6 +159,14 @@ public abstract class EntityManager {
 		return l;
 	}
 
+	public int containsPudge(int ClientID) {
+		for (int x = 0; x < entities.size(); x++) {
+			if(entities.get(x) instanceof PudgeEntity)
+				if(entities.get(x).ClientID == ClientID) return x;			
+		}
+		return -1;
+	}
+	
 	public int containsHook(int ownerIndex, String click) {
 		String[] u = click.split(" ");
 		Vector2 target = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
@@ -168,5 +194,11 @@ public abstract class EntityManager {
 	}
 
 	public void sendNetworkData() {
+	}
+	
+	public void respawn(){
+	}
+	
+	public void removeUnupdatedEntities(){
 	}
 }

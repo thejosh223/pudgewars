@@ -18,7 +18,10 @@ public abstract class Entity implements BBOwner {
 
 	// Kill Data
 	public boolean remove = false;
-
+	public boolean wasUpdated = false;
+	public boolean respawn = false;
+	public boolean respawning = false;
+	
 	// Render Data
 	public boolean shouldRender = true;
 
@@ -27,6 +30,7 @@ public abstract class Entity implements BBOwner {
 
 	// Network Data
 	public int networkID;
+	public int ClientID = -1;
 	public boolean shouldSendNetworkData = false;
 
 	public Entity(Vector2 position) {
@@ -86,6 +90,10 @@ public abstract class Entity implements BBOwner {
 	/*
 	 * Network
 	 */
+	public int getClientID(){	
+		return ClientID;
+	}
+	
 	public void sendNetworkData() {
 		if (shouldSendNetworkData) {
 			Game.net.sendEntityData(getNetworkString());

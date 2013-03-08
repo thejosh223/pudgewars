@@ -33,6 +33,8 @@ public class PudgeEntity extends Entity implements LightSource {
 	public final static double GRAPPLEHOOK_COOLDOWN = 15;
 
 	public final static double ATK_RANGE = 2;
+	
+	public final static double RESPAWN_INTERVAL = 2;
 
 	public Stats stats;
 
@@ -64,6 +66,8 @@ public class PudgeEntity extends Entity implements LightSource {
 	protected Animation ani;
 	protected Image fullLife;
 	protected Image emptyLife;
+	
+	public double respawnInterval = RESPAWN_INTERVAL;
 
 	public PudgeEntity(Vector2 position, Team team) {
 		super(position, new Vector2(COLLISION_WIDTH, COLLISION_HEIGHT));
@@ -184,6 +188,16 @@ public class PudgeEntity extends Entity implements LightSource {
 		// Game.net.sendEntityData(getNetworkString());
 		// }
 		rigidbody.updateVelocity();
+		
+		if(respawning){
+			if (respawnInterval < 0) {
+				this.stats.set_life(20);
+				respawnInterval = RESPAWN_INTERVAL;
+				remove = false;
+				respawn = true;
+			}
+			respawnInterval -= Time.getTickInterval();
+		}
 	}
 
 	public void clickedOnPlayer(Vector2 right) {
@@ -290,8 +304,11 @@ public class PudgeEntity extends Entity implements LightSource {
 	}
 
 	public void kill() {
-		super.kill();
-		System.out.println("Pudge was Killed");
+		if(Game.isServer) {
+			System.out.println("Pudge was Killed");
+			respawning = true;
+			super.kill();
+		}
 	}
 
 	/*
@@ -306,6 +323,7 @@ public class PudgeEntity extends Entity implements LightSource {
 
 	public String getNetworkString() {
 		String s = "PUDGE:";
+		s += ClientID + ":";
 		s += transform.position.getNetString();
 		s += ":" + rigidbody.velocity.getNetString() + ":";
 		s += (target == null) ? "null" : target.getNetString();
@@ -317,26 +335,27 @@ public class PudgeEntity extends Entity implements LightSource {
 	}
 
 	public void setNetworkString(String s) {
+		wasUpdated = true;
 		String[] t = s.split(":");
 
-		transform.position.setNetString(t[1]);
-		rigidbody.velocity.setNetString(t[2]);
-		if (t[3].equals("null")) {
+		transform.position.setNetString(t[2]);
+		rigidbody.velocity.setNetString(t[3]);
+		if (t[4].equals("null")) {
 			target = null;
 		} else {
 			target = new Vector2();
-			target.setNetString(t[3]);
+			target.setNetString(t[4]);
 			clickedOnPlayer(target);
 		}
 
-		if (!t[5].equals("null")) {
-			String[] u = t[5].split(" ");
+		if (!t[6].equals("null")) {
+			String[] u = t[6].split(" ");
 			Vector2 hookTarget = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
-			if (t[6].equals("false")) setHook(hookTarget, HookType.NORMAL);
+			if (t[7].equals("false")) setHook(hookTarget, HookType.NORMAL);
 			else setHook(hookTarget, HookType.GRAPPLE);
 		}
 
-		this.stats.setNetString(t[7]);
+		this.stats.setNetString(t[8]);
 	}
 
 	/*

@@ -37,7 +37,7 @@ public class GrappleHookEntity extends HookEntity {
 	}
 	
 	public String getNetworkString() {
-		String s = "GRAPPLEHOOK:" + Game.entities.entities.indexOf(owner) + ":";
+		String s = "GRAPPLEHOOK:" + owner.ClientID + ":";
 		s += (target == null) ? "null" : target.getNetString() + ":";
 		s += transform.position.getNetString();
 		s += ":" + rigidbody.velocity.getNetString();

@@ -21,27 +21,28 @@ public class ClientNetwork extends Network {
 	}
 	
 	public void getEntityData(){
-		//format for PUDGE >> index:controllable:PUDGE:position:velocity:moveTarget:team:hookTarget:isGrapple:life
-		//format for HOOKS >> index:controllable:HOOKNAME:ownerIndex:target:position:velocity
+		//format for PUDGE >> controllable:PUDGE:CientID:position:velocity:moveTarget:team:hookTarget:isGrapple:life
+		//format for HOOKS >> controllable:HOOKNAME:ownerIndex:target:position:velocity
 		String msg;
 		
 		while(!(msg = clientConn.getMessage()).equals("EOM")){
 			String t[] = msg.split(":");
-			int index = Integer.parseInt(t[0]);
 			
-			if(t[2].equals("PUDGE")){
-				if(Game.entities.entities.size()-1 < index) 
+			if(t[1].equals("PUDGE")){
+				int pudgeIndex = Game.entities.containsPudge(Integer.parseInt(t[2]));
+				if(pudgeIndex == -1)
 					Game.entities.addPudgeEntity(msg);
 				else 
-					Game.entities.entities.get(index).setNetworkString(msg.substring(msg.indexOf(':',msg.indexOf(':')+1)+1));
-			}else if(t[2].equals("NORMALHOOK") || t[2].equals("GRAPPLEHOOK") ){
-				int hookIndex = Game.entities.containsHook(Integer.parseInt(t[3]), t[4]);
+					Game.entities.entities.get(pudgeIndex).setNetworkString(msg.substring(msg.indexOf(':')+1));
+			}else if(t[1].equals("NORMALHOOK") || t[1].equals("GRAPPLEHOOK") ){
+				int hookIndex = Game.entities.containsHook(Integer.parseInt(t[2]), t[3]);
 				if(hookIndex == -1)
 					Game.entities.addHookEntity(msg);
 				else 
-					Game.entities.entities.get(hookIndex).setNetworkString(t[5] + ":" + t[6]);
+					Game.entities.entities.get(hookIndex).setNetworkString(t[4] + ":" + t[5]);
 			}
 		}
+		Game.entities.removeUnupdatedEntities();
 	}
 	
 	public void clearBuffer(){

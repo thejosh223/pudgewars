@@ -13,6 +13,9 @@ public class Network {
 	public void getEntityData() {
 	}
 
+	public void getEntityData(String msg){
+	}
+	
 	public void sendEntityData() {
 	}
 

@@ -16,7 +16,7 @@ public class ServerEntityManager extends EntityManager {
 			PudgeEntity p;
 			if (clients.get(i).getTeam() == 0) p = new PudgeEntity(new Vector2(4, 8 * x++ + 4), Team.leftTeam);
 			else p = new PudgeEntity(new Vector2(20, 8 * y++ + 4), Team.rightTeam);
-			//p.controllable = true;
+			p.ClientID = i;
 			entities.add(p);
 		}
 		map.addLightSources(entities);
@@ -31,5 +31,9 @@ public class ServerEntityManager extends EntityManager {
 			entities.get(i).update();
 		for (int i = 0; i < particles.size(); i++)
 			particles.get(i).update();
+	}
+	
+	public void respawn(){
+		
 	}
 }
