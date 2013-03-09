@@ -1,12 +1,10 @@
 package pudgewars.entities;
 
 import java.awt.Image;
-import java.awt.geom.AffineTransform;
 import java.util.Random;
 
 import pudgewars.Game;
 import pudgewars.entities.hooks.HookEntity;
-import pudgewars.entities.hooks.NormalHookEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 import pudgewars.util.Animation;
@@ -14,20 +12,17 @@ import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
-public class CowEntity extends Entity {
+public class CowEntity extends HookableEntity {
+	public final static double MOVESPEED = 2;
+
 	public final static double COLLISION_WIDTH = 1;
 	public final static double COLLISION_HEIGHT = 1;
 
 	protected Image clicker;
 
-	// Hooking
-	public boolean canMove;
-	public boolean canTileCollide;
-	public boolean canEntityCollide;
-	public NormalHookEntity attachedHook;
-
 	// Movement
 	protected Vector2 target;
+	private int movementDelay;
 
 	// Rendering
 	protected Animation ani;
@@ -39,17 +34,17 @@ public class CowEntity extends Entity {
 
 		this.team = team;
 
-		canTileCollide = true;
-		canEntityCollide = true;
-		canMove = true;
-
 		rigidbody.physicsSlide = true;
 
-		ani = Animation.makeAnimation("cow", 8, 32, 32, 0.05);
+		ani = Animation.makeAnimation("cow", 1, 32, 32, 0.05);
 		ani.startAnimation();
 
 		clicker = ImageHandler.get().getImage("selector");
+
 		target = null;
+		movementDelay = 0;
+
+		restoreDefaults();
 	}
 
 	public void update() {
@@ -57,9 +52,22 @@ public class CowEntity extends Entity {
 
 		if (!canMove) target = null;
 
-		Random r = new Random();
-		if (r.nextInt(60) == 1) {
-			target = Vector2.add(transform.position, new Vector2(r.nextInt(3) - 1, r.nextInt(3) - 1));
+		if (Game.isServer) {
+			if (movementDelay <= 0) {
+				Random r = new Random();
+				double theta = Math.toRadians(r.nextInt(360));
+				target = Vector2.add(transform.position, new Vector2(Math.sin(theta) * 4, Math.cos(theta) * 4));
+				movementDelay = r.nextInt(120);
+			} else {
+				movementDelay--;
+			}
+		}
+
+		if (Time.totalTicks % 60 == 0) {
+			if (attachedHook != null) {
+				System.out.println("NN");
+			}
+			// System.out.println(">> " + canTileCollide);
 		}
 
 		// Target Movement
@@ -73,10 +81,10 @@ public class CowEntity extends Entity {
 			} else {
 				rigidbody.setDirection(target);
 			}
+		} else {
 		}
 
 		rigidbody.updateVelocity();
-		transform.position.println();
 	}
 
 	public void render() {
@@ -85,13 +93,16 @@ public class CowEntity extends Entity {
 		// Draw Pudge
 		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
 
-		if (target != null) {
-			Vector2 targetLocation = Game.s.worldToScreenPoint(target);
-			AffineTransform a = new AffineTransform();
-			a.translate((int) (targetLocation.x - clicker.getWidth(null) / 2), (int) (targetLocation.y - clicker.getHeight(null) / 2));
-			Game.s.g.drawImage(clicker, a, null);
-		}
+		// if (target != null) {
+		// Vector2 targetLocation = Game.s.worldToScreenPoint(target);
+		// AffineTransform a = new AffineTransform();
+		// a.translate((int) (targetLocation.x - clicker.getWidth(null) / 2), (int) (targetLocation.y - clicker.getHeight(null) / 2));
+		// Game.s.g.drawImage(clicker, a, null);
+		// }
+	}
 
+	public void restoreDefaults() {
+		rigidbody.speed = MOVESPEED;
 	}
 
 	/*
@@ -99,8 +110,9 @@ public class CowEntity extends Entity {
 	 */
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return true;
-		if (b instanceof CowEntity) return true;
-		if (b instanceof PudgeEntity) return true;
+		if (b instanceof PudgeEntity || b instanceof CowEntity) {
+			return canEntityCollide;
+		}
 		if (canTileCollide) {
 			if (b instanceof Tile) {
 				if (((Tile) b).isPudgeSolid()) return true;
@@ -110,6 +122,7 @@ public class CowEntity extends Entity {
 	}
 
 	public void collides(Entity e, double vx, double vy) {
+		super.collides(e, vx, vy);
 	}
 
 	public void kill() {

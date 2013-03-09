@@ -4,6 +4,7 @@ import java.awt.image.BufferedImage;
 
 import pudgewars.Game;
 import pudgewars.entities.Entity;
+import pudgewars.entities.HookableEntity;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.interfaces.BBOwner;
@@ -85,7 +86,7 @@ public class Tile implements BBOwner {
 			else return false;
 		}
 		// Pudge Collisions
-		if (b instanceof PudgeEntity) {
+		if (b instanceof HookableEntity) {
 			if (isPudgeSolid()) return true;
 			return false;
 		}

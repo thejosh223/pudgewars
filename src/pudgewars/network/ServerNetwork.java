@@ -20,7 +20,7 @@ public class ServerNetwork extends Network {
 			for (int y = 0; y < Game.entities.entities.size(); y++) {
 				boolean controllable = (x == Game.entities.entities.get(y).getClientID()) ? true : false;
 				serverConn.get(x).sendMessage(controllable + ":" + Game.entities.entities.get(y).getNetworkString());
-				System.out.println("SENDING SERVER ENTITY DATA >> " + y + ":" + Game.entities.entities.get(y).getNetworkString() + ":" + controllable);
+				// System.out.println("SENDING SERVER ENTITY DATA >> " + y + ":" + Game.entities.entities.get(y).getNetworkString() + ":" + controllable);
 			}
 			serverConn.get(x).sendMessage("EOM");
 		}

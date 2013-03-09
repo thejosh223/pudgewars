@@ -7,6 +7,7 @@ import java.awt.geom.Ellipse2D;
 import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.entities.Entity;
+import pudgewars.entities.HookableEntity;
 import pudgewars.entities.LightSource;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
@@ -24,7 +25,7 @@ public class HookEntity extends Entity implements LightSource {
 	public final static float HOOK_REVERSE_MULT = 2;
 
 	public PudgeEntity owner;
-	public PudgeEntity hooked;
+	public HookableEntity hooked;
 	protected HookPieceEntity hookPiece;
 
 	protected MovementScheme movementScheme;
@@ -42,7 +43,6 @@ public class HookEntity extends Entity implements LightSource {
 	public HookEntity(PudgeEntity e, String s, Vector2 target) {
 		super(e.transform.position, new Vector2(1, 1));
 		this.team = e.team;
-		System.out.println("Instanted: " + team.name());
 
 		owner = e;
 		hooked = null;

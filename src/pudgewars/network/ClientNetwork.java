@@ -12,7 +12,7 @@ public class ClientNetwork extends Network {
 	}
 
 	public void sendEntityData(String msg) {
-		System.out.println("ACTION COMMITTED >> " + msg + " sent to server.");
+		// System.out.println("ACTION COMMITTED >> " + msg + " sent to server.");
 		clientConn.sendMessage(msg);
 	}
 

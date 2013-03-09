@@ -1,7 +1,7 @@
 package pudgewars.entities.hooks;
 
-import pudgewars.Game;
 import pudgewars.entities.Entity;
+import pudgewars.entities.HookableEntity;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
@@ -18,40 +18,43 @@ public class NormalHookEntity extends HookEntity {
 	/*
 	 * Pudge Hooking
 	 */
-	public void attachPudge(PudgeEntity e) {
+	public void attachHookableEntity(HookableEntity e) {
 		e.transform.position = transform.position.clone(); // Set the pudge as this position
 		if (!isTeammate(e)) {
-			if (e.stats.subLife(damage)) {
+			if (e instanceof PudgeEntity && ((PudgeEntity) e).stats.subLife(damage)) {
 				// Pudge was Killed!
 				owner.stats.addExp(2);
 				return;
 			}
 		}
 		e.canTileCollide = false;
-		// e.canEntityCollide = true;
+		// e.canEntityCollide = false;
 		e.canMove = false;
 		e.attachedHook = this;
+
+		System.out.println("Attached Hook: " + e.getClass());
 
 		hooked = e;
 		canHook = false;
 		isRotating = false;
 	}
 
-	public void detachPudge() {
+	public void detachHookableEntity() {
+		System.out.println("Detached!");
 		hooked.canTileCollide = true;
-		// hooked.canEntityCollide = false;
+		// hooked.canEntityCollide = true;
 		hooked.canMove = true;
 		hooked.attachedHook = null;
-		hooked.stats.restoreDefaults();
+		hooked.restoreDefaults();
 		hooked = null;
 	}
 
 	/*
-	 * Collision Detection and Response
+	 * Collisions
 	 */
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return false;
-		if (b instanceof PudgeEntity) {
+		if (b instanceof HookableEntity) {
 			if (b == owner) return false;
 			else return true;
 		}
@@ -64,15 +67,18 @@ public class NormalHookEntity extends HookEntity {
 
 	public void collides(Entity e, double vx, double vy) {
 		if (hooked == null && canHook) {
-			if (e instanceof PudgeEntity) {
+			if (e instanceof HookableEntity) {
 				if (e != owner) {
-					attachPudge((PudgeEntity) e);
+					attachHookableEntity((HookableEntity) e);
 					setMovementType(MovementScheme.REVERSE);
 				}
 			}
 		}
 	}
 
+	/*
+	 * Network
+	 */
 	public String getNetworkString() {
 		String s = "NORMALHOOK:" + owner.ClientID + ":";
 		s += (target == null) ? "null" : target.getNetString();

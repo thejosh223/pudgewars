@@ -22,7 +22,7 @@ import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
-public class PudgeEntity extends Entity implements LightSource {
+public class PudgeEntity extends HookableEntity implements LightSource {
 	public final static int CLICK_SIZE = 8;
 	public final static int MAX_LIFE = 20;
 
@@ -33,7 +33,7 @@ public class PudgeEntity extends Entity implements LightSource {
 	public final static double GRAPPLEHOOK_COOLDOWN = 15;
 
 	public final static double ATK_RANGE = 2;
-	
+
 	public final static double RESPAWN_INTERVAL = 4;
 
 	public Stats stats;
@@ -45,11 +45,6 @@ public class PudgeEntity extends Entity implements LightSource {
 	public double hookCooldown;
 	public double grappleCooldown;
 	public boolean isHooking;
-	public boolean canMove;
-	public boolean canTileCollide;
-	public boolean canEntityCollide;
-	public NormalHookEntity attachedHook;
-
 	// Attacking
 	public double attackInterval;
 
@@ -66,20 +61,14 @@ public class PudgeEntity extends Entity implements LightSource {
 	protected Animation ani;
 	protected Image fullLife;
 	protected Image emptyLife;
-	
+
 	// Respawning
 	public double respawnInterval = RESPAWN_INTERVAL;
 
 	public PudgeEntity(Vector2 position, Team team) {
 		super(position, new Vector2(COLLISION_WIDTH, COLLISION_HEIGHT));
 
-		transform.drawScale = new Vector2(2, 2);
-
 		this.team = team;
-
-		canTileCollide = true;
-		canEntityCollide = true;
-		canMove = true;
 
 		stats = new Stats(this);
 		stats.restoreDefaults();
@@ -92,7 +81,8 @@ public class PudgeEntity extends Entity implements LightSource {
 
 		clicker = ImageHandler.get().getImage("selector");
 		target = null;
-		
+
+		transform.drawScale = new Vector2(2, 2);
 		fullLife = ImageHandler.get().getImage("life_full");
 		emptyLife = ImageHandler.get().getImage("life_empty");
 	}
@@ -179,7 +169,7 @@ public class PudgeEntity extends Entity implements LightSource {
 				if (attackInterval == 0) {
 					attackInterval = 0.5;
 					Game.entities.addParticle(ParticleTypes.DIE, targetEnemy, null, 0.25);
-					if(targetEnemy.stats.subLife(4)){
+					if (targetEnemy.stats.subLife(4)) {
 						stats.addExp(2);
 						targetEnemy = null;
 					}
@@ -192,12 +182,12 @@ public class PudgeEntity extends Entity implements LightSource {
 		// Game.net.sendEntityData(getNetworkString());
 		// }
 		rigidbody.updateVelocity();
-		
-		if(respawning){
+
+		if (respawning) {
 			if (respawnInterval < 0) {
 				this.stats.set_life(20);
 				String position = (team == Team.leftTeam) ? "4.0 " : "20.0 ";
-				position += 8 * (ClientID/2) + 4;
+				position += 8 * (ClientID / 2) + 4;
 				transform.position.setNetString(position);
 				rigidbody.velocity.setNetString("0.0 0.0");
 				respawnInterval = RESPAWN_INTERVAL;
@@ -265,6 +255,9 @@ public class PudgeEntity extends Entity implements LightSource {
 		}
 	}
 
+	/*
+	 * Hooking
+	 */
 	public boolean setHook(Vector2 click, int hookType) {
 		if (!isHooking) {
 			Entity e = null;
@@ -283,12 +276,17 @@ public class PudgeEntity extends Entity implements LightSource {
 		return false;
 	}
 
+	public void restoreDefaults() {
+		System.out.println("[PUDGE] Restore Defaults!");
+		stats.restoreDefaults();
+	}
+
 	/*
 	 * Collisions
 	 */
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return true;
-		if (b instanceof PudgeEntity) {
+		if (b instanceof PudgeEntity || b instanceof CowEntity) {
 			return canEntityCollide ? true : isHooking;
 		}
 		if (canTileCollide) {
@@ -300,11 +298,12 @@ public class PudgeEntity extends Entity implements LightSource {
 	}
 
 	public void collides(Entity e, double vx, double vy) {
-		if (e instanceof PudgeEntity) {
-			PudgeEntity p = (PudgeEntity) e;
+		super.collides(e, vx, vy);
+		if (e instanceof HookableEntity) {
+			HookableEntity p = (HookableEntity) e;
 			if (p.attachedHook != null) {
 				if (p.attachedHook.owner == this) {
-					p.attachedHook.detachPudge();
+					p.attachedHook.detachHookableEntity();
 					p.rigidbody.velocity = Vector2.ZERO.clone();
 				}
 			}
@@ -312,7 +311,7 @@ public class PudgeEntity extends Entity implements LightSource {
 	}
 
 	public void kill() {
-		if(Game.isServer) {
+		if (Game.isServer) {
 			System.out.println("Pudge was Killed");
 			respawning = true;
 			super.kill();
@@ -322,7 +321,6 @@ public class PudgeEntity extends Entity implements LightSource {
 	/*
 	 * Network
 	 */
-
 	public void sendNetworkData() {
 		if (controllable) {
 			super.sendNetworkData();
