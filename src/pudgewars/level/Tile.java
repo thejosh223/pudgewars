@@ -5,12 +5,13 @@ import java.awt.image.BufferedImage;
 import pudgewars.Game;
 import pudgewars.entities.Entity;
 import pudgewars.entities.HookableEntity;
-import pudgewars.entities.PudgeEntity;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.util.ImageHandler;
 
 public class Tile implements BBOwner {
+	public final static Tile VOID = new Tile("void", 0, 1, false, false, false);
+
 	public final static Tile[] GRASS = //
 	{ new Tile("grass-2", 0, 1, false, false, false), //
 			new Tile("grass-2", 1, 1, false, false, false), //

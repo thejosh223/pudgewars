@@ -20,7 +20,6 @@ Difficulty = A(High) - D(Low)
 	- Swap Hook
 	- Pure Damage Hook
 3D - Displaying of Scores
-3D - Outside Lookable Area
 
 4A - Powerups
 	- Invisibility
@@ -38,6 +37,7 @@ Difficulty = A(High) - D(Low)
 1B - Killing of Entities
 2D - When you kill, you get more exp
 2A - Cows are Hookable
+3D - Outside Lookable Area
 
 ------PARTIALLY DONE--------
 

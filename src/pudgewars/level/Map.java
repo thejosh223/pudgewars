@@ -130,11 +130,25 @@ public class Map {
 	}
 
 	public void render() {
+		Game.s.clear();
+
+		// Smart Rendering!
 		int dx = (int) (Window.CENTER_X - (Game.focus.x * Game.TILE_SIZE));
 		int dy = (int) (Window.CENTER_Y - (Game.focus.y * Game.TILE_SIZE));
-		for (int i = 0; i < MAP_HEIGHT; i++) {
-			for (int o = 0; o < MAP_WIDTH; o++) {
-				map[i][o].render(dx + o * Game.TILE_SIZE, dy + i * Game.TILE_SIZE, mapData[i][o]);
+
+		// TODO: Figure out why I have to (-1) from sx/y
+		int sx = -(int) Math.floor(dx / Game.TILE_SIZE) - 1;
+		int sy = -(int) Math.floor(dy / Game.TILE_SIZE) - 1;
+		int lx = sx + Game.TILE_WIDTH + 2;
+		int ly = sy + Game.TILE_HEIGHT + 2;
+
+		for (int i = sy; i < ly; i++) {
+			for (int o = sx; o < lx; o++) {
+				if (i < 0 || o < 0 || i >= MAP_HEIGHT || o >= MAP_WIDTH) {
+					Tile.VOID.render(dx + o * Game.TILE_SIZE, dy + i * Game.TILE_SIZE, 0);
+				} else {
+					map[i][o].render(dx + o * Game.TILE_SIZE, dy + i * Game.TILE_SIZE, mapData[i][o]);
+				}
 			}
 		}
 	}
