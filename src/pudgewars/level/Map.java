@@ -13,6 +13,7 @@ import pudgewars.components.Rigidbody;
 import pudgewars.entities.Entity;
 import pudgewars.entities.HealingFountainEntity;
 import pudgewars.entities.LightSourceEntity;
+import pudgewars.entities.PudgeEntity;
 import pudgewars.entities.Team;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.render.GUI;
@@ -43,8 +44,7 @@ public class Map {
 	private BufferedImage minimap;
 
 	public Image[] respawnImages;
-	public double RESPAWN_INTERVAL = 4;
-	public double respawnInterval = RESPAWN_INTERVAL;
+	public double respawnInterval = PudgeEntity.RESPAWN_INTERVAL;
 
 	public Map() {
 		Random r = new Random();
@@ -90,8 +90,8 @@ public class Map {
 
 		// Respawn Images
 		respawnImages = new Image[2];
-		respawnImages[0] = ImageHandler.get().getImage("respawn_empty");
-		respawnImages[1] = ImageHandler.get().getImage("respawn_full");
+		respawnImages[0] = ImageHandler.get().getImage("respawn2_empty");
+		respawnImages[1] = ImageHandler.get().getImage("respawn2_full");
 	}
 
 	public void update() {
@@ -114,6 +114,10 @@ public class Map {
 		else if (Game.focus.x > Map.MAP_WIDTH - Game.TILE_WIDTH / 2.0) Game.focus.set(Map.MAP_WIDTH - Game.TILE_WIDTH / 2.0, Game.focus.y);
 		if (Game.focus.y < Game.TILE_HEIGHT / 2.0) Game.focus.set(Game.focus.x, Game.TILE_HEIGHT / 2.0);
 		else if (Game.focus.y > Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2.0) Game.focus.set(Game.focus.x, Map.MAP_HEIGHT - Game.TILE_HEIGHT / 2.0);
+
+		// if (!Game.isServer) {
+		// Game.focus = Game.entities.player.transform.position.clone();
+		// }
 
 		/*
 		 * Map Updates
@@ -158,13 +162,14 @@ public class Map {
 		 */
 		if (Game.showRespawningScreen) {
 			respawnInterval -= Time.getTickInterval();
-			GUI.partialHorizontalBar(respawnImages, (Game.s.width / 2) - (respawnImages[0].getWidth(null) / 2), (Game.s.height / 2) - (respawnImages[0].getHeight(null) / 2), 1 - (respawnInterval / RESPAWN_INTERVAL));
-		} else respawnInterval = RESPAWN_INTERVAL;
+			GUI.partialHorizontalBar(respawnImages, (Game.s.width / 2) - (respawnImages[0].getWidth(null) / 2), (Game.s.height / 2) - (respawnImages[0].getHeight(null) / 2), 1 - (respawnInterval / PudgeEntity.RESPAWN_INTERVAL));
+		} else {
+			respawnInterval = PudgeEntity.RESPAWN_INTERVAL;
+		}
 
 		/*
 		 * Clock
 		 */
-		
 	}
 
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {

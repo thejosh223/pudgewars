@@ -34,7 +34,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 	public final static double ATK_RANGE = 2;
 
-	public final static double RESPAWN_INTERVAL = 4;
+	public final static double RESPAWN_INTERVAL = 10;
 
 	public Stats stats;
 

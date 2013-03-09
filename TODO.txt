@@ -8,7 +8,6 @@ Difficulty = A(High) - D(Low)
 	- Death Timer
 	- scores++
 
-2A - Cows are Hookable
 2C - Better Art
 	- Water
 	- Hay Hookables
@@ -38,6 +37,7 @@ Difficulty = A(High) - D(Low)
 2B - Stats working properly
 1B - Killing of Entities
 2D - When you kill, you get more exp
+2A - Cows are Hookable
 
 ------PARTIALLY DONE--------
 
