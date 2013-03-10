@@ -177,10 +177,6 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			}
 		}
 
-		// send the movement made to the server
-		// if (controllable && actionCommitted) {
-		// Game.net.sendEntityData(getNetworkString());
-		// }
 		rigidbody.updateVelocity();
 
 		if (respawning) {

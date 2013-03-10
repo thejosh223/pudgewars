@@ -34,4 +34,20 @@ public class GUI {
 		Game.s.g.drawImage(i[0], x, y, x + width, y + height, 0, 0, i[0].getWidth(null), i[0].getHeight(null), null);
 		Game.s.g.drawImage(i[1], x, y, x + (int) (width * frac), y + height, 0, 0, (int) (i[0].getWidth(null) * frac), i[0].getHeight(null), null);
 	}
+
+	public static void partialVerticalBar(Image[] i, int x, int y, double frac) {
+		GUI.partialVerticalBar(i, x, y, i[0].getWidth(null), i[0].getHeight(null), frac);
+	}
+
+	public static void partialVerticalBar(Image[] i, int x, int y, int width, int height, double frac) {
+		Game.s.g.drawImage(i[0], x, y, x + width, y + height, 0, 0, i[0].getWidth(null), i[0].getHeight(null), null);
+		if (frac < 0) {
+			// Bottom Going Up
+			frac *= -1;
+			Game.s.g.drawImage(i[1], x, y + (int) (height * (1 - frac)), x + width, y + height, 0, (int) (i[0].getHeight(null) * (1 - frac)), (int) i[0].getWidth(null), i[0].getHeight(null), null);
+		} else {
+			// Top Going Down
+			Game.s.g.drawImage(i[1], x, y, x + width, y + (int) (height * frac), 0, 0, (int) i[0].getWidth(null), (int) (i[0].getHeight(null) * frac), null);
+		}
+	}
 }

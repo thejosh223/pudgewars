@@ -49,19 +49,19 @@ public class Stats {
 		// Load the Images
 		expImages = new Image[4];
 		for (int i = 0; i < 4; i++)
-			expImages[i] = ImageHandler.get().getImage("exp_" + i);
+			expImages[i] = ImageHandler.get().getImage("HUD_exp_" + i);
 
 		// Life Images
 		lifeImages = new Image[2];
-		lifeImages[0] = ImageHandler.get().getImage("HUD_life_empty");
-		lifeImages[1] = ImageHandler.get().getImage("HUD_life_full");
+		lifeImages[0] = ImageHandler.get().getImage("HUD_hp_empty");
+		lifeImages[1] = ImageHandler.get().getImage("HUD_hp_full");
 
 		hookCooldownImages = new Image[2];
-		hookCooldownImages[0] = ImageHandler.get().getImage("hook_empty");
-		hookCooldownImages[1] = ImageHandler.get().getImage("hook_full");
+		hookCooldownImages[0] = ImageHandler.get().getImage("lasso_icon_empty");
+		hookCooldownImages[1] = ImageHandler.get().getImage("lasso_icon_full");
 		grappleCooldownImages = new Image[2];
-		grappleCooldownImages[0] = ImageHandler.get().getImage("grapple_empty");
-		grappleCooldownImages[1] = ImageHandler.get().getImage("grapple_full");
+		grappleCooldownImages[0] = ImageHandler.get().getImage("grapple_icon_empty");
+		grappleCooldownImages[1] = ImageHandler.get().getImage("grapple_icon_full");
 	}
 
 	public void restoreDefaults() {
@@ -125,6 +125,7 @@ public class Stats {
 	 * GUI
 	 */
 	public final static int LEFT_PADDING = Game.TILE_SIZE / 2;
+	public final static int RIGHT_PADDING = Game.TILE_SIZE / 2;
 	public final static int BOT_PADDING = Game.TILE_SIZE / 2;
 	public final static int BAR_PADDING = Game.TILE_SIZE / 2;
 
@@ -132,23 +133,30 @@ public class Stats {
 		int barHeight = lifeImages[0].getHeight(null);
 
 		// Draw Life
-		GUI.partialHorizontalBar(lifeImages, LEFT_PADDING, Game.s.height - (BOT_PADDING + barHeight), lifePercentage());
+		GUI.partialVerticalBar(lifeImages, LEFT_PADDING, Game.s.height - (BOT_PADDING + lifeImages[0].getHeight(null)), -lifePercentage());
+		// GUI.partialHorizontalBar(lifeImages, (Game.s.width - lifeImages[0].getWidth(null)) / 2, Game.s.height - (BOT_PADDING + barHeight), lifePercentage());
 
 		// Hook Cooldown
-		GUI.partialHorizontalBar(hookCooldownImages, LEFT_PADDING, Game.s.height - (BOT_PADDING + barHeight * 2 + BAR_PADDING), (1 - (pudge.hookCooldown / PudgeEntity.HOOK_COOLDOWN)));
+		GUI.partialHorizontalBar(hookCooldownImages, Game.s.width - (RIGHT_PADDING + grappleCooldownImages[0].getWidth(null) + BAR_PADDING + hookCooldownImages[0].getWidth(null)), //
+				Game.s.height - (BOT_PADDING + hookCooldownImages[0].getHeight(null)), //
+				(1 - (pudge.hookCooldown / PudgeEntity.HOOK_COOLDOWN)));
 
 		// Grapple Cooldown
-		GUI.partialHorizontalBar(grappleCooldownImages, LEFT_PADDING, Game.s.height - (BOT_PADDING + barHeight * 3 + BAR_PADDING * 2), (1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
+		GUI.partialHorizontalBar(grappleCooldownImages, Game.s.width - (RIGHT_PADDING + grappleCooldownImages[0].getWidth(null)), //
+				Game.s.height - (BOT_PADDING + grappleCooldownImages[0].getHeight(null)), //
+				(1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
 
 		// Draw Experience
-		if(experience < 30){
+		int ex = LEFT_PADDING + lifeImages[0].getWidth(null) + BAR_PADDING;
+		int ey = Game.s.height - (BOT_PADDING + expImages[0].getHeight(null));
+		if (experience < 30) {
 			Image tImg[] = { expImages[(int) (experience / 10)], expImages[(int) (experience / 10) + 1] };
-			GUI.partialHorizontalBar(tImg, (Game.s.width - expImages[0].getWidth(null)) / 2, Game.s.height - expImages[0].getHeight(null), ((((int) experience) % 10) / 10.0));
-		}else{
+			GUI.partialHorizontalBar(tImg, ex, ey, ((((int) experience) % 10) / 10.0));
+		} else {
 			Image tImg[] = { expImages[(int) (experience / 10)], expImages[(int) (experience / 10)] };
-			GUI.partialHorizontalBar(tImg, (Game.s.width - expImages[0].getWidth(null)) / 2, Game.s.height - expImages[0].getHeight(null), ((((int) experience)) / 10.0));
+			GUI.partialHorizontalBar(tImg, ex, ey, ((((int) experience)) / 10.0));
 		}
-		
+
 		if (isOpen) {
 			for (int i = 0; i < CharStat.length; i++) {
 				if (ref[i].drawButtons(10, 10 + i * (16 + 4))) {
