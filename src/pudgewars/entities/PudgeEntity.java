@@ -5,6 +5,7 @@ import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
 import java.util.List;
+import java.util.Random;
 
 import pudgewars.Game;
 import pudgewars.Window;
@@ -16,6 +17,7 @@ import pudgewars.entities.hooks.NormalHookEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 import pudgewars.particles.ParticleTypes;
+import pudgewars.particles.VelocityParticle;
 import pudgewars.util.Animation;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.ImageHandler;
@@ -89,7 +91,23 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	}
 
 	public void update() {
-		if (rigidbody.isMoving()) ani.update();
+		if (rigidbody.isMoving()) {
+			// Update Animation
+			ani.update();
+
+			// Add Dust Particles
+			Random r = new Random();
+			if (r.nextInt(5) == 0) {
+				Vector2 posOffset = new Vector2(r.nextDouble() - 0.5, r.nextDouble() - 0.5);
+				posOffset.scale(0.5);
+				Vector2 velOffset = new Vector2(r.nextDouble() - 0.5, r.nextDouble() - 0.5);
+				velOffset.scale(0.25);
+				Game.entities.addParticle( //
+						new VelocityParticle("dust", 3, 3, 1, //
+								Vector2.add(posOffset, transform.position), //
+								Vector2.add(velOffset, rigidbody.velocity), 0.5));
+			}
+		}
 
 		if (!canMove) target = null;
 

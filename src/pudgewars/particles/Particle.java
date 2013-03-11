@@ -19,7 +19,7 @@ public class Particle {
 		ani = Animation.makeAnimation(img, amt, width, height, duration / amt);
 		ani.startAnimation();
 		this.duration = (int) (duration * Time.TICKS_PER_SECOND); // Convert to tick count
-		this.position = pos;
+		this.position = pos.clone();
 	}
 
 	public void update() {

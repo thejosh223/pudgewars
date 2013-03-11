@@ -32,16 +32,23 @@ public abstract class EntityManager {
 		map = Game.map;
 	}
 
+	public void addParticle(Particle p) {
+		particles.add(p);
+	}
+
 	public void addParticle(ParticleTypes p, Entity e, Vector2 pos, double duration) {
 		switch (p) {
 			case SPARKLE:
-				particles.add(new Particle("sparkle2", 16, 16, 4, pos.clone(), duration));
+				particles.add(new Particle("sparkle2", 16, 16, 4, pos, duration));
 				break;
 			case FOLLOW_SPARKLE:
 				particles.add(new FollowParticle("sparkle2", 16, 16, 4, e, duration));
 				break;
 			case DIE:
 				particles.add(new FollowParticle("damage", 16, 16, 2, e, duration));
+				break;
+			case DUST:
+				particles.add(new Particle("dust", 3, 3, 1, pos, duration));
 				break;
 		}
 	}
