@@ -45,6 +45,7 @@ public class GrappleHookEntity extends HookEntity {
 	}
 
 	public void setNetworkString(String s) {
+		wasUpdated = true;
 		String[] t = s.split(":");
 		transform.position.setNetString(t[0]);
 		rigidbody.velocity.setNetString(t[1]);

@@ -1,6 +1,7 @@
 package pudgewars.entities;
 
 import pudgewars.Game;
+import pudgewars.entities.hooks.HookEntity;
 import pudgewars.entities.hooks.GrappleHookEntity;
 import pudgewars.entities.hooks.NormalHookEntity;
 import pudgewars.util.Vector2;
@@ -52,6 +53,7 @@ public class ClientEntityManager extends EntityManager {
 		Vector2 click = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
 		Entity p = Game.entities.entities.get(containsPudge(Integer.parseInt(t[2])));
 		Entity e = (t[1].equals("NORMALHOOK")) ? new NormalHookEntity((PudgeEntity) p, click) : new GrappleHookEntity((PudgeEntity) p, click);
+		e.wasUpdated = true;
 		Game.entities.entities.add(e);
 	}
 
@@ -68,6 +70,11 @@ public class ClientEntityManager extends EntityManager {
 				if (((PudgeEntity) e).controllable) Game.showRespawningScreen = false;
 				if (!e.wasUpdated) e.remove = true;
 				else e.wasUpdated = false;
+			} else if (e instanceof HookEntity){
+				if (!e.wasUpdated){
+					e.remove = true;
+					e.kill();
+				} else e.wasUpdated = false;
 			}
 		}
 	}
