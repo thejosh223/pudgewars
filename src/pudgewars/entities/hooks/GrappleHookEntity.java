@@ -1,6 +1,5 @@
 package pudgewars.entities.hooks;
 
-import pudgewars.Game;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
@@ -35,7 +34,7 @@ public class GrappleHookEntity extends HookEntity {
 			setMovementType(MovementScheme.REVERSE);
 		}
 	}
-	
+
 	public String getNetworkString() {
 		String s = "GRAPPLEHOOK:" + owner.ClientID + ":";
 		s += (target == null) ? "null" : target.getNetString() + ":";
