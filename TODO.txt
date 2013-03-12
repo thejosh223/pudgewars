@@ -28,7 +28,6 @@ Difficulty = A(High) - D(Low)
 4B - Full Screen Mode
 4B - Minimap w/ Fog of War
 4D - Add Game Timer
-4D - Add Dust Particles for Movement
 4D - Add Cowboy Bouncing
 
 ----------- DONE -----------
@@ -38,6 +37,7 @@ Difficulty = A(High) - D(Low)
 2D - When you kill, you get more exp
 2A - Cows are Hookable
 3D - Outside Lookable Area
+4D - Add Dust Particles for Movement
 
 ------PARTIALLY DONE--------
 
