@@ -11,6 +11,11 @@ public class GrappleHookEntity extends HookEntity {
 		super(e, "specialhook", target);
 	}
 
+	public void kill() {
+		super.kill();
+		owner.restoreDefaults();
+	}
+
 	/*
 	 * Collision Detection and Response
 	 */
