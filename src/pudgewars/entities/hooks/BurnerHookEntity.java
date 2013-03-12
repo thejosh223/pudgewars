@@ -6,26 +6,34 @@ import pudgewars.util.Vector2;
 
 public class BurnerHookEntity extends NormalHookEntity {
 
+	public final static double BURN_INTERVAL_DIST = 2;
+
 	public double dist;
 
 	public BurnerHookEntity(PudgeEntity e, Vector2 target) {
 		super(e, target);
+
+		this.damage = 0;
 	}
 
 	public void update() {
-		double xDist = rigidbody.velocity.x * Time.getTickInterval();
-		double yDist = rigidbody.velocity.y * Time.getTickInterval();
-		double tDist = Math.sqrt(xDist * xDist + yDist * yDist);
+		super.update();
 
-		dist += tDist;
-		if (dist >= 1) {
-			dist -= 1;
-			if (hooked instanceof PudgeEntity) {
-				((PudgeEntity) hooked).stats.subLife(1);
+		if (hooked != null) {
+			// System.out.println("Somebody was hooked.");
+			// double xDist = rigidbody.velocity.x * Time.getTickInterval();
+			// double yDist = rigidbody.velocity.y * Time.getTickInterval();
+			// double tDist = Math.sqrt(xDist * xDist + yDist * yDist);
+
+			dist += rigidbody.speed * Time.getTickInterval();
+			// System.out.println("Dist: " + dist);
+			if (dist >= BURN_INTERVAL_DIST) {
+				dist -= BURN_INTERVAL_DIST;
+				if (hooked instanceof PudgeEntity) {
+					((PudgeEntity) hooked).stats.subLife(1);
+				}
 			}
 		}
-
-		super.update();
 	}
 
 	public String getNetworkString() {

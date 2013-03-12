@@ -197,7 +197,7 @@ public abstract class EntityManager {
 		for (int x = 0; x < entities.size(); x++) {
 			String net = entities.get(x).getNetworkString();
 			String[] t = net.split(":");
-			if (t[0].equals("NORMALHOOK") || t[0].equals("GRAPPLEHOOK")) {
+			if (t[0].equals("NORMALHOOK") || t[0].equals("GRAPPLEHOOK") || t[0].equals("BURNERHOOK")) {
 				u = t[2].split(" ");
 				if (Integer.parseInt(t[1]) == ownerIndex && target.x == Float.parseFloat(u[0]) && target.y == Float.parseFloat(u[1])) return x;
 			}

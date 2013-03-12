@@ -10,6 +10,7 @@ import java.util.Random;
 import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.components.Stats;
+import pudgewars.entities.hooks.BurnerHookEntity;
 import pudgewars.entities.hooks.GrappleHookEntity;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.entities.hooks.HookType;
@@ -138,7 +139,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			if (left != null) {
 				if (!Game.keyInput.specialHook.isDown) {
 					if (hookCooldown <= 0) {
-						if (setHook(Game.s.screenToWorldPoint(left), HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
+						if (setHook(Game.s.screenToWorldPoint(left), HookType.BURNER)) hookCooldown = HOOK_COOLDOWN;
 						hookTarget = Game.s.screenToWorldPoint(left);
 						shouldSendNetworkData = true;
 					}
@@ -284,6 +285,10 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 				case HookType.GRAPPLE:
 					e = new GrappleHookEntity(this, click);
 					hookType = HookType.GRAPPLE;
+					break;
+				case HookType.BURNER:
+					e = new BurnerHookEntity(this, click);
+					hookType = HookType.BURNER;
 					break;
 			}
 			Game.entities.entities.add(e);

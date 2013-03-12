@@ -34,7 +34,7 @@ public class ClientNetwork extends Network {
 				int cowIndex = Game.entities.getIndexByClientID(Integer.parseInt(t[2]), CowEntity.class);
 				if (cowIndex == -1) Game.entities.addCowEntity(msg);
 				else Game.entities.entities.get(cowIndex).setNetworkString(msg.substring(msg.indexOf(':') + 1));
-			} else if (t[1].equals("NORMALHOOK") || t[1].equals("GRAPPLEHOOK") || t[1].equals("BURNERHOOKENTITY")) {
+			} else if (t[1].equals("NORMALHOOK") || t[1].equals("GRAPPLEHOOK") || t[1].equals("BURNERHOOK")) {
 				int hookIndex = Game.entities.containsHook(Integer.parseInt(t[2]), t[3]);
 				if (hookIndex == -1) Game.entities.addHookEntity(msg);
 				else Game.entities.entities.get(hookIndex).setNetworkString(t[4] + ":" + t[5]);
