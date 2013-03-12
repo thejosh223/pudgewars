@@ -1,6 +1,7 @@
 package pudgewars.entities;
 
 import pudgewars.Game;
+import pudgewars.entities.hooks.BurnerHookEntity;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.entities.hooks.GrappleHookEntity;
 import pudgewars.entities.hooks.NormalHookEntity;
@@ -50,9 +51,18 @@ public class ClientEntityManager extends EntityManager {
 		System.out.println("HOOK GENERATED! >> " + msg);
 		String t[] = msg.split(":");
 		String[] u = t[3].split(" ");
+
 		Vector2 click = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
 		Entity p = Game.entities.entities.get(containsPudge(Integer.parseInt(t[2])));
-		Entity e = (t[1].equals("NORMALHOOK")) ? new NormalHookEntity((PudgeEntity) p, click) : new GrappleHookEntity((PudgeEntity) p, click);
+		
+		Entity e = null;
+		if (t[1].equals("NORMALHOOK")) {
+			e = new NormalHookEntity((PudgeEntity) p, click);
+		} else if (t[1].equals("GRAPPLEHOOK")) {
+			e = new GrappleHookEntity((PudgeEntity) p, click);
+		} else if (t[1].equals("BURNERHOOK")) {
+			e = new BurnerHookEntity((PudgeEntity) p, click);
+		}
 		e.wasUpdated = true;
 		Game.entities.entities.add(e);
 	}
@@ -70,8 +80,8 @@ public class ClientEntityManager extends EntityManager {
 				if (((PudgeEntity) e).controllable) Game.showRespawningScreen = false;
 				if (!e.wasUpdated) e.remove = true;
 				else e.wasUpdated = false;
-			} else if (e instanceof HookEntity){
-				if (!e.wasUpdated){
+			} else if (e instanceof HookEntity) {
+				if (!e.wasUpdated) {
 					e.remove = true;
 					e.kill();
 				} else e.wasUpdated = false;
