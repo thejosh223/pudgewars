@@ -163,6 +163,7 @@ public class Stats {
 					if (ref[i].getCost() <= experience) {
 						experience -= ref[i].getCost();
 						ref[i].setLevel(ref[i].level + 1);
+						pudge.restoreDefaults();
 						pudge.shouldSendNetworkData = true;
 					}
 				}

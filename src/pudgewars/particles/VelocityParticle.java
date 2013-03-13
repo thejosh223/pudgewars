@@ -9,7 +9,7 @@ public class VelocityParticle extends Particle {
 	public VelocityParticle(String img, int width, int height, int amt, Vector2 pos, Vector2 vel, double duration) {
 		super(img, width, height, amt, pos, duration);
 		velocity = vel.clone();
-		velocity.scale(-0.2 * Time.getTickInterval());
+		velocity.scale(Time.getTickInterval());
 	}
 
 	public void update() {

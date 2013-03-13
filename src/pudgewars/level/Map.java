@@ -33,7 +33,10 @@ public class Map {
 	public final static double SCROLL_SPEED = 10; // tiles / second
 
 	// Map Updates
-	public final static int TILEUPDATES_PERTICK = 32; // # of tiles updated per tick
+	public final static int TILEUPDATES_PERTICK = 32; // # of tiles updated per
+														// tick
+	// Controls
+	public boolean mouseScrollingEnabled = false;
 
 	// Map Data
 	private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
@@ -78,9 +81,9 @@ public class Map {
 		map[MAP_HEIGHT / 2][MAP_WIDTH / 2 - 1] = Tile.FOUNTAIN[2];
 		map[MAP_HEIGHT / 2][MAP_WIDTH / 2] = Tile.FOUNTAIN[3];
 
-		for (int i = 0; i < map.length; i++)
-			for (int o = 0; o < map[0].length; o++)
-				mapData[i][o] = r.nextInt(100);
+		// for (int i = 0; i < map.length; i++)
+		// for (int o = 0; o < map[0].length; o++)
+		// mapData[i][o] = r.nextInt(100);
 
 		/*
 		 * Minimap
@@ -101,10 +104,14 @@ public class Map {
 		double vx = 0;
 		double vy = 0;
 		// Scrolling
-		if (Game.mouseInput.mousePosition.x >= 0 && Game.mouseInput.mousePosition.x < SCROLLBAR_X || Game.keyInput.left.isDown) vx = -SCROLL_SPEED;
-		else if (Game.mouseInput.mousePosition.x >= 1 - SCROLLBAR_Y && Game.mouseInput.mousePosition.x < 1 || Game.keyInput.right.isDown) vx = SCROLL_SPEED;
-		if (Game.mouseInput.mousePosition.y >= 0 && Game.mouseInput.mousePosition.y < SCROLLBAR_Y || Game.keyInput.up.isDown) vy = -SCROLL_SPEED;
-		else if (Game.mouseInput.mousePosition.y >= 1 - SCROLLBAR_Y && Game.mouseInput.mousePosition.y < 1 || Game.keyInput.down.isDown) vy = SCROLL_SPEED;
+		if (mouseScrollingEnabled && Game.mouseInput.mousePosition.x >= 0 && Game.mouseInput.mousePosition.x < SCROLLBAR_X //
+				|| Game.keyInput.left.isDown) vx = -SCROLL_SPEED;
+		else if (mouseScrollingEnabled && Game.mouseInput.mousePosition.x >= 1 - SCROLLBAR_Y && Game.mouseInput.mousePosition.x < 1 //
+				|| Game.keyInput.right.isDown) vx = SCROLL_SPEED;
+		if (mouseScrollingEnabled && Game.mouseInput.mousePosition.y >= 0 && Game.mouseInput.mousePosition.y < SCROLLBAR_Y //
+				|| Game.keyInput.up.isDown) vy = -SCROLL_SPEED;
+		else if (mouseScrollingEnabled && Game.mouseInput.mousePosition.y >= 1 - SCROLLBAR_Y && Game.mouseInput.mousePosition.y < 1 //
+				|| Game.keyInput.down.isDown) vy = SCROLL_SPEED;
 
 		// Set Focus
 		Game.focus.set(Game.focus.x + Time.getTickInterval() * vx, Game.focus.y + Time.getTickInterval() * vy);
@@ -122,10 +129,13 @@ public class Map {
 		/*
 		 * Map Updates
 		 */
-		Random r = new Random();
-		for (int i = 0; i < TILEUPDATES_PERTICK; i++) {
-			int t = r.nextInt(MAP_WIDTH * MAP_HEIGHT);
-			mapData[t / MAP_WIDTH][t % MAP_WIDTH]++;
+		// Random r = new Random();
+		// for (int i = 0; i < TILEUPDATES_PERTICK; i++) {
+		// int t = r.nextInt(MAP_WIDTH * MAP_HEIGHT);
+		// mapData[t / MAP_WIDTH][t % MAP_WIDTH]++;
+		// }
+		for (int i = 0; i < MAP_WIDTH * MAP_HEIGHT; i++) {
+			mapData[i / MAP_WIDTH][i % MAP_HEIGHT]++;
 		}
 	}
 
@@ -169,7 +179,8 @@ public class Map {
 		 */
 		Graphics2D g = (Graphics2D) minimap.getGraphics();
 		g.drawImage(minimapBase, 0, 0, null);
-		// Game.s.g.drawImage(minimap, 10, 10, minimap.getWidth(), minimap.getHeight(), null);
+		// Game.s.g.drawImage(minimap, 10, 10, minimap.getWidth(),
+		// minimap.getHeight(), null);
 
 		/*
 		 * Respawning

@@ -8,6 +8,7 @@ import pudgewars.entities.HookableEntity;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.util.ImageHandler;
+import pudgewars.util.Time;
 
 public class Tile implements BBOwner {
 	public final static Tile VOID = new Tile("void", 0, 1, false, false, false);
@@ -31,7 +32,7 @@ public class Tile implements BBOwner {
 			new Tile("tree", 2, 1, true, true, false), //
 			new Tile("tree", 3, 1, true, true, false) };
 
-	public final static Tile WATER = new Tile("water", 0, 5, false, false, false);
+	public final static Tile WATER = new Tile("river0000", 0, 8, false, false, false);
 
 	public final static Tile T_Mound = new Tile("mound2", 0, 1, true, false, false);
 	public final static Tile T_Hookable = new LightTile("hookable", 0, 1, false, false, true, 13, 13);
@@ -54,7 +55,7 @@ public class Tile implements BBOwner {
 	}
 
 	public void render(int x, int y, int tileData) {
-		Game.s.g.drawImage(img[tileData % img.length], x, y, null);
+		Game.s.g.drawImage(img[(tileData / (int) (0.5 * Time.TICKS_PER_SECOND)) % img.length], x, y, null);
 	}
 
 	public void postRender(int x, int y) {

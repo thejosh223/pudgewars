@@ -1,6 +1,10 @@
 package pudgewars.entities.hooks;
 
+import java.util.Random;
+
+import pudgewars.Game;
 import pudgewars.entities.PudgeEntity;
+import pudgewars.particles.VelocityParticle;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
@@ -31,6 +35,19 @@ public class BurnerHookEntity extends NormalHookEntity {
 				dist -= BURN_INTERVAL_DIST;
 				if (hooked instanceof PudgeEntity) {
 					((PudgeEntity) hooked).stats.subLife(1);
+
+					// Add Blood Particles
+					Random r = new Random();
+					for (int i = 0; i < r.nextInt(10) + 10; i++) {
+						Vector2 posOffset = new Vector2(r.nextDouble() - 0.5, r.nextDouble() - 0.5);
+						posOffset.scale(0.5);
+						Vector2 velOffset = new Vector2(r.nextDouble() - 0.5, r.nextDouble() - 0.5);
+						velOffset.scale(4);
+						Game.entities.addParticle( //
+								new VelocityParticle("blood", 3, 3, 1, //
+										Vector2.add(posOffset, transform.position), //
+										velOffset, 0.25));
+					}
 				}
 			}
 		}

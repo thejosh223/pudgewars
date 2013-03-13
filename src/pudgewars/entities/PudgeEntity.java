@@ -102,11 +102,13 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 				Vector2 posOffset = new Vector2(r.nextDouble() - 0.5, r.nextDouble() - 0.5);
 				posOffset.scale(0.5);
 				Vector2 velOffset = new Vector2(r.nextDouble() - 0.5, r.nextDouble() - 0.5);
-				velOffset.scale(0.25);
+				velOffset.scale(0.5); // Randomness of Velocity
+				velOffset.add(rigidbody.velocity);
+				velOffset.scale(-0.2);
 				Game.entities.addParticle( //
 						new VelocityParticle("dust", 3, 3, 1, //
 								Vector2.add(posOffset, transform.position), //
-								Vector2.add(velOffset, rigidbody.velocity), 0.35));
+								velOffset, 0.35));
 			}
 		}
 

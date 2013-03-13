@@ -169,6 +169,7 @@ public abstract class EntityManager {
 	/*
 	 * Searching Functions
 	 */
+	@SuppressWarnings("rawtypes")
 	public int getIndexByClientID(int clientID, Class c) {
 		for (int x = 0; x < entities.size(); x++) {
 			if (entities.get(x).getClass().equals(c)) {
