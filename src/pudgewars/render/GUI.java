@@ -7,7 +7,9 @@ import pudgewars.util.ImageHandler;
 import pudgewars.util.Vector2;
 
 public class GUI {
-	public Image font = ImageHandler.get().getImage("font");
+	public static Image font_black = ImageHandler.get().getImage("font_black");
+	public static Image font_red = ImageHandler.get().getImage("font_red");
+	public static Image font_grey = ImageHandler.get().getImage("font_grey");
 
 	public GUI() {
 	}
@@ -48,6 +50,13 @@ public class GUI {
 		} else {
 			// Top Going Down
 			Game.s.g.drawImage(i[1], x, y, x + width, y + (int) (height * frac), 0, 0, (int) i[0].getWidth(null), (int) (i[0].getHeight(null) * frac), null);
+		}
+	}
+	
+	public static void showText(String text, TextSize size, TextColor color, int x, int y){
+		for(int i = 0; i < text.length(); i++) {
+			Image img = (color == TextColor.black) ? font_black : (color == TextColor.red) ? font_red : font_grey; 
+			Game.s.g.drawImage(img, x + (6*i), y, x + (6*i) + 6, y + 8, (text.charAt(i)%16)*9, (int) (text.charAt(i)/16)*9, (text.charAt(i)%16)*9 + 6, (int) (text.charAt(i)/16)*9 + 8, null);
 		}
 	}
 }

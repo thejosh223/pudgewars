@@ -78,9 +78,8 @@ public abstract class EntityManager {
 
 	public void updateRespawnEntities() {
 		for (int i = 0; i < respawnEntities.size(); i++) {
-			respawnEntities.get(i).update();
+			respawnEntities.get(i).respawnUpdate();
 			if (respawnEntities.get(i).respawn) {
-				System.out.println("hey");
 				respawnEntities.get(i).respawn = false;
 				respawnEntities.get(i).respawning = false;
 				entities.add(respawnEntities.get(i));
@@ -170,21 +169,10 @@ public abstract class EntityManager {
 	 * Searching Functions
 	 */
 	@SuppressWarnings("rawtypes")
-	public int getIndexByClientID(int clientID, Class c) {
-		for (int x = 0; x < entities.size(); x++) {
-			if (entities.get(x).getClass().equals(c)) {
-				if (entities.get(x).ClientID == clientID) {
-					return x;
-				}
-			}
-		}
-		return -1;
-	}
-
-	public int containsPudge(int ClientID) {
-		for (int x = 0; x < entities.size(); x++) {
-			if (entities.get(x) instanceof PudgeEntity) {
-				if (entities.get(x).ClientID == ClientID) {
+	public int getIndexByClientID(List<Entity> list, int clientID, Class c) {
+		for (int x = 0; x < list.size(); x++) {
+			if (list.get(x).getClass().equals(c)) {
+				if (list.get(x).ClientID == clientID) {
 					return x;
 				}
 			}

@@ -17,6 +17,8 @@ import pudgewars.entities.PudgeEntity;
 import pudgewars.entities.Team;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.render.GUI;
+import pudgewars.render.TextColor;
+import pudgewars.render.TextSize;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
@@ -36,7 +38,7 @@ public class Map {
 	public final static int TILEUPDATES_PERTICK = 32; // # of tiles updated per
 														// tick
 	// Controls
-	public boolean mouseScrollingEnabled = false;
+	public boolean mouseScrollingEnabled = true;
 
 	// Map Data
 	private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
@@ -191,7 +193,49 @@ public class Map {
 		} else {
 			respawnInterval = PudgeEntity.RESPAWN_INTERVAL;
 		}
+		
+		/*
+		 * Scores
+		 */
+		GUI.showText("Team 1 Score", TextSize.normal, TextColor.black, 10, 10);
+		GUI.showText("Team 2 Score", TextSize.normal, TextColor.black, Game.s.width - 82, 10);
 
+		int leftTeamScore = 0;
+		int leftTeamCount = 0;
+		int rightTeamScore = 0;
+		int rightTeamCount = 0;
+		for (int i = 0; i < Game.entities.entities.size(); i++){
+			if(Game.entities.entities.get(i) instanceof PudgeEntity){
+				PudgeEntity p = (PudgeEntity) Game.entities.entities.get(i);
+				if(p.team == Team.leftTeam){
+					leftTeamScore += p.stats.getKills();
+					leftTeamCount++;
+				}
+				else if(p.team == Team.rightTeam){
+					rightTeamScore += p.stats.getKills();
+					rightTeamCount++;
+				}
+				p.stats.showScore();
+			}
+		}
+		
+		for (int i = 0; i < Game.entities.respawnEntities.size(); i++){
+			if(Game.entities.respawnEntities.get(i) instanceof PudgeEntity){
+				PudgeEntity p = (PudgeEntity) Game.entities.respawnEntities.get(i);
+				if(p.team == Team.leftTeam){
+					leftTeamScore += p.stats.getKills();
+					leftTeamCount++;
+				}
+				else if(p.team == Team.rightTeam){
+					rightTeamScore += p.stats.getKills();
+					rightTeamCount++;
+				}
+				p.stats.showScore();
+			}
+		}
+		
+		GUI.showText("Total " + leftTeamScore, TextSize.normal, TextColor.black, 10, (leftTeamCount + 2)*10);
+		GUI.showText("Total " + rightTeamScore, TextSize.normal, TextColor.black, Game.s.width - 82, (rightTeamCount + 2)*10);
 		/*
 		 * Clock
 		 */

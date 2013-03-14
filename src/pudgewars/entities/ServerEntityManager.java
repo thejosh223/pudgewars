@@ -17,6 +17,8 @@ public class ServerEntityManager extends EntityManager {
 			if (clients.get(i).getTeam() == 0) p = new PudgeEntity(new Vector2(4, 8 * x++ + 4), Team.leftTeam);
 			else p = new PudgeEntity(new Vector2(20, 8 * y++ + 4), Team.rightTeam);
 			p.ClientID = i;
+			p.name =  clients.get(i).getName();
+					
 			entities.add(p);
 		}
 

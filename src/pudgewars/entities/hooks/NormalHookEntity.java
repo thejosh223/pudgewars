@@ -24,6 +24,7 @@ public class NormalHookEntity extends HookEntity {
 			if (e instanceof PudgeEntity && ((PudgeEntity) e).stats.subLife(damage)) {
 				// Pudge was Killed!
 				owner.stats.addExp(2);
+				owner.stats.addKill();
 				return;
 			}
 		}

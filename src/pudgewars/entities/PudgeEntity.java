@@ -193,6 +193,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 					Game.entities.addParticle(ParticleTypes.DIE, targetEnemy, null, 0.25);
 					if (targetEnemy.stats.subLife(4)) {
 						stats.addExp(2);
+						if(Game.isServer) stats.addKill();
 						targetEnemy = null;
 					}
 				}
@@ -200,12 +201,14 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		}
 
 		rigidbody.updateVelocity();
-
+	}
+	
+	public void respawnUpdate(){
 		if (respawning) {
 			if (respawnInterval < 0) {
 				this.stats.set_life(20);
 				String position = (team == Team.leftTeam) ? "4.0 " : "20.0 ";
-				position += 8 * (ClientID / 2) + 4;
+				position += 8 * (ClientID/2.0) + 4;
 				transform.position.setNetString(position);
 				rigidbody.velocity.setNetString("0.0 0.0");
 				respawnInterval = RESPAWN_INTERVAL;
@@ -361,6 +364,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		s += (hookTarget == null) ? "null" : hookTarget.getNetString();
 		s += ":" + hookType;
 		s += ":" + stats.getNetString();
+		s += ":" + name;
 		return s;
 	}
 

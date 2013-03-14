@@ -140,7 +140,7 @@ public class Game {
 		entities.updateEntities();
 		entities.lateUpdateEntities();
 		entities.killUpdateEntities();
-		entities.updateRespawnEntities();
+		if(Game.isServer) entities.updateRespawnEntities();
 	}
 
 	protected void render() {

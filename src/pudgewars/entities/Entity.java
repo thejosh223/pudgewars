@@ -53,6 +53,9 @@ public abstract class Entity implements BBOwner {
 
 	public void lateUpdate() {
 	}
+	
+	public void respawnUpdate() {
+	}
 
 	public void kill() {
 		remove = true;

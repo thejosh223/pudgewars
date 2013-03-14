@@ -23,6 +23,7 @@ public class ClientEntityManager extends EntityManager {
 		boolean controllable = (t[0].equals("true")) ? true : false;
 		PudgeEntity pudge = new PudgeEntity(position, team);
 		pudge.ClientID = Integer.parseInt(t[2]);
+		pudge.name = t[10];
 		pudge.wasUpdated = true;
 
 		if (controllable) {
@@ -30,6 +31,9 @@ public class ClientEntityManager extends EntityManager {
 			player.controllable = true;
 		}
 		entities.add(pudge);
+		
+		int pudgeIndex = Game.entities.getIndexByClientID(Game.entities.respawnEntities, pudge.ClientID, PudgeEntity.class);
+		if(pudgeIndex != -1) Game.entities.respawnEntities.remove(pudgeIndex);
 	}
 
 	public void addCowEntity(String msg) {
@@ -53,7 +57,7 @@ public class ClientEntityManager extends EntityManager {
 		String[] u = t[3].split(" ");
 
 		Vector2 click = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
-		Entity p = Game.entities.entities.get(containsPudge(Integer.parseInt(t[2])));
+		Entity p = Game.entities.entities.get(getIndexByClientID(Game.entities.entities, Integer.parseInt(t[2]), PudgeEntity.class));
 		
 		Entity e = null;
 		if (t[1].equals("NORMALHOOK")) {
@@ -78,7 +82,10 @@ public class ClientEntityManager extends EntityManager {
 			Entity e = Game.entities.entities.get(x);
 			if (e instanceof PudgeEntity) {
 				if (((PudgeEntity) e).controllable) Game.showRespawningScreen = false;
-				if (!e.wasUpdated) e.remove = true;
+				if (!e.wasUpdated){
+					e.remove = true;
+					Game.entities.respawnEntities.add(e);
+				}
 				else e.wasUpdated = false;
 			} else if (e instanceof HookEntity) {
 				if (!e.wasUpdated) {

@@ -34,8 +34,12 @@ public class BurnerHookEntity extends NormalHookEntity {
 			if (dist >= BURN_INTERVAL_DIST) {
 				dist -= BURN_INTERVAL_DIST;
 				if (hooked instanceof PudgeEntity) {
-					((PudgeEntity) hooked).stats.subLife(1);
-
+					if(((PudgeEntity) hooked).stats.subLife(1)){
+						owner.stats.addExp(2);
+						owner.stats.addKill();
+						return;
+					};
+						
 					// Add Blood Particles
 					Random r = new Random();
 					for (int i = 0; i < r.nextInt(10) + 10; i++) {

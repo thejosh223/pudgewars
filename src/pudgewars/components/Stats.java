@@ -4,7 +4,10 @@ import java.awt.Image;
 
 import pudgewars.Game;
 import pudgewars.entities.PudgeEntity;
+import pudgewars.entities.Team;
 import pudgewars.render.GUI;
+import pudgewars.render.TextColor;
+import pudgewars.render.TextSize;
 import pudgewars.util.ImageHandler;
 
 public class Stats {
@@ -32,6 +35,7 @@ public class Stats {
 	public BaseStat life = new BaseStat(this, "Life", 1, 20, 2, 1);
 	public BaseStat[] ref;
 	private int _life;
+	private int kills = 0;
 
 	public Stats(PudgeEntity p) {
 		pudge = p;
@@ -75,6 +79,7 @@ public class Stats {
 		String s = experience + "]" + _life;
 		for (int i = 0; i < ref.length; i++)
 			s += "]" + ref[i].getNetString();
+		s += "]" + kills;
 		return s;
 	}
 
@@ -84,6 +89,7 @@ public class Stats {
 		_life = Integer.parseInt(t[1]);
 		for (int i = 2; i < ref.length + 2; i++)
 			ref[i - 2].setNetString(t[i]);
+		kills = Integer.parseInt(t[ref.length + 2]);
 	}
 
 	/*
@@ -120,7 +126,14 @@ public class Stats {
 		if (experience > (expImages.length - 1) * 10) experience = ((expImages.length - 1) * 10);
 		if (experience < 0) experience = 0;
 	}
+	
+	public void addKill() {
+		kills++;
+	}
 
+	public int getKills() {
+		return kills;
+	}
 	/*
 	 * GUI
 	 */
@@ -156,7 +169,7 @@ public class Stats {
 			Image tImg[] = { expImages[(int) (experience / 10)], expImages[(int) (experience / 10)] };
 			GUI.partialHorizontalBar(tImg, ex, ey, ((((int) experience)) / 10.0));
 		}
-
+		
 		if (isOpen) {
 			for (int i = 0; i < CharStat.length; i++) {
 				if (ref[i].drawButtons(10, 10 + i * (16 + 4))) {
@@ -169,5 +182,13 @@ public class Stats {
 				}
 			}
 		}
+	}
+	
+	public void showScore(){
+		// Draw Kills
+		int x = (pudge.team == Team.leftTeam) ? 10 : Game.s.width - 82 ;
+		int y = ((pudge.ClientID/2) + 2) * 10;
+		TextColor color = (pudge.remove) ? TextColor.grey : (pudge.controllable) ? TextColor.red : TextColor.black; 
+		GUI.showText(pudge.name + ": " + kills, TextSize.normal, color, x, y);
 	}
 }

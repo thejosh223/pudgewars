@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import pudgewars.Game;
+import pudgewars.entities.PudgeEntity;
 
 public class ServerNetwork extends Network {
 	public List<MyConnection> serverConn;
@@ -29,7 +30,7 @@ public class ServerNetwork extends Network {
 	public void getEntityData(String msg) {
 		// format for PUDGE >> PUDGE:CientID:position:velocity:moveTarget:team:hookTarget:isGrapple:life
 		String t[] = msg.split(":");
-		int pudgeIndex = Game.entities.containsPudge(Integer.parseInt(t[1]));
+		int pudgeIndex = Game.entities.getIndexByClientID(Game.entities.entities, Integer.parseInt(t[1]), PudgeEntity.class);
 		if (pudgeIndex != -1) Game.entities.entities.get(pudgeIndex).setNetworkString(msg);
 	}
 }
