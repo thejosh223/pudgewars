@@ -37,7 +37,7 @@ public class BurnerHookEntity extends NormalHookEntity {
 					if(((PudgeEntity) hooked).stats.subLife(1)){
 						owner.stats.addExp(2);
 						owner.stats.addKill();
-						hooked = null;
+						detachHookableEntity();
 						return;
 					};
 						
