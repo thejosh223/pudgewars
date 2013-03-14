@@ -193,7 +193,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 					Game.entities.addParticle(ParticleTypes.DIE, targetEnemy, null, 0.25);
 					if (targetEnemy.stats.subLife(4)) {
 						stats.addExp(2);
-						stats.addKill();
+						if(Game.isServer) stats.addKill();
 						targetEnemy = null;
 					}
 				}
