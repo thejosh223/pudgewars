@@ -2,6 +2,7 @@ package pudgewars.network;
 
 public class ClientNode {
 	private MyConnection conn;
+	private int id;
 	private String name;
 	private String status;
 	private int team;
@@ -17,6 +18,14 @@ public class ClientNode {
 		return this.conn;
 	}
 
+	public int getID() {
+		return this.id;
+	}
+
+	public void setID(int id) {
+		this.id = id;
+	}
+	
 	public String getName() {
 		return this.name;
 	}

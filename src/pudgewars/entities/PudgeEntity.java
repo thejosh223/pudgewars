@@ -208,7 +208,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			if (respawnInterval < 0) {
 				this.stats.set_life(20);
 				String position = (team == Team.leftTeam) ? "4.0 " : "20.0 ";
-				position += 8 * (ClientID/2.0) + 4;
+				position += 8 * (ClientID/2) + 4;
 				transform.position.setNetString(position);
 				rigidbody.velocity.setNetString("0.0 0.0");
 				respawnInterval = RESPAWN_INTERVAL;
