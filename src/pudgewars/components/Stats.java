@@ -5,9 +5,11 @@ import java.awt.Image;
 import pudgewars.Game;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.entities.Team;
+import pudgewars.render.ArcImage;
 import pudgewars.render.GUI;
 import pudgewars.render.TextColor;
 import pudgewars.render.TextSize;
+import pudgewars.util.Animation;
 import pudgewars.util.ImageHandler;
 
 public class Stats {
@@ -18,7 +20,8 @@ public class Stats {
 	public boolean isOpen = false;
 	public Image[] statImages;
 	public Image[] expImages;
-	public Image[] lifeImages;
+	// public Image[] lifeImages;
+	public ArcImage[] lifeImages;
 	public Image[] hookCooldownImages;
 	public Image[] grappleCooldownImages;
 
@@ -56,9 +59,13 @@ public class Stats {
 			expImages[i] = ImageHandler.get().getImage("HUD_exp_" + i);
 
 		// Life Images
-		lifeImages = new Image[2];
-		lifeImages[0] = ImageHandler.get().getImage("HUD_hp_empty");
-		lifeImages[1] = ImageHandler.get().getImage("HUD_hp_full");
+		// lifeImages = new Image[2];
+		// lifeImages[0] = ImageHandler.get().getImage("HUD_hp_empty");
+		// lifeImages[1] = ImageHandler.get().getImage("HUD_hp_full");
+		lifeImages = new ArcImage[3];
+		lifeImages[0] = new ArcImage(ImageHandler.get().getImage("hp_empty"), ImageHandler.get().getImage("hp_full"));
+		lifeImages[1] = new ArcImage(ImageHandler.get().getImage("hp_empty"), ImageHandler.get().getImage("hp_half"));
+		lifeImages[2] = new ArcImage(ImageHandler.get().getImage("hp_empty"), ImageHandler.get().getImage("hp_quarter"));
 
 		hookCooldownImages = new Image[2];
 		hookCooldownImages[0] = ImageHandler.get().getImage("lasso_icon_empty");
@@ -126,7 +133,7 @@ public class Stats {
 		if (experience > (expImages.length - 1) * 10) experience = ((expImages.length - 1) * 10);
 		if (experience < 0) experience = 0;
 	}
-	
+
 	public void addKill() {
 		kills++;
 	}
@@ -134,6 +141,7 @@ public class Stats {
 	public int getKills() {
 		return kills;
 	}
+
 	/*
 	 * GUI
 	 */
@@ -143,11 +151,16 @@ public class Stats {
 	public final static int BAR_PADDING = Game.TILE_SIZE / 2;
 
 	public void onGUI() {
-		int barHeight = lifeImages[0].getHeight(null);
-
 		// Draw Life
-		GUI.partialVerticalBar(lifeImages, LEFT_PADDING, Game.s.height - (BOT_PADDING + lifeImages[0].getHeight(null)), -lifePercentage());
+		// GUI.partialVerticalBar(lifeImages, LEFT_PADDING, Game.s.height - (BOT_PADDING + lifeImages[0].getHeight(null)), -lifePercentage());
 		// GUI.partialHorizontalBar(lifeImages, (Game.s.width - lifeImages[0].getWidth(null)) / 2, Game.s.height - (BOT_PADDING + barHeight), lifePercentage());
+		int lifeIndex = 0;
+		if (lifePercentage() > 0.5) ;
+		else if (lifePercentage() > 0.25) lifeIndex = 1;
+		else lifeIndex = 2;
+		lifeImages[lifeIndex].renderCenteredAt( //
+				LEFT_PADDING + lifeImages[0].getWidth() / 2, Game.s.height - (BOT_PADDING + lifeImages[0].getHeight() / 2), //
+				lifePercentage());
 
 		// Hook Cooldown
 		GUI.partialHorizontalBar(hookCooldownImages, Game.s.width - (RIGHT_PADDING + grappleCooldownImages[0].getWidth(null) + BAR_PADDING + hookCooldownImages[0].getWidth(null)), //
@@ -160,7 +173,7 @@ public class Stats {
 				(1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
 
 		// Draw Experience
-		int ex = LEFT_PADDING + lifeImages[0].getWidth(null) + BAR_PADDING;
+		int ex = LEFT_PADDING + expImages[0].getWidth(null) + BAR_PADDING;
 		int ey = Game.s.height - (BOT_PADDING + expImages[0].getHeight(null));
 		if (experience < 30) {
 			Image tImg[] = { expImages[(int) (experience / 10)], expImages[(int) (experience / 10) + 1] };
@@ -169,7 +182,7 @@ public class Stats {
 			Image tImg[] = { expImages[(int) (experience / 10)], expImages[(int) (experience / 10)] };
 			GUI.partialHorizontalBar(tImg, ex, ey, ((((int) experience)) / 10.0));
 		}
-		
+
 		if (isOpen) {
 			for (int i = 0; i < CharStat.length; i++) {
 				if (ref[i].drawButtons(10, 10 + i * (16 + 4))) {
@@ -183,12 +196,12 @@ public class Stats {
 			}
 		}
 	}
-	
-	public void showScore(){
+
+	public void showScore() {
 		// Draw Kills
-		int x = (pudge.team == Team.leftTeam) ? 10 : Game.s.width - 82 ;
-		int y = ((pudge.ClientID/2) + 2) * 10;
-		TextColor color = (pudge.remove) ? TextColor.grey : (pudge.controllable) ? TextColor.red : TextColor.black; 
+		int x = (pudge.team == Team.leftTeam) ? 10 : Game.s.width - 82;
+		int y = ((pudge.ClientID / 2) + 2) * 10;
+		TextColor color = (pudge.remove) ? TextColor.grey : (pudge.controllable) ? TextColor.red : TextColor.black;
 		GUI.showText(pudge.name + ": " + kills, TextSize.normal, color, x, y);
 	}
 }

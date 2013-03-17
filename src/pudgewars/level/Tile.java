@@ -33,12 +33,12 @@ public class Tile implements BBOwner {
 			new Tile("tree", 3, 1, true, true, false) };
 
 	public final static Tile[] HOOKABLE = //
-	{ new LightTile("haybail", 0, 1, false, false, true, 13, 13), //
-			new LightTile("haybail", 1, 1, false, false, true, 13, 13), //
-			new LightTile("haybail", 2, 1, false, false, true, 13, 13), //
-			new LightTile("haybail", 3, 1, false, false, true, 13, 13), //
-			new LightTile("haybail", 4, 1, false, false, true, 13, 13), //
-			new LightTile("haybail", 5, 1, false, false, true, 13, 13), //
+	{ new LightTile("haybail3", 0, 1, false, false, true, 13, 13), //
+			new LightTile("haybail3", 1, 1, false, false, true, 13, 13), //
+			new LightTile("haybail3", 2, 1, false, false, true, 13, 13), //
+			new LightTile("haybail3", 3, 1, false, false, true, 13, 13), //
+			new LightTile("haybail3", 4, 1, false, false, true, 13, 13), //
+			new LightTile("haybail3", 5, 1, false, false, true, 13, 13), //
 	};
 
 	public final static Tile WATER = new Tile("river0000", 0, 8, false, false, false);

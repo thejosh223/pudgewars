@@ -68,6 +68,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	protected ArcImage life;
 	protected Image fullLife;
 	protected Image emptyLife;
+	protected Animation heart;
 
 	// Respawning
 	public double respawnInterval = RESPAWN_INTERVAL;
@@ -86,6 +87,9 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		ani = Animation.makeAnimation("horse2", 8, 32, 32, 0.05);
 		ani.startAnimation();
 
+		heart = Animation.makeAnimation("heart", 8, 32, 32, 0.25);
+		heart.startAnimation();
+
 		clicker = ImageHandler.get().getImage("selector");
 		target = null;
 
@@ -96,6 +100,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	}
 
 	public void update() {
+		heart.update();
 		if (rigidbody.isMoving()) {
 			// Update Animation
 			ani.update();
@@ -256,7 +261,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		int lifebarActual = (int) (fullLife.getWidth(null) * stats.lifePercentage());
 
 		// Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, lifebarWidth, lifebarHeight, null);
-		life.renderCenteredAt((int) v.x, (int) v.y, stats.lifePercentage() * 2 * Math.PI);
+		life.renderCenteredAt((int) v.x, (int) v.y, stats.lifePercentage());
 
 		// Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x + lifebarWidth / 2, (int) v.y + lifebarHeight / 2, //
 		// 0, 0, lifebarWidth, lifebarHeight, null);
@@ -277,6 +282,11 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 				a.rotate(targetRotation, CLICK_SIZE / 2, CLICK_SIZE / 2);
 				Game.s.g.drawImage(clicker, a, null);
 			}
+
+			Image i = heart.getImage();
+			Game.s.g.drawImage(i, //
+					Stats.LEFT_PADDING, Game.s.height - (Stats.BOT_PADDING + 32), //
+					32, 32, null);
 
 			// Draw Stats
 			stats.onGUI();

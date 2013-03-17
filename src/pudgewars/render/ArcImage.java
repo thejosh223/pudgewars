@@ -22,7 +22,7 @@ public class ArcImage {
 		updateImage();
 	}
 
-	public void updateImage() {
+	private void updateImage() {
 		toRender = new BufferedImage(empty.getWidth(), empty.getHeight(), BufferedImage.TYPE_INT_ARGB);
 		Graphics2D g = (Graphics2D) toRender.getGraphics();
 
@@ -33,9 +33,10 @@ public class ArcImage {
 		// System.out.println("Update Angle: " + Math.toDegrees(angle));
 	}
 
-	public void renderCenteredAt(int x, int y, double angle) {
-		if (angle != this.angle) {
-			this.angle = angle;
+	public void renderCenteredAt(int x, int y, double percentage) {
+		percentage *= 2 * Math.PI;
+		if (percentage != this.angle) {
+			this.angle = percentage;
 			updateImage();
 		}
 		Game.s.g.drawImage(empty, x - empty.getWidth() / 2, y - empty.getHeight() / 2, empty.getWidth(), empty.getHeight(), null);
@@ -44,5 +45,13 @@ public class ArcImage {
 
 	public void renderCenteredAt(int x, int y) {
 		Game.s.g.drawImage(empty, x - empty.getWidth() / 2, y - empty.getHeight() / 2, empty.getWidth(), empty.getHeight(), null);
+	}
+
+	public int getWidth() {
+		return empty.getWidth();
+	}
+
+	public int getHeight() {
+		return empty.getHeight();
 	}
 }
