@@ -21,10 +21,10 @@ public class Tile implements BBOwner {
 			new Tile("grass-2", 4, 1, false, false, false) };
 
 	public final static Tile[] FOUNTAIN = //
-	{ new Tile("fountain", 0, 1, false, false, false), //
-			new Tile("fountain", 1, 1, false, false, false), //
-			new Tile("fountain", 2, 1, false, false, false), //
-			new Tile("fountain", 3, 1, false, false, false) };
+	{ new Tile("fountain3", 0, 8, false, false, false), //
+			new Tile("fountain3", 1, 8, false, false, false), //
+			new Tile("fountain3", 2, 8, false, false, false), //
+			new Tile("fountain3", 3, 8, false, false, false) };
 
 	public final static Tile[] TREE = //
 	{ new Tile("tree", 0, 1, true, true, false), //
@@ -32,10 +32,18 @@ public class Tile implements BBOwner {
 			new Tile("tree", 2, 1, true, true, false), //
 			new Tile("tree", 3, 1, true, true, false) };
 
+	public final static Tile[] HOOKABLE = //
+	{ new LightTile("haybail", 0, 1, false, false, true, 13, 13), //
+			new LightTile("haybail", 1, 1, false, false, true, 13, 13), //
+			new LightTile("haybail", 2, 1, false, false, true, 13, 13), //
+			new LightTile("haybail", 3, 1, false, false, true, 13, 13), //
+			new LightTile("haybail", 4, 1, false, false, true, 13, 13), //
+			new LightTile("haybail", 5, 1, false, false, true, 13, 13), //
+	};
+
 	public final static Tile WATER = new Tile("river0000", 0, 8, false, false, false);
 
 	public final static Tile T_Mound = new Tile("mound2", 0, 1, true, false, false);
-	public final static Tile T_Hookable = new LightTile("hookable", 0, 1, false, false, true, 13, 13);
 
 	protected String ID;
 	protected BufferedImage[] img;

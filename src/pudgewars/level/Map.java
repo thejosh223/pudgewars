@@ -57,6 +57,8 @@ public class Map {
 		/*
 		 * Level
 		 */
+		int hookableIndex = 0;
+
 		// Set Grass, Boundaries, Hookables
 		for (int i = 0; i < map.length; i++)
 			for (int o = 0; o < map[0].length; o++)
@@ -65,8 +67,10 @@ public class Map {
 				else if (i == MAP_HEIGHT - 1) map[i][o] = Tile.TREE[0];
 				else if (o == MAP_WIDTH - 1) map[i][o] = Tile.TREE[3];
 				else if ((i == (int) (MAP_HEIGHT * 0.25) || i == (int) (MAP_HEIGHT * 0.75) || i == (int) (MAP_HEIGHT * 0.50)) //
-						&& (o == (int) (MAP_WIDTH * 0.25) || o == (int) (MAP_WIDTH * 0.75))) map[i][o] = Tile.T_Hookable;
-				else map[i][o] = Tile.GRASS[r.nextInt(Tile.GRASS.length)];
+						&& (o == (int) (MAP_WIDTH * 0.25) || o == (int) (MAP_WIDTH * 0.75))) {
+					map[i][o] = Tile.HOOKABLE[hookableIndex];
+					hookableIndex = (hookableIndex + 1) % Tile.HOOKABLE.length;
+				} else map[i][o] = Tile.GRASS[r.nextInt(Tile.GRASS.length)];
 
 		int o1 = (MAP_WIDTH - DIVISION_WIDTH) / 2 - 1;
 		int o2 = (MAP_WIDTH + DIVISION_WIDTH) / 2;
@@ -193,7 +197,7 @@ public class Map {
 		} else {
 			respawnInterval = PudgeEntity.RESPAWN_INTERVAL;
 		}
-		
+
 		/*
 		 * Scores
 		 */
@@ -204,38 +208,36 @@ public class Map {
 		int leftTeamCount = 0;
 		int rightTeamScore = 0;
 		int rightTeamCount = 0;
-		for (int i = 0; i < Game.entities.entities.size(); i++){
-			if(Game.entities.entities.get(i) instanceof PudgeEntity){
+		for (int i = 0; i < Game.entities.entities.size(); i++) {
+			if (Game.entities.entities.get(i) instanceof PudgeEntity) {
 				PudgeEntity p = (PudgeEntity) Game.entities.entities.get(i);
-				if(p.team == Team.leftTeam){
+				if (p.team == Team.leftTeam) {
 					leftTeamScore += p.stats.getKills();
 					leftTeamCount++;
-				}
-				else if(p.team == Team.rightTeam){
+				} else if (p.team == Team.rightTeam) {
 					rightTeamScore += p.stats.getKills();
 					rightTeamCount++;
 				}
 				p.stats.showScore();
 			}
 		}
-		
-		for (int i = 0; i < Game.entities.respawnEntities.size(); i++){
-			if(Game.entities.respawnEntities.get(i) instanceof PudgeEntity){
+
+		for (int i = 0; i < Game.entities.respawnEntities.size(); i++) {
+			if (Game.entities.respawnEntities.get(i) instanceof PudgeEntity) {
 				PudgeEntity p = (PudgeEntity) Game.entities.respawnEntities.get(i);
-				if(p.team == Team.leftTeam){
+				if (p.team == Team.leftTeam) {
 					leftTeamScore += p.stats.getKills();
 					leftTeamCount++;
-				}
-				else if(p.team == Team.rightTeam){
+				} else if (p.team == Team.rightTeam) {
 					rightTeamScore += p.stats.getKills();
 					rightTeamCount++;
 				}
 				p.stats.showScore();
 			}
 		}
-		
-		GUI.showText("Total " + leftTeamScore, TextSize.normal, TextColor.black, 10, (leftTeamCount + 2)*10);
-		GUI.showText("Total " + rightTeamScore, TextSize.normal, TextColor.black, Game.s.width - 82, (rightTeamCount + 2)*10);
+
+		GUI.showText("Total " + leftTeamScore, TextSize.normal, TextColor.black, 10, (leftTeamCount + 2) * 10);
+		GUI.showText("Total " + rightTeamScore, TextSize.normal, TextColor.black, Game.s.width - 82, (rightTeamCount + 2) * 10);
 		/*
 		 * Clock
 		 */
