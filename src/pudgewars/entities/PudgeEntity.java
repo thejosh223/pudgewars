@@ -4,6 +4,7 @@ import java.awt.Image;
 import java.awt.Shape;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Ellipse2D;
+import java.awt.image.BufferedImage;
 import java.util.List;
 import java.util.Random;
 
@@ -19,6 +20,7 @@ import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
 import pudgewars.particles.ParticleTypes;
 import pudgewars.particles.VelocityParticle;
+import pudgewars.render.ArcImage;
 import pudgewars.util.Animation;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.ImageHandler;
@@ -63,6 +65,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 	// Rendering
 	protected Animation ani;
+	protected ArcImage life;
 	protected Image fullLife;
 	protected Image emptyLife;
 
@@ -76,7 +79,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 		stats = new Stats(this);
 		stats.restoreDefaults();
-		stats.subLife(5);
+		stats.subLife(8);
 
 		rigidbody.physicsSlide = true;
 
@@ -87,8 +90,9 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		target = null;
 
 		transform.drawScale = new Vector2(2, 2);
-		fullLife = ImageHandler.get().getImage("life_full");
-		emptyLife = ImageHandler.get().getImage("life_empty");
+		fullLife = ImageHandler.get().getImage("c_life_full");
+		emptyLife = ImageHandler.get().getImage("c_life_empty");
+		life = new ArcImage((BufferedImage) emptyLife, (BufferedImage) fullLife);
 	}
 
 	public void update() {
@@ -193,7 +197,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 					Game.entities.addParticle(ParticleTypes.DIE, targetEnemy, null, 0.25);
 					if (targetEnemy.stats.subLife(4)) {
 						stats.addExp(2);
-						if(Game.isServer) stats.addKill();
+						if (Game.isServer) stats.addKill();
 						targetEnemy = null;
 					}
 				}
@@ -202,13 +206,13 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 		rigidbody.updateVelocity();
 	}
-	
-	public void respawnUpdate(){
+
+	public void respawnUpdate() {
 		if (respawning) {
 			if (respawnInterval < 0) {
 				this.stats.set_life(20);
 				String position = (team == Team.leftTeam) ? "4.0 " : "20.0 ";
-				position += 8 * (ClientID/2) + 4;
+				position += 8 * (ClientID / 2) + 4;
 				transform.position.setNetString(position);
 				rigidbody.velocity.setNetString("0.0 0.0");
 				respawnInterval = RESPAWN_INTERVAL;
@@ -240,24 +244,27 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	public void render() {
 		if (!shouldRender) return;
 
-		// Draw Pudge
-		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
-
 		/*
 		 * LIFE DRAWING
 		 */
 
 		// Dimension Definitions!
 		Vector2 v = Game.s.worldToScreenPoint(transform.position);
-		v.y -= Game.TILE_SIZE / 2;
+		// v.y -= Game.TILE_SIZE / 2;
 		int lifebarWidth = fullLife.getWidth(null);
 		int lifebarHeight = fullLife.getHeight(null);
 		int lifebarActual = (int) (fullLife.getWidth(null) * stats.lifePercentage());
 
-		Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x + lifebarWidth / 2, (int) v.y + lifebarHeight / 2, //
-				0, 0, lifebarWidth, lifebarHeight, null);
-		Game.s.g.drawImage(fullLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x - lifebarWidth / 2 + lifebarActual, (int) v.y + lifebarHeight / 2, //
-				0, 0, lifebarActual, lifebarHeight, null);
+		// Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, lifebarWidth, lifebarHeight, null);
+		life.renderCenteredAt((int) v.x, (int) v.y, stats.lifePercentage() * 2 * Math.PI);
+
+		// Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x + lifebarWidth / 2, (int) v.y + lifebarHeight / 2, //
+		// 0, 0, lifebarWidth, lifebarHeight, null);
+		// Game.s.g.drawImage(fullLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x - lifebarWidth / 2 + lifebarActual, (int) v.y + lifebarHeight / 2, //
+		// 0, 0, lifebarActual, lifebarHeight, null);
+
+		// Draw Pudge
+		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
 	}
 
 	public void onGUI() {
