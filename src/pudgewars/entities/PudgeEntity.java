@@ -87,15 +87,15 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		ani = Animation.makeAnimation("horse2", 8, 32, 32, 0.05);
 		ani.startAnimation();
 
-		heart = Animation.makeAnimation("heart", 8, 32, 32, 0.25);
+		heart = Animation.makeAnimation("heart", 8, 32, 32, 1 / 8.0);
 		heart.startAnimation();
 
 		clicker = ImageHandler.get().getImage("selector");
 		target = null;
 
 		transform.drawScale = new Vector2(2, 2);
-		fullLife = ImageHandler.get().getImage("c_life_full");
-		emptyLife = ImageHandler.get().getImage("c_life_empty");
+		fullLife = ImageHandler.get().getImage("life_full");
+		emptyLife = ImageHandler.get().getImage("life_empty");
 		life = new ArcImage((BufferedImage) emptyLife, (BufferedImage) fullLife);
 	}
 
@@ -249,27 +249,28 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	public void render() {
 		if (!shouldRender) return;
 
+		// Draw Pudge
+		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
+
 		/*
 		 * LIFE DRAWING
 		 */
 
 		// Dimension Definitions!
 		Vector2 v = Game.s.worldToScreenPoint(transform.position);
-		// v.y -= Game.TILE_SIZE / 2;
+		v.y -= Game.TILE_SIZE / 2;
 		int lifebarWidth = fullLife.getWidth(null);
 		int lifebarHeight = fullLife.getHeight(null);
 		int lifebarActual = (int) (fullLife.getWidth(null) * stats.lifePercentage());
 
-		// Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, lifebarWidth, lifebarHeight, null);
-		life.renderCenteredAt((int) v.x, (int) v.y, stats.lifePercentage());
+		// Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y
+		// - lifebarHeight / 2, lifebarWidth, lifebarHeight, null);
+		// life.renderCenteredAt((int) v.x, (int) v.y, stats.lifePercentage());
 
-		// Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x + lifebarWidth / 2, (int) v.y + lifebarHeight / 2, //
-		// 0, 0, lifebarWidth, lifebarHeight, null);
-		// Game.s.g.drawImage(fullLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x - lifebarWidth / 2 + lifebarActual, (int) v.y + lifebarHeight / 2, //
-		// 0, 0, lifebarActual, lifebarHeight, null);
-
-		// Draw Pudge
-		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
+		Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x + lifebarWidth / 2, (int) v.y + lifebarHeight / 2, //
+				0, 0, lifebarWidth, lifebarHeight, null);
+		Game.s.g.drawImage(fullLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x - lifebarWidth / 2 + lifebarActual, (int) v.y + lifebarHeight / 2, //
+				0, 0, lifebarActual, lifebarHeight, null);
 	}
 
 	public void onGUI() {
@@ -300,18 +301,18 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		if (!isHooking) {
 			Entity e = null;
 			switch (shootingHook) {
-				case HookType.NORMAL:
-					e = new NormalHookEntity(this, click);
-					hookType = HookType.NORMAL;
-					break;
-				case HookType.GRAPPLE:
-					e = new GrappleHookEntity(this, click);
-					hookType = HookType.GRAPPLE;
-					break;
-				case HookType.BURNER:
-					e = new BurnerHookEntity(this, click);
-					hookType = HookType.BURNER;
-					break;
+			case HookType.NORMAL:
+				e = new NormalHookEntity(this, click);
+				hookType = HookType.NORMAL;
+				break;
+			case HookType.GRAPPLE:
+				e = new GrappleHookEntity(this, click);
+				hookType = HookType.GRAPPLE;
+				break;
+			case HookType.BURNER:
+				e = new BurnerHookEntity(this, click);
+				hookType = HookType.BURNER;
+				break;
 			}
 			Game.entities.entities.add(e);
 			isHooking = true;
@@ -330,9 +331,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	 */
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return true;
-		if (b instanceof PudgeEntity || b instanceof CowEntity) {
-			return canEntityCollide ? true : isHooking;
-		}
+		if (b instanceof PudgeEntity || b instanceof CowEntity) { return canEntityCollide ? true : isHooking; }
 		if (canTileCollide) {
 			if (b instanceof Tile) {
 				if (((Tile) b).isPudgeSolid()) return true;
