@@ -11,6 +11,17 @@ public class GUI {
 	public static Image font_red = ImageHandler.get().getImage("font_red");
 	public static Image font_grey = ImageHandler.get().getImage("font_grey");
 
+	public static Image[] numbers;
+	public static Image dash;
+
+	static {
+		numbers = new Image[6];
+		for (int i = 0; i < numbers.length; i++)
+			numbers[i] = ImageHandler.get().getImage("numbers", i, 0, 16, 16);
+
+		dash = ImageHandler.get().getImage("dash");
+	}
+
 	public GUI() {
 	}
 
@@ -52,11 +63,23 @@ public class GUI {
 			Game.s.g.drawImage(i[1], x, y, x + width, y + (int) (height * frac), 0, 0, (int) i[0].getWidth(null), (int) (i[0].getHeight(null) * frac), null);
 		}
 	}
-	
-	public static void showText(String text, TextSize size, TextColor color, int x, int y){
-		for(int i = 0; i < text.length(); i++) {
-			Image img = (color == TextColor.black) ? font_black : (color == TextColor.red) ? font_red : font_grey; 
-			Game.s.g.drawImage(img, x + (6*i), y, x + (6*i) + 6, y + 8, (text.charAt(i)%16)*9, (int) (text.charAt(i)/16)*9, (text.charAt(i)%16)*9 + 6, (int) (text.charAt(i)/16)*9 + 8, null);
+
+	public static void showTally(int val, int x, int y) {
+		for (int i = 0; val > 0; val -= 5, i++) {
+			if (val >= 5) {
+				Game.s.g.drawImage(numbers[numbers.length - 1], x + i * (numbers[0].getWidth(null) + dash.getWidth(null)), y, null);
+				Game.s.g.drawImage(dash, x + i * (numbers[0].getWidth(null) + dash.getWidth(null)) + numbers[0].getWidth(null), y, null);
+			} else {
+				Game.s.g.drawImage(numbers[val], x + i * (numbers[0].getWidth(null) + dash.getWidth(null)), y, null);
+			}
+		}
+
+	}
+
+	public static void showText(String text, TextSize size, TextColor color, int x, int y) {
+		for (int i = 0; i < text.length(); i++) {
+			Image img = (color == TextColor.black) ? font_black : (color == TextColor.red) ? font_red : font_grey;
+			Game.s.g.drawImage(img, x + (6 * i), y, x + (6 * i) + 6, y + 8, (text.charAt(i) % 16) * 9, (int) (text.charAt(i) / 16) * 9, (text.charAt(i) % 16) * 9 + 6, (int) (text.charAt(i) / 16) * 9 + 8, null);
 		}
 	}
 }

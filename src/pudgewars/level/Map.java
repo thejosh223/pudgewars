@@ -201,10 +201,7 @@ public class Map {
 		/*
 		 * Scores
 		 */
-		GUI.showText("Team 1 Score", TextSize.normal, TextColor.black, 10, 10);
-		GUI.showText("Team 2 Score", TextSize.normal, TextColor.black, Game.s.width - 82, 10);
-
-		int leftTeamScore = 0;
+		int leftTeamScore = 13;
 		int leftTeamCount = 0;
 		int rightTeamScore = 0;
 		int rightTeamCount = 0;
@@ -236,11 +233,12 @@ public class Map {
 			}
 		}
 
-		GUI.showText("Total " + leftTeamScore, TextSize.normal, TextColor.black, 10, (leftTeamCount + 2) * 10);
-		GUI.showText("Total " + rightTeamScore, TextSize.normal, TextColor.black, Game.s.width - 82, (rightTeamCount + 2) * 10);
-		/*
-		 * Clock
-		 */
+		GUI.showText("Team 1 Score", TextSize.normal, TextColor.black, 10, 10);
+		GUI.showText("Team 2 Score", TextSize.normal, TextColor.black, Game.s.width - 82, 10);
+		GUI.showTally(leftTeamScore, 10, (leftTeamCount + 2) * 10);
+		GUI.showTally(rightTeamScore, Game.s.width - 82, (rightTeamCount + 2) * 10);
+		// GUI.showText("Total " + leftTeamScore, TextSize.normal, TextColor.black, 10, (leftTeamCount + 2) * 10);
+		// GUI.showText("Total " + rightTeamScore, TextSize.normal, TextColor.black, Game.s.width - 82, (rightTeamCount + 2) * 10);
 	}
 
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {
