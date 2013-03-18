@@ -41,6 +41,9 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 	public final static double RESPAWN_INTERVAL = 10;
 
+	public final static double MIN_HEART_SCALE = 1;
+	public final static double MAX_HEART_SCALE = 2.5;
+
 	public Stats stats;
 
 	// Whether or not you can control this Pudge
@@ -87,7 +90,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		ani = Animation.makeAnimation("horse2", 8, 32, 32, 0.05);
 		ani.startAnimation();
 
-		heart = Animation.makeAnimation("heart", 8, 32, 32, 1 / 8.0);
+		heart = Animation.makeAnimation("heart2", 8, 32, 32, 1 / 8.0);
 		heart.startAnimation();
 
 		clicker = ImageHandler.get().getImage("selector");
@@ -100,7 +103,10 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	}
 
 	public void update() {
+		// Heart Animation
+		heart.timeScale = -(MAX_HEART_SCALE - MIN_HEART_SCALE) * stats.lifePercentage() + MAX_HEART_SCALE;
 		heart.update();
+
 		if (rigidbody.isMoving()) {
 			// Update Animation
 			ani.update();
@@ -301,18 +307,18 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		if (!isHooking) {
 			Entity e = null;
 			switch (shootingHook) {
-			case HookType.NORMAL:
-				e = new NormalHookEntity(this, click);
-				hookType = HookType.NORMAL;
-				break;
-			case HookType.GRAPPLE:
-				e = new GrappleHookEntity(this, click);
-				hookType = HookType.GRAPPLE;
-				break;
-			case HookType.BURNER:
-				e = new BurnerHookEntity(this, click);
-				hookType = HookType.BURNER;
-				break;
+				case HookType.NORMAL:
+					e = new NormalHookEntity(this, click);
+					hookType = HookType.NORMAL;
+					break;
+				case HookType.GRAPPLE:
+					e = new GrappleHookEntity(this, click);
+					hookType = HookType.GRAPPLE;
+					break;
+				case HookType.BURNER:
+					e = new BurnerHookEntity(this, click);
+					hookType = HookType.BURNER;
+					break;
 			}
 			Game.entities.entities.add(e);
 			isHooking = true;
@@ -331,7 +337,9 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	 */
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return true;
-		if (b instanceof PudgeEntity || b instanceof CowEntity) { return canEntityCollide ? true : isHooking; }
+		if (b instanceof PudgeEntity || b instanceof CowEntity) {
+			return canEntityCollide ? true : isHooking;
+		}
 		if (canTileCollide) {
 			if (b instanceof Tile) {
 				if (((Tile) b).isPudgeSolid()) return true;

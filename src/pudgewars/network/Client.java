@@ -220,8 +220,7 @@ public class Client {
 	}
 
 	public static void main(String args[]) {
-		// String host = JOptionPane.showInputDialog(null, "Enter host:",
-		// "127.0.0.1");
+		// String host = JOptionPane.showInputDialog(null, "Enter host:", "127.0.0.1");
 		String host = "127.0.0.1";
 		createAndShowGUI();
 		chatWindow.setText("Connecting to host: " + host + "...\n");

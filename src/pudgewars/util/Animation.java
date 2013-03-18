@@ -4,6 +4,8 @@ import java.awt.Image;
 import java.util.ArrayList;
 
 public class Animation {
+	public double timeScale = 1;
+
 	private ArrayList<OneScene> scenes;
 	private int sceneIndex; // The index for the scene in your ArrayList
 
@@ -46,7 +48,7 @@ public class Animation {
 		if (scenes.size() > 1 && playing) {
 			// movieTime is the total amount of time passed since the beginning
 			// movieTime is the sum of all the timePassed variables
-			movieTime += Time.getTickInterval();
+			movieTime += Time.getTickInterval() * timeScale;
 
 			// If the movieTime is going on for too long, restart the animation.
 			if (movieTime >= totalTime) {
