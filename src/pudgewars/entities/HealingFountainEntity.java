@@ -1,7 +1,7 @@
 package pudgewars.entities;
 
 import pudgewars.Game;
-import pudgewars.particles.ParticleTypes;
+import pudgewars.particles.FollowParticle;
 import pudgewars.util.Time;
 import pudgewars.util.Vector2;
 
@@ -23,8 +23,8 @@ public class HealingFountainEntity extends LightSourceEntity {
 				Entity e = Game.entities.entities.get(i);
 				if (e.transform.position.distance(transform.position) <= HEALING_RADIUS) {
 					if (e instanceof PudgeEntity) {
-						if(Game.isServer) ((PudgeEntity) e).stats.addLife(HEAL_AMOUNT);
-						Game.entities.addParticle(ParticleTypes.FOLLOW_SPARKLE, e, null, HEALING_INTERVAL);
+						if (Game.isServer) ((PudgeEntity) e).stats.addLife(HEAL_AMOUNT);
+						Game.entities.addParticle(new FollowParticle("sparkle2", 16, 16, 4, e, HEALING_INTERVAL));
 					}
 				}
 			}

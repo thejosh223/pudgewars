@@ -201,7 +201,7 @@ public class Map {
 		/*
 		 * Scores
 		 */
-		int leftTeamScore = 13;
+		int leftTeamScore = 0;
 		int leftTeamCount = 0;
 		int rightTeamScore = 0;
 		int rightTeamCount = 0;

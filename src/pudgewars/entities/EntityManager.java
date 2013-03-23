@@ -41,9 +41,6 @@ public abstract class EntityManager {
 			case SPARKLE:
 				particles.add(new Particle("sparkle2", 16, 16, 4, pos, duration));
 				break;
-			case FOLLOW_SPARKLE:
-				particles.add(new FollowParticle("sparkle2", 16, 16, 4, e, duration));
-				break;
 			case DIE:
 				particles.add(new FollowParticle("damage", 16, 16, 2, e, duration));
 				break;

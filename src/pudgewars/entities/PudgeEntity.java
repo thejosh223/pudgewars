@@ -91,7 +91,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		ani = Animation.makeAnimation("horse2", 8, 32, 32, 0.05);
 		ani.startAnimation();
 
-		heart = Animation.makeAnimation("heart2", 8, 32, 32, 1 / 8.0);
+		heart = Animation.makeAnimation("heart4", 8, 32, 32, 1 / 8.0);
 		heart.startAnimation();
 
 		clicker = ImageHandler.get().getImage("selector");
