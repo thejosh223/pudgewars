@@ -341,7 +341,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return true;
 		if (b instanceof PudgeEntity || b instanceof CowEntity) {
-			System.out.println("Collided with Pudge/Cow: canEntityCollide = " + canEntityCollide);
+			//System.out.println("Collided with Pudge/Cow: canEntityCollide = " + canEntityCollide);
 			return canEntityCollide ? true : isHooking;
 		}
 		if (canTileCollide) {
