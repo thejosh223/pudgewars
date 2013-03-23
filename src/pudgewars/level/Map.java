@@ -68,7 +68,10 @@ public class Map {
 						&& (o == (int) (MAP_WIDTH * 0.25) || o == (int) (MAP_WIDTH * 0.75))) {
 					map[i][o] = Tile.HOOKABLE[hookableIndex];
 					hookableIndex = (hookableIndex + 1) % Tile.HOOKABLE.length;
-				} else map[i][o] = Tile.GRASS[r.nextInt(Tile.GRASS.length)];
+				} else {
+					map[i][o] = Tile.GRASS[r.nextInt(Tile.GRASS.length)];
+					// map[i][o] = Tile.NEWGRASS;
+				}
 
 		int o1 = (MAP_WIDTH - DIVISION_WIDTH) / 2 - 1;
 		int o2 = (MAP_WIDTH + DIVISION_WIDTH) / 2;

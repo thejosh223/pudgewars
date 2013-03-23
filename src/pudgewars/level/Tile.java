@@ -13,12 +13,17 @@ import pudgewars.util.Time;
 public class Tile implements BBOwner {
 	public final static Tile VOID = new Tile("void", 0, 1, 0, false, false, false);
 
+	public final static Tile NEWGRASS = new Tile("newgrass", 0, 8, 0.25, false, false, false);
+
 	public final static Tile[] GRASS = //
-	{ new Tile("grass-2", 0, 1, 0, false, false, false), //
-			new Tile("grass-2", 1, 1, 0, false, false, false), //
-			new Tile("grass-2", 2, 1, 0, false, false, false), //
-			new Tile("grass-2", 3, 1, 0, false, false, false), //
-			new Tile("grass-2", 4, 1, 0, false, false, false) };
+	{ new Tile("grass", 0, 1, 0, false, false, false), //
+			new Tile("grass", 1, 1, 0, false, false, false), //
+			new Tile("grass", 2, 1, 0, false, false, false), //
+			new Tile("grass", 3, 1, 0, false, false, false), //
+			new Tile("grass", 4, 1, 0, false, false, false), //
+			new Tile("grass", 5, 1, 0, false, false, false), //
+			new Tile("grass", 6, 1, 0, false, false, false), //
+			new Tile("grass", 7, 1, 0, false, false, false) };
 
 	public final static Tile[] FOUNTAIN = //
 	{ new Tile("fountain3", 0, 8, 0.1875, false, false, false), //
