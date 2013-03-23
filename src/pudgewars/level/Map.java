@@ -17,8 +17,6 @@ import pudgewars.entities.PudgeEntity;
 import pudgewars.entities.Team;
 import pudgewars.entities.hooks.HookEntity;
 import pudgewars.render.GUI;
-import pudgewars.render.TextColor;
-import pudgewars.render.TextSize;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
@@ -238,7 +236,7 @@ public class Map {
 		// GUI.showText("Total " + leftTeamScore, TextSize.normal, TextColor.black, 10, (leftTeamCount + 2) * 10);
 		// GUI.showText("Total " + rightTeamScore, TextSize.normal, TextColor.black, Game.s.width - 82, (rightTeamCount + 2) * 10);
 		GUI.showTally(leftTeamScore, 4, 4, true);
-		GUI.showTally(rightTeamScore, Game.s.width - GUI.rightBorder.getWidth(null), 4, false);
+		GUI.showTally(rightTeamScore, Game.s.width - GUI.rightBorder.getWidth(null) - 4, 4, false);
 	}
 
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {

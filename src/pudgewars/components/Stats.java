@@ -5,6 +5,7 @@ import java.awt.Image;
 import pudgewars.Game;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.entities.Team;
+import pudgewars.entities.hooks.HookType;
 import pudgewars.render.ArcImage;
 import pudgewars.render.GUI;
 import pudgewars.render.TextColor;
@@ -22,8 +23,10 @@ public class Stats {
 	public Image[] expImages;
 	// public Image[] lifeImages;
 	public ArcImage[] lifeImages;
+
 	public Image[] hookCooldownImages;
 	public Image[] grappleCooldownImages;
+	public Image activeHookSelection;
 
 	// Movement Data
 	public BaseStat moveSpeed = new BaseStat(this, "MoveSpeed", 0, 3.8, 0.4, 1);
@@ -73,6 +76,8 @@ public class Stats {
 		grappleCooldownImages = new Image[2];
 		grappleCooldownImages[0] = ImageHandler.get().getImage("grapple_icon_empty");
 		grappleCooldownImages[1] = ImageHandler.get().getImage("grapple_icon_full");
+
+		activeHookSelection = ImageHandler.get().getImage("hooks/activehook");
 	}
 
 	public void restoreDefaults() {
@@ -162,10 +167,18 @@ public class Stats {
 				LEFT_PADDING + lifeImages[0].getWidth() / 2, Game.s.height - (BOT_PADDING + lifeImages[0].getHeight() / 2), //
 				lifePercentage());
 
+		/*
+		 * Hooks
+		 */
 		// Hook Cooldown
 		GUI.partialHorizontalBar(hookCooldownImages, Game.s.width - (RIGHT_PADDING + grappleCooldownImages[0].getWidth(null) + BAR_PADDING + hookCooldownImages[0].getWidth(null)), //
 				Game.s.height - (BOT_PADDING + hookCooldownImages[0].getHeight(null)), //
 				(1 - (pudge.hookCooldown / PudgeEntity.HOOK_COOLDOWN)));
+		if (pudge.activeHook == HookType.NORMAL) {
+			Game.s.g.drawImage(activeHookSelection, //
+					Game.s.width - (RIGHT_PADDING + grappleCooldownImages[0].getWidth(null) + BAR_PADDING + hookCooldownImages[0].getWidth(null)), //
+					Game.s.height - (BOT_PADDING + hookCooldownImages[0].getHeight(null)), null);
+		}
 
 		// Grapple Cooldown
 		GUI.partialHorizontalBar(grappleCooldownImages, Game.s.width - (RIGHT_PADDING + grappleCooldownImages[0].getWidth(null)), //

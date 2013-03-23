@@ -51,6 +51,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	public boolean controllable = false;
 
 	// Hooking
+	public int activeHook;
 	public double hookCooldown;
 	public double grappleCooldown;
 	public boolean isHooking;
