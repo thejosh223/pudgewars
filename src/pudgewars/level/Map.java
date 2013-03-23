@@ -3,6 +3,7 @@ package pudgewars.level;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -217,6 +218,15 @@ public class Map {
 			}
 		}
 
+		Team winningTeam = null;
+		winningTeam = (leftTeamScore >= 10) ? Team.leftTeam : (rightTeamScore >= 10) ? Team.rightTeam : null;
+		
+		if(winningTeam != null){
+			if(Game.entities.player.team == winningTeam) JOptionPane.showMessageDialog(Game.w,"Your team won! Yeeha!");
+			else JOptionPane.showMessageDialog(Game.w,"Your team lost. Go kill yourselves.");
+			System.exit(1);
+		}
+		
 		for (int i = 0; i < Game.entities.respawnEntities.size(); i++) {
 			if (Game.entities.respawnEntities.get(i) instanceof PudgeEntity) {
 				PudgeEntity p = (PudgeEntity) Game.entities.respawnEntities.get(i);
