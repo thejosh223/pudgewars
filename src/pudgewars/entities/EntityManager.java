@@ -89,14 +89,28 @@ public abstract class EntityManager {
 	public void render() {
 		map.render();
 
-		// Init shouldRender = false
+		/* Entities Render */
 		for (int i = 0; i < entities.size(); i++)
-			entities.get(i).shouldRender = true;
-		// entities.get(i).shouldRender = false;
-
+			entities.get(i).shouldRender = false;
 		for (int i = 0; i < entities.size(); i++) {
 			Entity other = entities.get(i);
 			Vector2 v = Game.s.worldToScreenPoint(other.transform.position);
+			for (int o = 0; o < entities.size(); o++) {
+				Entity lightSourceTemp = entities.get(o);
+				if (player.isTeammate(lightSourceTemp) && lightSourceTemp instanceof LightSource) {
+					if (((LightSource) lightSourceTemp).getLightShape().contains(v.x, v.y)) {
+						other.shouldRender = true;
+					}
+				}
+			}
+		}
+
+		/* Particle Render */
+		for (int i = 0; i < particles.size(); i++)
+			particles.get(i).shouldRender = false;
+		for (int i = 0; i < particles.size(); i++) {
+			Particle other = particles.get(i);
+			Vector2 v = Game.s.worldToScreenPoint(other.position);
 			for (int o = 0; o < entities.size(); o++) {
 				Entity lightSourceTemp = entities.get(o);
 				if (player.isTeammate(lightSourceTemp) && lightSourceTemp instanceof LightSource) {
@@ -113,7 +127,7 @@ public abstract class EntityManager {
 			particles.get(i).render();
 
 		map.postRender();
-		// renderLightmap();
+		renderLightmap();
 	}
 
 	public void renderGUI() {

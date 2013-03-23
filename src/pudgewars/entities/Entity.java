@@ -21,7 +21,7 @@ public abstract class Entity implements BBOwner {
 	public boolean wasUpdated = false;
 	public boolean respawn = false;
 	public boolean respawning = false;
-	
+
 	// Render Data
 	public boolean shouldRender = true;
 
@@ -53,7 +53,7 @@ public abstract class Entity implements BBOwner {
 
 	public void lateUpdate() {
 	}
-	
+
 	public void respawnUpdate() {
 	}
 
@@ -69,8 +69,16 @@ public abstract class Entity implements BBOwner {
 	 * Collisions
 	 */
 
+	public boolean isTangible() {
+		return true;
+	}
+
 	public final boolean blocks(BBOwner b) {
-		return b.shouldBlock(this) && this.shouldBlock(b);
+		if (b.isTangible() && this.isTangible()) {
+			return b.shouldBlock(this) && this.shouldBlock(b);
+		} else {
+			return false;
+		}
 	}
 
 	public boolean shouldBlock(BBOwner b) {
@@ -93,10 +101,10 @@ public abstract class Entity implements BBOwner {
 	/*
 	 * Network
 	 */
-	public int getClientID(){	
+	public int getClientID() {
 		return ClientID;
 	}
-	
+
 	public void sendNetworkData() {
 		if (shouldSendNetworkData) {
 			Game.net.sendEntityData(getNetworkString());

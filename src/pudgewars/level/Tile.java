@@ -114,4 +114,8 @@ public class Tile implements BBOwner {
 	public void collides(Tile t, double vx, double vy) {
 	}
 
+	public boolean isTangible() {
+		return true;
+	}
+
 }

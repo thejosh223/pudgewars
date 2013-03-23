@@ -20,6 +20,14 @@ public abstract class HookableEntity extends Entity {
 	}
 
 	public void restoreDefaults() {
+		canTileCollide = true;
+		canEntityCollide = true;
+		canMove = true;
+	}
+
+	public boolean isTangible() {
+		return canEntityCollide || canTileCollide;
+		// return false;
 	}
 
 	public void collides(Entity e, double vx, double vy) {

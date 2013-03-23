@@ -13,4 +13,6 @@ public interface BBOwner {
 	public boolean blocks(BBOwner b);
 
 	public boolean shouldBlock(BBOwner b);
+
+	public boolean isTangible();
 }

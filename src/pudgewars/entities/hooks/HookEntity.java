@@ -156,8 +156,8 @@ public class HookEntity extends Entity implements LightSource {
 	}
 
 	public void kill() {
-		if(Game.isServer) super.kill();
-		
+		if (Game.isServer) super.kill();
+
 		owner.isHooking = false;
 		while (hookPiece != null) {
 			HookPieceEntity temp = hookPiece;

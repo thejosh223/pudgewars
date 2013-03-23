@@ -92,16 +92,10 @@ public class CowEntity extends HookableEntity {
 
 		// Draw Pudge
 		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
-
-		// if (target != null) {
-		// Vector2 targetLocation = Game.s.worldToScreenPoint(target);
-		// AffineTransform a = new AffineTransform();
-		// a.translate((int) (targetLocation.x - clicker.getWidth(null) / 2), (int) (targetLocation.y - clicker.getHeight(null) / 2));
-		// Game.s.g.drawImage(clicker, a, null);
-		// }
 	}
 
 	public void restoreDefaults() {
+		super.restoreDefaults();
 		rigidbody.speed = MOVESPEED;
 	}
 

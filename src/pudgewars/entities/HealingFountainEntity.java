@@ -8,13 +8,13 @@ import pudgewars.util.Vector2;
 public class HealingFountainEntity extends LightSourceEntity {
 
 	public final static int HEAL_AMOUNT = 1;
-	public final static double HEALING_RADIUS = 3;
+	public final static double HEALING_RADIUS = 4;
 	public final static double HEALING_INTERVAL = 1;
 
 	public double interval;
 
 	public HealingFountainEntity(Vector2 position) {
-		super(position, Team.freeForAll, 6, 6);
+		super(position, Team.freeForAll, HEALING_RADIUS * 2, HEALING_RADIUS * 2);
 	}
 
 	public void update() {

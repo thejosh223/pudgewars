@@ -10,6 +10,7 @@ import pudgewars.util.Vector2;
 public class Particle {
 	public Vector2 position;
 
+	public boolean shouldRender;
 	public int duration;
 	public boolean remove;
 
@@ -29,6 +30,8 @@ public class Particle {
 	}
 
 	public void render() {
+		if (!shouldRender) return;
+
 		Vector2 v = Game.s.worldToScreenPoint(position);
 		Image i = ani.getImage();
 		Game.s.g.drawImage(ani.getImage(), (int) v.x - i.getWidth(null) / 2, (int) v.y - i.getHeight(null) / 2, null);

@@ -31,6 +31,7 @@ public class GrappleHookEntity extends HookEntity {
 	public void collides(Tile t, double vx, double vy) {
 		if (t.isHookable()) {
 			owner.canTileCollide = false;
+			owner.canEntityCollide = false;
 			owner.canMove = false;
 			rigidbody.speed = 0;
 			isRotating = false;
