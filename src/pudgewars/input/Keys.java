@@ -37,6 +37,11 @@ public class Keys {
 	public Key buyMode = new Key();
 	public Key space = new Key();
 
+	public Key n1 = new Key();
+	public Key n2 = new Key();
+	public Key n3 = new Key();
+	public Key n4 = new Key();
+
 	public void tick() {
 		for (Key k : keys) {
 			k.tick();

@@ -10,7 +10,6 @@ import pudgewars.render.ArcImage;
 import pudgewars.render.GUI;
 import pudgewars.render.TextColor;
 import pudgewars.render.TextSize;
-import pudgewars.util.Animation;
 import pudgewars.util.ImageHandler;
 
 public class Stats {
@@ -196,9 +195,25 @@ public class Stats {
 			GUI.partialHorizontalBar(tImg, ex, ey, ((((int) experience)) / 10.0));
 		}
 
+		int TOP_PADDING = 10;
+		int SIDE_PADDING = 10;
+		int MID_SPACING = 4;
+
+		int radius = 60;
+		int cx = Game.s.width / 2;
+		int cy = Game.s.height / 2;
+		double angle = 0;
 		if (isOpen) {
+			// int x = SIDE_PADDING;
+			// int y = TOP_PADDING;
 			for (int i = 0; i < CharStat.length; i++) {
-				if (ref[i].drawButtons(10, 10 + i * (16 + 4))) {
+				// if (i == CharStat.length / 2) {
+				// x = Game.s.width - (ref[i].baseImage.getWidth(null) + SIDE_PADDING);
+				// y = TOP_PADDING;
+				// }
+
+				if (ref[i].drawButtons((int) (radius * Math.cos(angle)) + cx - ref[i].baseImage.getWidth(null) / 2, //
+						(int) (radius * Math.sin(angle)) + cy - ref[i].baseImage.getHeight(null) / 2)) {
 					if (ref[i].getCost() <= experience) {
 						experience -= ref[i].getCost();
 						ref[i].setLevel(ref[i].level + 1);
@@ -206,6 +221,9 @@ public class Stats {
 						pudge.shouldSendNetworkData = true;
 					}
 				}
+				angle += Math.PI / 3;
+
+				// y += ref[i].baseImage.getHeight(null) + MID_SPACING;
 			}
 		}
 	}
