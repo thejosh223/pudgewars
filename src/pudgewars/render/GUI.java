@@ -12,14 +12,35 @@ public class GUI {
 	public static Image font_grey = ImageHandler.get().getImage("font_grey");
 
 	public static Image[] numbers;
-	public static Image dash;
+	public static Image[] leftNumbers;
+	public static Image[] rightNumbers;
+	public static Image leftDash;
+	public static Image rightDash;
+	public static Image leftBorder;
+	public static Image rightBorder;
+	// public static Image dash;
+
+	public final static int BORDER_LEFTPADDING = 4;
 
 	static {
 		numbers = new Image[6];
 		for (int i = 0; i < numbers.length; i++)
 			numbers[i] = ImageHandler.get().getImage("numbers", i, 0, 16, 16);
 
-		dash = ImageHandler.get().getImage("dash");
+		// Left Numbers
+		leftDash = ImageHandler.get().getImage("score/left_dash");
+		leftBorder = ImageHandler.get().getImage("score/left_back");
+		leftNumbers = new Image[6];
+		for (int i = 0; i < leftNumbers.length; i++)
+			leftNumbers[i] = ImageHandler.get().getImage("score/left_numbers", i, 0, 16, 16);
+
+		rightDash = ImageHandler.get().getImage("score/right_dash");
+		rightBorder = ImageHandler.get().getImage("score/right_back");
+		rightNumbers = new Image[6];
+		for (int i = 0; i < leftNumbers.length; i++)
+			rightNumbers[i] = ImageHandler.get().getImage("score/right_numbers", i, 0, 16, 16);
+
+		// dash = ImageHandler.get().getImage("score/dash");
 	}
 
 	public GUI() {
@@ -64,13 +85,20 @@ public class GUI {
 		}
 	}
 
-	public static void showTally(int val, int x, int y) {
+	public static void showTally(int val, int x, int y, boolean left) {
+		Image[] nums = left ? leftNumbers : rightNumbers;
+		Image dash = left ? leftDash : rightDash;
+		Image border = left ? leftBorder : rightBorder;
+		Game.s.g.drawImage(border, x, y, null);
+
+		x += BORDER_LEFTPADDING;
+
 		for (int i = 0; val > 0; val -= 5, i++) {
 			if (val >= 5) {
-				Game.s.g.drawImage(numbers[numbers.length - 1], x + i * (numbers[0].getWidth(null) + dash.getWidth(null)), y, null);
-				Game.s.g.drawImage(dash, x + i * (numbers[0].getWidth(null) + dash.getWidth(null)) + numbers[0].getWidth(null), y, null);
+				Game.s.g.drawImage(nums[nums.length - 1], x + i * (nums[0].getWidth(null) + dash.getWidth(null)), y, null);
+				Game.s.g.drawImage(dash, x + i * (nums[0].getWidth(null) + dash.getWidth(null)) + nums[0].getWidth(null), y, null);
 			} else {
-				Game.s.g.drawImage(numbers[val], x + i * (numbers[0].getWidth(null) + dash.getWidth(null)), y, null);
+				Game.s.g.drawImage(nums[val], x + i * (nums[0].getWidth(null) + dash.getWidth(null)), y, null);
 			}
 		}
 

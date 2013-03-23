@@ -201,9 +201,9 @@ public class Map {
 		/*
 		 * Scores
 		 */
-		int leftTeamScore = 0;
+		int leftTeamScore = 3;
 		int leftTeamCount = 0;
-		int rightTeamScore = 0;
+		int rightTeamScore = 7;
 		int rightTeamCount = 0;
 		for (int i = 0; i < Game.entities.entities.size(); i++) {
 			if (Game.entities.entities.get(i) instanceof PudgeEntity) {
@@ -215,7 +215,7 @@ public class Map {
 					rightTeamScore += p.stats.getKills();
 					rightTeamCount++;
 				}
-				p.stats.showScore();
+				// p.stats.showScore();
 			}
 		}
 
@@ -229,16 +229,16 @@ public class Map {
 					rightTeamScore += p.stats.getKills();
 					rightTeamCount++;
 				}
-				p.stats.showScore();
+				// p.stats.showScore();
 			}
 		}
 
-		GUI.showText("Team 1 Score", TextSize.normal, TextColor.black, 10, 10);
-		GUI.showText("Team 2 Score", TextSize.normal, TextColor.black, Game.s.width - 82, 10);
-		GUI.showTally(leftTeamScore, 10, (leftTeamCount + 2) * 10);
-		GUI.showTally(rightTeamScore, Game.s.width - 82, (rightTeamCount + 2) * 10);
+		// GUI.showText("Team 1 Score", TextSize.normal, TextColor.black, 10, 10);
+		// GUI.showText("Team 2 Score", TextSize.normal, TextColor.black, Game.s.width - 82, 10);
 		// GUI.showText("Total " + leftTeamScore, TextSize.normal, TextColor.black, 10, (leftTeamCount + 2) * 10);
 		// GUI.showText("Total " + rightTeamScore, TextSize.normal, TextColor.black, Game.s.width - 82, (rightTeamCount + 2) * 10);
+		GUI.showTally(leftTeamScore, 4, 4, true);
+		GUI.showTally(rightTeamScore, Game.s.width - GUI.rightBorder.getWidth(null), 4, false);
 	}
 
 	public List<CollisionBox> getCollisionBoxes(Rigidbody r) {
