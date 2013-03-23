@@ -37,6 +37,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 	public final static double HOOK_COOLDOWN = 3;
 	public final static double GRAPPLEHOOK_COOLDOWN = 15;
+	public final static double BURNERHOOK_COOLDOWN = 8;
 
 	public final static double ATK_RANGE = 2;
 
@@ -52,9 +53,10 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 	// Hooking
 	public int activeHook;
-	public double hookCooldown;
-	public double grappleCooldown;
 	public boolean isHooking;
+	public double hookCooldown;
+	public double burnerCooldown;
+	public double grappleCooldown;
 	// Attacking
 	public double attackInterval;
 
@@ -78,8 +80,10 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	// Respawning
 	public double respawnInterval = RESPAWN_INTERVAL;
 
-	public PudgeEntity(Vector2 position, Team team) {
+	public PudgeEntity(Vector2 position, Team team, int clientID) {
 		super(position, new Vector2(COLLISION_WIDTH, COLLISION_HEIGHT));
+
+		this.ClientID = clientID;
 
 		this.team = team;
 
@@ -89,7 +93,13 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 		rigidbody.physicsSlide = true;
 
-		ani = Animation.makeAnimation("horse2", 8, 32, 32, 0.05);
+		int index = clientID;
+		if (team == Team.leftTeam) index /= 2;
+		else index = (index + 1) / 2;
+		index = team == Team.leftTeam ? index : index + 4;
+		System.out.println("Index: " + index);
+
+		ani = Animation.makeAnimation("cowboys", 8, index, 32, 32, 0.05);
 		ani.startAnimation();
 
 		heart = Animation.makeAnimation("heart4", 8, 32, 32, 1 / 8.0);
@@ -146,30 +156,44 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			if (hookCooldown < 0) hookCooldown = 0;
 			if (grappleCooldown > 0) grappleCooldown -= Time.getTickInterval();
 			if (grappleCooldown < 0) grappleCooldown = 0;
+			if (burnerCooldown > 0) burnerCooldown -= Time.getTickInterval();
+			if (burnerCooldown < 0) burnerCooldown = 0;
 
 			// Change Cursor
-			if (Game.keyInput.specialHook.isDown) Game.cursor.setCursor("Special");
-			else Game.cursor.setCursor("Default");
+			// if (Game.keyInput.specialHook.isDown) Game.cursor.setCursor("Special");
+			// else Game.cursor.setCursor("Default");
+
+			if (Game.keyInput.n1.wasPressed()) activeHook = HookType.NORMAL;
+			if (Game.keyInput.n2.wasPressed()) activeHook = HookType.BURNER;
+			if (Game.keyInput.n3.wasPressed()) activeHook = HookType.GRAPPLE;
 
 			// Hover
 			if (Game.keyInput.space.isDown) Game.focus = transform.position.clone();
 
 			Vector2 left = Game.mouseInput.left.wasPressed();
 			if (left != null) {
-				if (!Game.keyInput.specialHook.isDown) {
-					if (hookCooldown <= 0) {
-						if (setHook(Game.s.screenToWorldPoint(left), HookType.BURNER)) hookCooldown = HOOK_COOLDOWN;
-						hookTarget = Game.s.screenToWorldPoint(left);
-						shouldSendNetworkData = true;
-					}
-
-					canEntityCollide = true;
-				} else {
-					if (grappleCooldown <= 0) {
-						if (setHook(Game.s.screenToWorldPoint(left), HookType.GRAPPLE)) grappleCooldown = GRAPPLEHOOK_COOLDOWN;
-						hookTarget = Game.s.screenToWorldPoint(left);
-						shouldSendNetworkData = true;
-					}
+				switch (activeHook) {
+					case HookType.NORMAL:
+						if (hookCooldown <= 0) {
+							if (setHook(Game.s.screenToWorldPoint(left), HookType.NORMAL)) hookCooldown = HOOK_COOLDOWN;
+							hookTarget = Game.s.screenToWorldPoint(left);
+							shouldSendNetworkData = true;
+						}
+						break;
+					case HookType.BURNER:
+						if (hookCooldown <= 0) {
+							if (setHook(Game.s.screenToWorldPoint(left), HookType.BURNER)) burnerCooldown = BURNERHOOK_COOLDOWN;
+							hookTarget = Game.s.screenToWorldPoint(left);
+							shouldSendNetworkData = true;
+						}
+						break;
+					case HookType.GRAPPLE:
+						if (grappleCooldown <= 0) {
+							if (setHook(Game.s.screenToWorldPoint(left), HookType.GRAPPLE)) grappleCooldown = GRAPPLEHOOK_COOLDOWN;
+							hookTarget = Game.s.screenToWorldPoint(left);
+							shouldSendNetworkData = true;
+						}
+						break;
 				}
 			}
 
@@ -271,10 +295,6 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		int lifebarHeight = fullLife.getHeight(null);
 		int lifebarActual = (int) (fullLife.getWidth(null) * stats.lifePercentage());
 
-		// Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y
-		// - lifebarHeight / 2, lifebarWidth, lifebarHeight, null);
-		// life.renderCenteredAt((int) v.x, (int) v.y, stats.lifePercentage());
-
 		Game.s.g.drawImage(emptyLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x + lifebarWidth / 2, (int) v.y + lifebarHeight / 2, //
 				0, 0, lifebarWidth, lifebarHeight, null);
 		Game.s.g.drawImage(fullLife, (int) v.x - lifebarWidth / 2, (int) v.y - lifebarHeight / 2, (int) v.x - lifebarWidth / 2 + lifebarActual, (int) v.y + lifebarHeight / 2, //
@@ -341,7 +361,6 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	public boolean shouldBlock(BBOwner b) {
 		if (b instanceof HookEntity) return true;
 		if (b instanceof PudgeEntity || b instanceof CowEntity) {
-			// System.out.println("Collided with Pudge/Cow: canEntityCollide = " + canEntityCollide);
 			return canEntityCollide ? true : isHooking;
 		}
 		if (canTileCollide) {
@@ -416,8 +435,6 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 			int ht = Integer.parseInt(t[7]);
 			setHook(hookTarget, ht);
-			// if (t[7].equals("false")) setHook(hookTarget, HookType.NORMAL);
-			// else setHook(hookTarget, HookType.GRAPPLE);
 		}
 
 		this.stats.setNetString(t[8]);

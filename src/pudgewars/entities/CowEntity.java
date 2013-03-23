@@ -36,7 +36,7 @@ public class CowEntity extends HookableEntity {
 
 		rigidbody.physicsSlide = true;
 
-		ani = Animation.makeAnimation("cow", 1, 32, 32, 0.05);
+		ani = Animation.makeAnimation("cow2", 1, 32, 32, 0.05);
 		ani.startAnimation();
 
 		clicker = ImageHandler.get().getImage("selector");

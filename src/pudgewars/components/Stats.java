@@ -25,6 +25,7 @@ public class Stats {
 
 	public Image[] hookCooldownImages;
 	public Image[] grappleCooldownImages;
+	public Image[] burnerCooldownImages;
 	public Image activeHookSelection;
 
 	// Movement Data
@@ -70,11 +71,14 @@ public class Stats {
 		lifeImages[2] = new ArcImage(ImageHandler.get().getImage("hp_empty"), ImageHandler.get().getImage("hp_quarter"));
 
 		hookCooldownImages = new Image[2];
-		hookCooldownImages[0] = ImageHandler.get().getImage("lasso_icon_empty");
-		hookCooldownImages[1] = ImageHandler.get().getImage("lasso_icon_full");
+		hookCooldownImages[0] = ImageHandler.get().getImage("hooks/lasso_icon_empty");
+		hookCooldownImages[1] = ImageHandler.get().getImage("hooks/lasso_icon_full");
 		grappleCooldownImages = new Image[2];
-		grappleCooldownImages[0] = ImageHandler.get().getImage("grapple_icon_empty");
-		grappleCooldownImages[1] = ImageHandler.get().getImage("grapple_icon_full");
+		grappleCooldownImages[0] = ImageHandler.get().getImage("hooks/grapple_icon_empty");
+		grappleCooldownImages[1] = ImageHandler.get().getImage("hooks/grapple_icon_full");
+		burnerCooldownImages = new Image[2];
+		burnerCooldownImages[0] = ImageHandler.get().getImage("hooks/burner_empty");
+		burnerCooldownImages[1] = ImageHandler.get().getImage("hooks/burner_full");
 
 		activeHookSelection = ImageHandler.get().getImage("hooks/activehook");
 	}
@@ -169,20 +173,26 @@ public class Stats {
 		/*
 		 * Hooks
 		 */
-		// Hook Cooldown
-		GUI.partialHorizontalBar(hookCooldownImages, Game.s.width - (RIGHT_PADDING + grappleCooldownImages[0].getWidth(null) + BAR_PADDING + hookCooldownImages[0].getWidth(null)), //
-				Game.s.height - (BOT_PADDING + hookCooldownImages[0].getHeight(null)), //
-				(1 - (pudge.hookCooldown / PudgeEntity.HOOK_COOLDOWN)));
-		if (pudge.activeHook == HookType.NORMAL) {
-			Game.s.g.drawImage(activeHookSelection, //
-					Game.s.width - (RIGHT_PADDING + grappleCooldownImages[0].getWidth(null) + BAR_PADDING + hookCooldownImages[0].getWidth(null)), //
-					Game.s.height - (BOT_PADDING + hookCooldownImages[0].getHeight(null)), null);
-		}
+		int cW = grappleCooldownImages[0].getWidth(null); // = Cooldown Width
+		int cH = grappleCooldownImages[0].getHeight(null); // = Cooldown height
 
+		int hookTypesCount = 3;
+		int sx = Game.s.width - (RIGHT_PADDING + hookTypesCount * cW + (hookTypesCount - 1) * BAR_PADDING);
+		int sy = Game.s.height - (BOT_PADDING + cH);
+		int xInt = cW + BAR_PADDING;
+
+		// Hook Cooldown
+		GUI.partialHorizontalBar(hookCooldownImages, sx, sy, (1 - (pudge.hookCooldown / PudgeEntity.HOOK_COOLDOWN)));
+		sx += xInt;
+		// Hook Cooldown
+		GUI.partialHorizontalBar(burnerCooldownImages, sx, sy, (1 - (pudge.burnerCooldown / PudgeEntity.BURNERHOOK_COOLDOWN)));
+		sx += xInt;
 		// Grapple Cooldown
-		GUI.partialHorizontalBar(grappleCooldownImages, Game.s.width - (RIGHT_PADDING + grappleCooldownImages[0].getWidth(null)), //
-				Game.s.height - (BOT_PADDING + grappleCooldownImages[0].getHeight(null)), //
-				(1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
+		GUI.partialHorizontalBar(grappleCooldownImages, sx, sy, (1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
+
+		// Draw Active Hook Selection
+		int nx = Game.s.width - (RIGHT_PADDING + hookTypesCount * cW + (hookTypesCount - 1) * BAR_PADDING) + pudge.activeHook * xInt;
+		Game.s.g.drawImage(activeHookSelection, nx, sy, null);
 
 		// Draw Experience
 		int ex = LEFT_PADDING + expImages[0].getWidth(null) + BAR_PADDING;
@@ -195,23 +205,12 @@ public class Stats {
 			GUI.partialHorizontalBar(tImg, ex, ey, ((((int) experience)) / 10.0));
 		}
 
-		int TOP_PADDING = 10;
-		int SIDE_PADDING = 10;
-		int MID_SPACING = 4;
-
 		int radius = 60;
 		int cx = Game.s.width / 2;
 		int cy = Game.s.height / 2;
 		double angle = 0;
 		if (isOpen) {
-			// int x = SIDE_PADDING;
-			// int y = TOP_PADDING;
 			for (int i = 0; i < CharStat.length; i++) {
-				// if (i == CharStat.length / 2) {
-				// x = Game.s.width - (ref[i].baseImage.getWidth(null) + SIDE_PADDING);
-				// y = TOP_PADDING;
-				// }
-
 				if (ref[i].drawButtons((int) (radius * Math.cos(angle)) + cx - ref[i].baseImage.getWidth(null) / 2, //
 						(int) (radius * Math.sin(angle)) + cy - ref[i].baseImage.getHeight(null) / 2)) {
 					if (ref[i].getCost() <= experience) {
@@ -222,8 +221,6 @@ public class Stats {
 					}
 				}
 				angle += Math.PI / 3;
-
-				// y += ref[i].baseImage.getHeight(null) + MID_SPACING;
 			}
 		}
 	}

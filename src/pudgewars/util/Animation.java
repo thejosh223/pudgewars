@@ -106,6 +106,13 @@ public class Animation {
 		return totalTime;
 	}
 
+	public static Animation makeAnimation(String ref, int numAnimations, int y, int width, int height, double interval) {
+		Animation a = new Animation();
+		for (int i = 0; i < numAnimations; i++)
+			a.add(ImageHandler.get().getImage(ref, i, y, width, height), interval);
+		return a;
+	}
+
 	public static Animation makeAnimation(String ref, int numAnimations, int width, int height, double interval) {
 		Animation a = new Animation();
 		for (int i = 0; i < numAnimations; i++)

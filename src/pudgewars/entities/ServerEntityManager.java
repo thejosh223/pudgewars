@@ -14,17 +14,16 @@ public class ServerEntityManager extends EntityManager {
 		int x = 0, y = 0;
 		for (int i = 0; i < clients.size(); i++) {
 			PudgeEntity p;
-			if (clients.get(i).getTeam() == 0){
-				p = new PudgeEntity(new Vector2(4, 8 * x + 4), Team.leftTeam);
-				p.ClientID = 2*x++;
-			}
-			else{
-				p = new PudgeEntity(new Vector2(20, 8 * y + 4), Team.rightTeam);
-				p.ClientID = 2*y++ + 1;
+			if (clients.get(i).getTeam() == 0) {
+				p = new PudgeEntity(new Vector2(4, 8 * x + 4), Team.leftTeam, 2 * x++);
+				// p.ClientID = 2 * x++;
+			} else {
+				p = new PudgeEntity(new Vector2(20, 8 * y + 4), Team.rightTeam, 2 * y++ + 1);
+				// p.ClientID = 2*y++ + 1;
 			}
 			clients.get(i).setID(p.ClientID);
-			p.name =  clients.get(i).getName();
-					
+			p.name = clients.get(i).getName();
+
 			entities.add(p);
 		}
 
