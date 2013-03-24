@@ -215,6 +215,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			if (dist < rigidbody.velocity.magnitude() * Time.getTickInterval()) {
 				rigidbody.velocity = new Vector2(0, 0);
 				target = null;
+
 				if (controllable) {
 					// SoundEffect.GALLOP.stop();
 					SoundEffect.NASAL.play();
