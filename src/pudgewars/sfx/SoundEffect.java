@@ -24,7 +24,7 @@ public enum SoundEffect {
 	LASSO_RELEASE("hurt.wav"), //
 	NASAL("nasal.wav"), //
 	NEIGH("neigh.wav"), //
-	MOO("moo.wav");
+	MOO("cow.wav");
 
 	// Nested class for specifying volume
 	public static enum Volume {

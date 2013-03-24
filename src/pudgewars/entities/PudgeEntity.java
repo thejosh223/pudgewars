@@ -73,6 +73,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 	// Rendering
 	protected Animation ani;
+	protected Image outline;
 	protected ArcImage life;
 	protected Image fullLife;
 	protected Image emptyLife;
@@ -99,6 +100,9 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		else index = (index - 1) / 2;
 		index = team == Team.leftTeam ? index : index + 4;
 		System.out.println("Index: " + index);
+
+		if (team == Team.leftTeam) outline = ImageHandler.get().getImage("outline_left");
+		else outline = ImageHandler.get().getImage("outline_right");
 
 		ani = Animation.makeAnimation("cowboys", 8, index, 32, 32, 0.05);
 		ani.startAnimation();
@@ -285,8 +289,11 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 	public void render() {
 		if (!shouldRender) return;
 
+		AffineTransform a = transform.getAffineTransformation();
+
 		// Draw Pudge
-		Game.s.g.drawImage(ani.getImage(), transform.getAffineTransformation(), null);
+		Game.s.g.drawImage(outline, a, null);
+		Game.s.g.drawImage(ani.getImage(), a, null);
 
 		/*
 		 * LIFE DRAWING

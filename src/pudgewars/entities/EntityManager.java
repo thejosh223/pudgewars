@@ -75,11 +75,12 @@ public abstract class EntityManager {
 
 	public void updateRespawnEntities() {
 		for (int i = 0; i < respawnEntities.size(); i++) {
-			respawnEntities.get(i).respawnUpdate();
-			if (respawnEntities.get(i).respawn) {
-				respawnEntities.get(i).respawn = false;
-				respawnEntities.get(i).respawning = false;
-				entities.add(respawnEntities.get(i));
+			Entity e = respawnEntities.get(i);
+			e.respawnUpdate();
+			if (e.respawn) {
+				e.respawn = false;
+				e.respawning = false;
+				entities.add(e);
 				respawnEntities.remove(i);
 				i--;
 			}

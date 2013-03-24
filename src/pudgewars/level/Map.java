@@ -1,12 +1,11 @@
 package pudgewars.level;
 
-import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
-import javax.swing.JOptionPane;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+
+import javax.swing.JOptionPane;
 
 import pudgewars.Game;
 import pudgewars.Window;
@@ -37,19 +36,19 @@ public class Map {
 	public final static int TILEUPDATES_PERTICK = 32; // # of tiles updated per
 														// tick
 	// Controls
-	public boolean mouseScrollingEnabled = true;
+	public boolean mouseScrollingEnabled = false;
 
 	// Map Data
 	private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];
 	private int[][] mapData = new int[MAP_HEIGHT][MAP_WIDTH];
 
 	// Minimap
-	private Image minimapBase;
-	private BufferedImage minimap;
+	// private Image minimapBase;
+	// private BufferedImage minimap;
 
 	public Image[] respawnImages;
 	public double respawnInterval = PudgeEntity.RESPAWN_INTERVAL;
-	
+
 	// Scores
 	int leftTeamScore;
 	int leftTeamCount;
@@ -102,8 +101,8 @@ public class Map {
 		/*
 		 * Minimap
 		 */
-		minimapBase = ImageHandler.get().getImage("minimap");
-		minimap = new BufferedImage(minimapBase.getWidth(null), minimapBase.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+		// minimapBase = ImageHandler.get().getImage("minimap");
+		// minimap = new BufferedImage(minimapBase.getWidth(null), minimapBase.getHeight(null), BufferedImage.TYPE_INT_ARGB);
 
 		// Respawn Images
 		respawnImages = new Image[2];
@@ -191,10 +190,9 @@ public class Map {
 		/*
 		 * Minimap
 		 */
-		Graphics2D g = (Graphics2D) minimap.getGraphics();
-		g.drawImage(minimapBase, 0, 0, null);
-		// Game.s.g.drawImage(minimap, 10, 10, minimap.getWidth(),
-		// minimap.getHeight(), null);
+		// Graphics2D g = (Graphics2D) minimap.getGraphics();
+		// g.drawImage(minimapBase, 0, 0, null);
+		// Game.s.g.drawImage(minimap, 10, 10, minimap.getWidth(), minimap.getHeight(), null);
 
 		/*
 		 * Respawning
@@ -205,19 +203,19 @@ public class Map {
 		} else {
 			respawnInterval = PudgeEntity.RESPAWN_INTERVAL;
 		}
-		
-		/* 
+
+		/*
 		 * Win/Lose condition
 		 */
 		Team winningTeam = null;
 		winningTeam = (leftTeamScore >= 10) ? Team.leftTeam : (rightTeamScore >= 10) ? Team.rightTeam : null;
-		
-		if(winningTeam != null){
-			if(Game.entities.player.team == winningTeam) JOptionPane.showMessageDialog(Game.w,"Your team won! Yeeha! " + leftTeamScore + " " + rightTeamScore);
-			else JOptionPane.showMessageDialog(Game.w,"Your team lost. Go kill yourselves." + leftTeamScore + " " + rightTeamScore);
+
+		if (winningTeam != null) {
+			if (Game.entities.player.team == winningTeam) JOptionPane.showMessageDialog(Game.w, "Your team won! Yeeha! " + leftTeamScore + " " + rightTeamScore);
+			else JOptionPane.showMessageDialog(Game.w, "Your team lost. Go kill yourselves." + leftTeamScore + " " + rightTeamScore);
 			System.exit(1);
 		}
-		
+
 		/*
 		 * Scores
 		 */
@@ -225,7 +223,7 @@ public class Map {
 		leftTeamCount = 0;
 		rightTeamScore = 7;
 		rightTeamCount = 0;
-		
+
 		for (int i = 0; i < Game.entities.entities.size(); i++) {
 			if (Game.entities.entities.get(i) instanceof PudgeEntity) {
 				PudgeEntity p = (PudgeEntity) Game.entities.entities.get(i);
@@ -239,7 +237,7 @@ public class Map {
 				// p.stats.showScore();
 			}
 		}
-		
+
 		for (int i = 0; i < Game.entities.respawnEntities.size(); i++) {
 			if (Game.entities.respawnEntities.get(i) instanceof PudgeEntity) {
 				PudgeEntity p = (PudgeEntity) Game.entities.respawnEntities.get(i);
@@ -253,7 +251,7 @@ public class Map {
 				// p.stats.showScore();
 			}
 		}
-		
+
 		// GUI.showText("Team 1 Score", TextSize.normal, TextColor.black, 10, 10);
 		// GUI.showText("Team 2 Score", TextSize.normal, TextColor.black, Game.s.width - 82, 10);
 		// GUI.showText("Total " + leftTeamScore, TextSize.normal, TextColor.black, 10, (leftTeamCount + 2) * 10);
