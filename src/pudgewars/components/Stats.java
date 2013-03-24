@@ -5,7 +5,6 @@ import java.awt.Image;
 import pudgewars.Game;
 import pudgewars.entities.PudgeEntity;
 import pudgewars.entities.Team;
-import pudgewars.entities.hooks.HookType;
 import pudgewars.render.ArcImage;
 import pudgewars.render.GUI;
 import pudgewars.render.TextColor;
@@ -100,12 +99,11 @@ public class Stats {
 
 	public void setNetString(String s) {
 		String[] t = s.split("]");
-		if((Game.isServer && Integer.parseInt(t[0]) < experience) ||
-				(!Game.isServer) && Integer.parseInt(t[0]) > experience) experience = Integer.parseInt(t[0]);
-		if(!Game.isServer) _life = Integer.parseInt(t[1]);
+		if ((Game.isServer && Integer.parseInt(t[0]) < experience) || (!Game.isServer) && Integer.parseInt(t[0]) > experience) experience = Integer.parseInt(t[0]);
+		if (!Game.isServer) _life = Integer.parseInt(t[1]);
 		for (int i = 2; i < ref.length + 2; i++)
 			ref[i - 2].setNetString(t[i]);
-		if(!Game.isServer) kills = Integer.parseInt(t[ref.length + 2]);
+		if (!Game.isServer) kills = Integer.parseInt(t[ref.length + 2]);
 		restoreDefaults();
 	}
 
@@ -191,7 +189,7 @@ public class Stats {
 		sx += xInt;
 		// Grapple Cooldown
 		GUI.partialHorizontalBar(grappleCooldownImages, sx, sy, (1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
-		
+
 		// Draw Active Hook Selection
 		int nx = Game.s.width - (RIGHT_PADDING + hookTypesCount * cW + (hookTypesCount - 1) * BAR_PADDING) + pudge.activeHook * xInt;
 		Game.s.g.drawImage(activeHookSelection, nx, sy, null);

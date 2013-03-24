@@ -5,6 +5,7 @@ import java.util.HashMap;
 
 import javax.swing.event.MouseInputListener;
 
+import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.input.MouseButtons.MouseButton;
 import pudgewars.util.Vector2;
@@ -30,7 +31,7 @@ public class MouseHandler implements MouseInputListener {
 	}
 
 	public void mouseMoved(MouseEvent e) {
-		m.mousePosition = new Vector2((double) e.getX() / Window.ACTUAL_WIDTH, (double) e.getY() / Window.ACTUAL_HEIGHT);
+		m.mousePosition = new Vector2((double) e.getX() / Game.w.actualWidth, (double) e.getY() / Game.w.actualHeight);
 	}
 
 	public void mouseExited(MouseEvent e) {
@@ -45,7 +46,7 @@ public class MouseHandler implements MouseInputListener {
 	}
 
 	private Vector2 getPositionVector(MouseEvent e) {
-		return new Vector2((double) e.getX() / Window.ACTUAL_WIDTH, (double) e.getY() / Window.ACTUAL_HEIGHT);
+		return new Vector2((double) e.getX() / Game.w.actualWidth, (double) e.getY() / Game.w.actualHeight);
 	}
 
 	/*

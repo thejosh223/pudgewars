@@ -168,8 +168,6 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 			Vector2 left = Game.mouseInput.left.wasPressed();
 			if (left != null) {
-				SoundEffect.HURT.play();
-
 				switch (activeHook) {
 					case HookType.NORMAL:
 						if (hookCooldown <= 0) {
@@ -217,12 +215,12 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			if (dist < rigidbody.velocity.magnitude() * Time.getTickInterval()) {
 				rigidbody.velocity = new Vector2(0, 0);
 				target = null;
-				if(controllable){
-					SoundEffect.GALLOP.stop();
-					// SoundEffect.NASAL.play();
+				if (controllable) {
+					// SoundEffect.GALLOP.stop();
+					SoundEffect.NASAL.play();
 				}
 			} else {
-				if(!SoundEffect.GALLOP.isPlaying() && controllable) SoundEffect.GALLOP.play();
+				// if(!SoundEffect.GALLOP.isPlaying() && controllable) SoundEffect.GALLOP.play();
 				rigidbody.setDirection(target);
 			}
 		}
@@ -349,6 +347,9 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			}
 			Game.entities.entities.add(e);
 			isHooking = true;
+
+			// Play Hook Sound Effect
+			SoundEffect.LASSO_RELEASE.play();
 			return true;
 		}
 		return false;

@@ -9,6 +9,7 @@ import java.awt.event.WindowEvent;
 import java.net.Socket;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -25,6 +26,8 @@ public class Client {
 	static JTextField message, name;
 	static JLabel welcome;
 	static JButton readyButton, cancelButton, changeTeamButton;
+	static JComboBox<String> resolution;
+
 	private static MyConnection conn;
 
 	public JPanel createContentPane() {
@@ -33,8 +36,14 @@ public class Client {
 
 		welcome = new JLabel("");
 		welcome.setLocation(10, 10);
-		welcome.setSize(300, 30);
+		welcome.setSize(280, 30);
 		pane.add(welcome);
+
+		String[] scaleResolutions = { "320x240", "640x480", "960x720" };
+		resolution = new JComboBox<String>(scaleResolutions);
+		resolution.setBounds(280, 10, 80, 35);
+		resolution.setSelectedIndex(2);
+		pane.add(resolution);
 
 		JLabel label1 = new JLabel("Chat Window");
 		label1.setLocation(10, 50);
@@ -204,6 +213,7 @@ public class Client {
 					} else if (msg.equals("START")) {
 						conn.getMessage();
 						conn.sendMessage("STOP");
+						Window.SCALE = resolution.getSelectedIndex() + 1;
 						Window w = new Window(conn);
 						w.startClientGame();
 					} else {

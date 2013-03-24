@@ -38,7 +38,7 @@ public class Screen {
 	 * Drawing Functions
 	 */
 	public void drawToGraphics(Graphics2D g) {
-		g.drawImage(img, 0, 0, Window.ACTUAL_WIDTH, Window.ACTUAL_HEIGHT, null);
+		g.drawImage(img, 0, 0, Game.w.actualWidth, Game.w.actualHeight, null);
 	}
 
 	public void clear() {

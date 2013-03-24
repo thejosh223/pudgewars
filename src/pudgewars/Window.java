@@ -20,9 +20,10 @@ public class Window extends Canvas {
 	public static int WIDTH = Game.TILE_SIZE * Game.TILE_WIDTH;
 	public static int HEIGHT = Game.TILE_SIZE * Game.TILE_HEIGHT;
 
-	public static int SCALE = 2;
-	public static int ACTUAL_WIDTH = WIDTH * SCALE;
-	public static int ACTUAL_HEIGHT = HEIGHT * SCALE;
+	// NOTE: To change default scale, look at the combobox in the client.
+	public static int SCALE = 1;
+	// public static int ACTUAL_WIDTH = WIDTH * SCALE;
+	// public static int ACTUAL_HEIGHT = HEIGHT * SCALE;
 
 	public static int LIGHTMAP_MULT = 1;
 
@@ -35,14 +36,20 @@ public class Window extends Canvas {
 
 	public static Game g;
 
+	public int actualWidth;
+	public int actualHeight;
+
 	public Window(MyConnection conn) {
+		actualWidth = WIDTH * SCALE;
+		actualHeight = HEIGHT * SCALE;
+
 		// The Window
 		container = new JFrame("Pudge Wars");
-		container.setBounds(50, 50, ACTUAL_WIDTH, ACTUAL_HEIGHT);
+		container.setBounds(50, 50, actualWidth, actualHeight);
 		container.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JPanel panel = (JPanel) container.getContentPane();
-		Dimension d = new Dimension(ACTUAL_WIDTH, ACTUAL_HEIGHT);
+		Dimension d = new Dimension(actualWidth, actualHeight);
 		panel.setPreferredSize(d);
 		panel.setMaximumSize(d);
 		panel.setMinimumSize(d);
@@ -50,7 +57,7 @@ public class Window extends Canvas {
 		panel.setLayout(null);
 
 		// Sets the bounds of our Canvas
-		setBounds(0, 0, ACTUAL_WIDTH, ACTUAL_HEIGHT);
+		setBounds(0, 0, actualWidth, actualHeight);
 		panel.add(this);
 
 		// Makes the Window visible

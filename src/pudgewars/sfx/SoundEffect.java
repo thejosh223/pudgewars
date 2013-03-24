@@ -6,6 +6,7 @@ import java.net.URL;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
+import javax.sound.sampled.FloatControl;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 
@@ -19,15 +20,15 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * 4. You can use the static variable SoundEffect.volume to mute the sound.
  */
 public enum SoundEffect {
-	GALLOP("gallop.wav"),
-	HURT("hurt.wav"),
-	NASAL("nasal.wav"),
-	NEIGH("neigh.wav"),
+	// GALLOP("gallop.wav"),
+	LASSO_RELEASE("hurt.wav"), //
+	NASAL("nasal.wav"), //
+	NEIGH("neigh.wav"), //
 	MOO("moo.wav");
-	
+
 	// Nested class for specifying volume
 	public static enum Volume {
-		MUTE, LOW, MEDIUM, HIGH
+		MUTE, LOW, NORMAL, HIGH
 	}
 
 	public static Volume volume = Volume.LOW;
@@ -58,18 +59,30 @@ public enum SoundEffect {
 	// Play or Re-play the sound effect from the beginning, by rewinding.
 	public void play() {
 		if (volume != Volume.MUTE) {
+			FloatControl vol = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
+			switch (volume) {
+				case LOW:
+					vol.setValue(-1);
+					break;
+				case NORMAL:
+					vol.setValue(0);
+					break;
+				case HIGH:
+					vol.setValue(1);
+			}
+
 			if (clip.isRunning()) clip.stop(); // Stop the player if it is still running
 			clip.setFramePosition(0); // rewind to the beginning
 			clip.start(); // Start playing
 		}
 	}
-	
+
 	public void stop() {
 		clip.stop();
 	}
-	
+
 	public boolean isPlaying() {
-		if(clip.isRunning()) return true;
+		if (clip.isRunning()) return true;
 		return false;
 	}
 
