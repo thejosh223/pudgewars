@@ -19,8 +19,12 @@ import javax.sound.sampled.UnsupportedAudioFileException;
  * 4. You can use the static variable SoundEffect.volume to mute the sound.
  */
 public enum SoundEffect {
-	HURT("hurt.wav");
-
+	GALLOP("gallop.wav"),
+	HURT("hurt.wav"),
+	NASAL("nasal.wav"),
+	NEIGH("neigh.wav"),
+	MOO("moo.wav");
+	
 	// Nested class for specifying volume
 	public static enum Volume {
 		MUTE, LOW, MEDIUM, HIGH
@@ -58,6 +62,15 @@ public enum SoundEffect {
 			clip.setFramePosition(0); // rewind to the beginning
 			clip.start(); // Start playing
 		}
+	}
+	
+	public void stop() {
+		clip.stop();
+	}
+	
+	public boolean isPlaying() {
+		if(clip.isRunning()) return true;
+		return false;
 	}
 
 	// Optional static method to pre-load all the sound files.

@@ -4,8 +4,10 @@ import pudgewars.Game;
 import pudgewars.entities.Entity;
 import pudgewars.entities.HookableEntity;
 import pudgewars.entities.PudgeEntity;
+import pudgewars.entities.CowEntity;
 import pudgewars.interfaces.BBOwner;
 import pudgewars.level.Tile;
+import pudgewars.sfx.SoundEffect;
 import pudgewars.util.Vector2;
 
 public class NormalHookEntity extends HookEntity {
@@ -20,6 +22,10 @@ public class NormalHookEntity extends HookEntity {
 	 * Pudge Hooking
 	 */
 	public void attachHookableEntity(HookableEntity e) {
+		if(owner.controllable) { 
+			if(e instanceof PudgeEntity) SoundEffect.NEIGH.play();
+			else if(e instanceof CowEntity)  SoundEffect.MOO.play();
+		}
 		e.transform.position = transform.position.clone(); // Set the pudge as this position
 		if (!isTeammate(e)) {
 			if (e instanceof PudgeEntity && ((PudgeEntity) e).stats.subLife(damage)) {
