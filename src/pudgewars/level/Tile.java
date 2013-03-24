@@ -1,5 +1,6 @@
 package pudgewars.level;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import pudgewars.Game;
@@ -15,15 +16,17 @@ public class Tile implements BBOwner {
 
 	public final static Tile NEWGRASS = new Tile("newgrass", 0, 8, 0.25, false, false, false);
 
-	public final static Tile[] GRASS = //
-	{ new Tile("grass", 0, 1, 0, false, false, false), //
-			new Tile("grass", 1, 1, 0, false, false, false), //
-			new Tile("grass", 2, 1, 0, false, false, false), //
-			new Tile("grass", 3, 1, 0, false, false, false), //
-			new Tile("grass", 4, 1, 0, false, false, false), //
-			new Tile("grass", 5, 1, 0, false, false, false), //
-			new Tile("grass", 6, 1, 0, false, false, false), //
-			new Tile("grass", 7, 1, 0, false, false, false) };
+	public final static Tile[] GRASS;
+	static {
+		String grassFile = "grass3";
+		Image img = ImageHandler.get().getImage(grassFile);
+		int numGrassesX = img.getWidth(null) / 17;
+		// System.out.println("NumGrasses: " + numGrasses);
+
+		GRASS = new Tile[numGrassesX];
+		for (int i = 0; i < numGrassesX; i++)
+			GRASS[i] = new Tile(grassFile, i, 1, 0, false, false, false);
+	}
 
 	public final static Tile[] FOUNTAIN = //
 	{ new Tile("fountain3", 0, 8, 0.1875, false, false, false), //
