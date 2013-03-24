@@ -211,8 +211,8 @@ public class Stats {
 		double angle = 0;
 		if (isOpen) {
 			for (int i = 0; i < CharStat.length; i++) {
-				if (ref[i].drawButtons((int) (radius * Math.cos(angle)) + cx - ref[i].baseImage.getWidth(null) / 2, //
-						(int) (radius * Math.sin(angle)) + cy - ref[i].baseImage.getHeight(null) / 2)) {
+				if (ref[i].drawButtons((int) (radius * Math.cos(angle)) + cx - ref[i].image[0].getWidth(null) / 2, //
+						(int) (radius * Math.sin(angle)) + cy - ref[i].image[0].getHeight(null) / 2)) {
 					if (ref[i].getCost() <= experience) {
 						experience -= ref[i].getCost();
 						ref[i].setLevel(ref[i].level + 1);

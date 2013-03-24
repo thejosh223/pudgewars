@@ -8,11 +8,14 @@ import pudgewars.util.ImageHandler;
 
 public class BaseStat {
 
+	public final static int MAX_LEVEL = 6;
+
 	public Stats stats;
 
 	public String name;
-	public Image baseImage;
-	public Image modImage;
+	public Image[] image;
+	// public Image baseImage;
+	// public Image modImage;
 
 	private double baseValue;
 	private double increment;
@@ -29,15 +32,21 @@ public class BaseStat {
 
 		this.level = 0;
 
-		this.baseImage = ImageHandler.get().getImage("stats/stats3", imgIndex, 0, 40, 40);
-		this.modImage = ImageHandler.get().getImage("stats/stats3", imgIndex, 1, 40, 40);
+		image = new Image[2];
+		image[0] = ImageHandler.get().getImage("stats/stats3", imgIndex, 0, 40, 40);
+		image[1] = ImageHandler.get().getImage("stats/stats3", imgIndex, 1, 40, 40);
+		// this.baseImage = ImageHandler.get().getImage("stats/stats3", imgIndex, 0, 40, 40);
+		// this.modImage = ImageHandler.get().getImage("stats/stats3", imgIndex, 1, 40, 40);
 	}
 
 	public final static int XOFF = 3;
 
 	public boolean drawButtons(int x, int y) {
-		if (GUI.button(baseImage, x, y, baseImage.getWidth(null), baseImage.getHeight(null))) return true;
-		Game.s.g.drawImage(modImage, x, y, x + XOFF + (int) (23 * level / 10.0), y + modImage.getHeight(null), 0, 0, XOFF + (int) (23 * level / 10.0), modImage.getHeight(null), null);
+		GUI.partialHorizontalBar(image, x, y, image[0].getWidth(null), image[0].getHeight(null), (double) level / MAX_LEVEL);
+		if (GUI.button(null, x, y, image[0].getWidth(null), image[0].getHeight(null))) return true;
+
+		// Game.s.g.drawImage(modImage, x, y, x + XOFF + (int) (23 * level / (double) MAX_LEVEL), y + modImage.getHeight(null), //
+		// 0, 0, XOFF + (int) (23 * level / (double) MAX_LEVEL), modImage.getHeight(null), null);
 		return false;
 	}
 

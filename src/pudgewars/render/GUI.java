@@ -47,7 +47,8 @@ public class GUI {
 	}
 
 	public static boolean button(Image i, int x, int y, int width, int height) {
-		Game.s.g.drawImage(i, x, y, width, height, null);
+		if (i != null) Game.s.g.drawImage(i, x, y, width, height, null);
+
 		Vector2 v = Game.mouseInput.left.wasReleased();
 		if (v != null) {
 			if (v.x * Game.s.width > x && v.x * Game.s.width < x + width) {

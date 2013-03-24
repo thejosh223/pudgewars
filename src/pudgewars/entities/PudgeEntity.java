@@ -89,7 +89,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 		stats = new Stats(this);
 		stats.restoreDefaults();
-		stats.subLife(8);
+		// stats.subLife(8);
 
 		rigidbody.physicsSlide = true;
 
