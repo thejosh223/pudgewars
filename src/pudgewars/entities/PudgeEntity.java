@@ -96,7 +96,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 		int index = clientID;
 		if (team == Team.leftTeam) index /= 2;
-		else index = (index + 1) / 2;
+		else index = (index - 1) / 2;
 		index = team == Team.leftTeam ? index : index + 4;
 		System.out.println("Index: " + index);
 
