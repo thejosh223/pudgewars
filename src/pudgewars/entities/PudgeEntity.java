@@ -233,8 +233,10 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 					attackInterval = 0.5;
 					Game.entities.addParticle(ParticleTypes.DIE, targetEnemy, null, 0.25);
 					if (targetEnemy.stats.subLife(4)) {
-						stats.addExp(2);
-						if (Game.isServer) stats.addKill();
+						if (Game.isServer){ 
+							stats.addExp(2);
+							stats.addKill();
+						}
 						targetEnemy = null;
 					}
 				}
@@ -419,22 +421,27 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		wasUpdated = true;
 		String[] t = s.split(":");
 
-		transform.position.setNetString(t[2]);
-		rigidbody.velocity.setNetString(t[3]);
-		if (t[4].equals("null")) {
-			target = null;
-		} else {
-			target = new Vector2();
-			target.setNetString(t[4]);
-			clickedOnPlayer(target);
+		if(!Game.isServer){
+			transform.position.setNetString(t[2]);
+			rigidbody.velocity.setNetString(t[3]);
 		}
+		
+		if(Game.isServer){
+			if (t[4].equals("null")) {
+				target = null;
+			} else {
+				target = new Vector2();
+				target.setNetString(t[4]);
+				clickedOnPlayer(target);
+			}
+			
+			if (!t[6].equals("null")) {
+				String[] u = t[6].split(" ");
+				Vector2 hookTarget = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
 
-		if (!t[6].equals("null")) {
-			String[] u = t[6].split(" ");
-			Vector2 hookTarget = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
-
-			int ht = Integer.parseInt(t[7]);
-			setHook(hookTarget, ht);
+				int ht = Integer.parseInt(t[7]);
+				setHook(hookTarget, ht);
+			}
 		}
 
 		this.stats.setNetString(t[8]);
