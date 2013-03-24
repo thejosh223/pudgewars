@@ -2,7 +2,6 @@ package pudgewars.util;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.HashMap;
 
 import javax.imageio.ImageIO;
@@ -24,7 +23,7 @@ public class ImageHandler {
 			return images.get(ref);
 		}
 
-		i = loadImage("img/" + ref + ".png");
+		i = loadImage("gfx/" + ref + ".png");
 		images.put(ref, i);
 
 		return i;
@@ -54,7 +53,7 @@ public class ImageHandler {
 	public static BufferedImage loadImage(String ref) {
 		BufferedImage bimg = null;
 		try {
-			bimg = ImageIO.read(new File(ref));
+			bimg = ImageIO.read(ImageHandler.class.getClassLoader().getResource(ref));
 		} catch (Exception e) {
 			return null;
 		}
