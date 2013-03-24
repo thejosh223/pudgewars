@@ -157,7 +157,7 @@ public class HookEntity extends Entity implements LightSource {
 
 	public void kill() {
 		owner.isHooking = false;
-		if (Game.isServer){
+		//if (Game.isServer){
 			super.kill();
 
 			while (hookPiece != null) {
@@ -167,7 +167,7 @@ public class HookEntity extends Entity implements LightSource {
 				hookPiece = temp;
 			}
 			hookPiece = null;
-		}
+		//}
 	}
 
 	/*

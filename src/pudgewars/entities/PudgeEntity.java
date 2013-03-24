@@ -147,11 +147,6 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			stats.isOpen ^= true; // Cool way to NOT
 		}
 
-		// Controls
-		hookTarget = null;
-		// isGrapple = false;
-		hookType = 0;
-
 		if (controllable && canMove && !stats.isOpen) {
 			if (hookCooldown > 0) hookCooldown -= Time.getTickInterval();
 			if (hookCooldown < 0) hookCooldown = 0;
@@ -417,6 +412,8 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		s += ":" + hookType;
 		s += ":" + stats.getNetString();
 		s += ":" + name;
+		hookTarget = null;
+		hookType = 0;
 		return s;
 	}
 

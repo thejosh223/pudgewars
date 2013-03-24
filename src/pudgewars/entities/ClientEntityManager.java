@@ -2,7 +2,6 @@ package pudgewars.entities;
 
 import pudgewars.Game;
 import pudgewars.entities.hooks.BurnerHookEntity;
-import pudgewars.entities.hooks.HookEntity;
 import pudgewars.entities.hooks.GrappleHookEntity;
 import pudgewars.entities.hooks.NormalHookEntity;
 import pudgewars.util.Vector2;
@@ -85,12 +84,13 @@ public class ClientEntityManager extends EntityManager {
 					e.remove = true;
 					Game.entities.respawnEntities.add(e);
 				} else e.wasUpdated = false;
-			} else if (e instanceof HookEntity) {
-				if (!e.wasUpdated) {
-					e.remove = true;
-					e.kill();
-				} else e.wasUpdated = false;
-			}
+			} 
+			//else if (e instanceof HookEntity) {
+			//	if (!e.wasUpdated) {
+			//		e.remove = true;
+			//		e.kill();
+			//	} else e.wasUpdated = false;
+			//}
 		}
 	}
 
