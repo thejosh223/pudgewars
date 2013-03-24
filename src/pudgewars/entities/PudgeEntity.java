@@ -21,6 +21,7 @@ import pudgewars.level.Tile;
 import pudgewars.particles.ParticleTypes;
 import pudgewars.particles.VelocityParticle;
 import pudgewars.render.ArcImage;
+import pudgewars.sfx.SoundEffect;
 import pudgewars.util.Animation;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.ImageHandler;
@@ -172,6 +173,8 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 
 			Vector2 left = Game.mouseInput.left.wasPressed();
 			if (left != null) {
+				SoundEffect.HURT.play();
+
 				switch (activeHook) {
 					case HookType.NORMAL:
 						if (hookCooldown <= 0) {
@@ -233,7 +236,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 					attackInterval = 0.5;
 					Game.entities.addParticle(ParticleTypes.DIE, targetEnemy, null, 0.25);
 					if (targetEnemy.stats.subLife(4)) {
-						if (Game.isServer){ 
+						if (Game.isServer) {
 							stats.addExp(2);
 							stats.addKill();
 						}
@@ -421,11 +424,11 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 		wasUpdated = true;
 		String[] t = s.split(":");
 
-		if(!Game.isServer){
+		if (!Game.isServer) {
 			transform.position.setNetString(t[2]);
 			rigidbody.velocity.setNetString(t[3]);
 		}
-		
+
 		if (t[4].equals("null")) {
 			target = null;
 		} else {
@@ -433,7 +436,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			target.setNetString(t[4]);
 			clickedOnPlayer(target);
 		}
-		
+
 		if (!t[6].equals("null")) {
 			String[] u = t[6].split(" ");
 			Vector2 hookTarget = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));

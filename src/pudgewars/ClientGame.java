@@ -6,6 +6,7 @@ import pudgewars.input.MouseButtons;
 import pudgewars.network.ClientNetwork;
 import pudgewars.network.MyConnection;
 import pudgewars.render.CursorManager;
+import pudgewars.sfx.SoundEffect;
 
 public class ClientGame extends Game {
 	private static Object lock = new Object();
@@ -22,6 +23,8 @@ public class ClientGame extends Game {
 		entities = new ClientEntityManager();
 		entities.generateClientEntities();
 
+		SoundEffect.init();
+
 		Thread t = new Thread(new getEntityData());
 		t.start();
 	}
@@ -29,7 +32,8 @@ public class ClientGame extends Game {
 	private static class getEntityData implements Runnable {
 		public void run() {
 			while (true) {
-				for(int i = 0; i < 10; i++) net.clearBuffer();
+				for (int i = 0; i < 10; i++)
+					net.clearBuffer();
 				synchronized (lock) {
 					net.getEntityData();
 				}
