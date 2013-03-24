@@ -106,8 +106,10 @@ public class Map {
 
 		// Respawn Images
 		respawnImages = new Image[2];
-		respawnImages[0] = ImageHandler.get().getImage("respawn2_empty");
-		respawnImages[1] = ImageHandler.get().getImage("respawn2_full");
+		// respawnImages[0] = ImageHandler.get().getImage("respawn2_empty");
+		// respawnImages[1] = ImageHandler.get().getImage("respawn2_full");
+		respawnImages[0] = ImageHandler.get().getImage("respawn_0");
+		respawnImages[1] = ImageHandler.get().getImage("respawn_1");
 	}
 
 	public void update() {

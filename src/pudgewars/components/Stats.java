@@ -10,6 +10,7 @@ import pudgewars.render.GUI;
 import pudgewars.render.TextColor;
 import pudgewars.render.TextSize;
 import pudgewars.util.ImageHandler;
+import pudgewars.util.TimedRenderObject;
 
 public class Stats {
 	public PudgeEntity pudge;
@@ -41,7 +42,7 @@ public class Stats {
 	private int _life;
 	private int kills = 0;
 
-	public boolean shouldShowKillStreak = false;
+	// public boolean shouldShowKillStreak = false;
 	public int killStreak = 0;
 
 	// private int deaths = 0;
@@ -110,7 +111,11 @@ public class Stats {
 			int tKillStreak = Integer.parseInt(t[ref.length + 3]);
 			if (killStreak != tKillStreak) {
 				killStreak = tKillStreak;
-				shouldShowKillStreak = true;
+
+				if (killStreak >= 2) {
+					TimedRenderObject tro = new TimedRenderObject(ImageHandler.get().getImage("messages/killingspree"), Game.s.cx, 10, true, false, 2);
+					Game.entities.screenOverlays.add(tro);
+				}
 			}
 		}
 		restoreDefaults();

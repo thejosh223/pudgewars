@@ -11,8 +11,8 @@ public class Screen {
 	public int height;
 
 	// Center Coordinates
-	private int cx;
-	private int cy;
+	public int cx;
+	public int cy;
 
 	// The image that is drawn to.
 	// -This image is drawn to the Canvas all at once.

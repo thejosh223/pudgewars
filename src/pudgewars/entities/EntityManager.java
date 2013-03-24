@@ -7,8 +7,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JOptionPane;
-
 import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.components.Rigidbody;
@@ -17,6 +15,8 @@ import pudgewars.particles.FollowParticle;
 import pudgewars.particles.Particle;
 import pudgewars.particles.ParticleTypes;
 import pudgewars.util.CollisionBox;
+import pudgewars.util.Time;
+import pudgewars.util.TimedRenderObject;
 import pudgewars.util.Vector2;
 
 public abstract class EntityManager {
@@ -24,6 +24,7 @@ public abstract class EntityManager {
 	public List<Entity> entities;
 	public List<Entity> respawnEntities;
 	public List<Particle> particles;
+	public List<TimedRenderObject> screenOverlays;
 	public PudgeEntity player;
 	public Map map;
 
@@ -31,6 +32,7 @@ public abstract class EntityManager {
 		entities = new ArrayList<Entity>();
 		respawnEntities = new ArrayList<Entity>();
 		particles = new ArrayList<Particle>();
+		screenOverlays = new ArrayList<TimedRenderObject>();
 		map = Game.map;
 	}
 
@@ -135,17 +137,11 @@ public abstract class EntityManager {
 
 	public void renderGUI() {
 		// Check for any messages to show
-		for (int i = 0; i < entities.size(); i++) {
-			if (entities.get(i) instanceof PudgeEntity) {
-				PudgeEntity e = (PudgeEntity) entities.get(i);
-				if (e.stats.shouldShowKillStreak) {
-					if (e.stats.killStreak >= 2) {
-						// System.out.println("Killing Spree!");
-						// JOptionPane.showMessageDialog(null, "Killing Spree!");
-					}
-
-					e.stats.shouldShowKillStreak = false;
-				}
+		for (int i = 0; i < screenOverlays.size(); i++) {
+			screenOverlays.get(i).render();
+			if (screenOverlays.get(i).killTime <= Time.timeSinceStart()) {
+				screenOverlays.remove(i);
+				i--;
 			}
 		}
 
