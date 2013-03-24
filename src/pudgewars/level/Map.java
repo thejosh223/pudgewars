@@ -219,9 +219,9 @@ public class Map {
 		/*
 		 * Scores
 		 */
-		leftTeamScore = 7;
+		leftTeamScore = 0;
 		leftTeamCount = 0;
-		rightTeamScore = 7;
+		rightTeamScore = 0;
 		rightTeamCount = 0;
 
 		for (int i = 0; i < Game.entities.entities.size(); i++) {

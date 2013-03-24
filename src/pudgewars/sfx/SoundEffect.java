@@ -62,13 +62,13 @@ public enum SoundEffect {
 			FloatControl vol = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 			switch (volume) {
 				case LOW:
-					vol.setValue(-1);
+					vol.setValue(-10);
 					break;
 				case NORMAL:
 					vol.setValue(0);
 					break;
 				case HIGH:
-					vol.setValue(1);
+					vol.setValue(10);
 			}
 
 			if (clip.isRunning()) clip.stop(); // Stop the player if it is still running

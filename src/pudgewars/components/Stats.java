@@ -19,7 +19,6 @@ public class Stats {
 	public boolean isOpen = false;
 	public Image[] statImages;
 	public Image[] expImages;
-	// public Image[] lifeImages;
 	public ArcImage[] lifeImages;
 
 	public Image[] hookCooldownImages;
@@ -42,6 +41,11 @@ public class Stats {
 	private int _life;
 	private int kills = 0;
 
+	public boolean shouldShowKillStreak = false;
+	public int killStreak = 0;
+
+	// private int deaths = 0;
+
 	public Stats(PudgeEntity p) {
 		pudge = p;
 
@@ -61,9 +65,6 @@ public class Stats {
 			expImages[i] = ImageHandler.get().getImage("HUD_exp_" + i);
 
 		// Life Images
-		// lifeImages = new Image[2];
-		// lifeImages[0] = ImageHandler.get().getImage("HUD_hp_empty");
-		// lifeImages[1] = ImageHandler.get().getImage("HUD_hp_full");
 		lifeImages = new ArcImage[3];
 		lifeImages[0] = new ArcImage(ImageHandler.get().getImage("hp_empty"), ImageHandler.get().getImage("hp_full"));
 		lifeImages[1] = new ArcImage(ImageHandler.get().getImage("hp_empty"), ImageHandler.get().getImage("hp_half"));
@@ -94,6 +95,7 @@ public class Stats {
 		for (int i = 0; i < ref.length; i++)
 			s += "]" + ref[i].getNetString();
 		s += "]" + kills;
+		s += "]" + killStreak;
 		return s;
 	}
 
@@ -104,6 +106,13 @@ public class Stats {
 		for (int i = 2; i < ref.length + 2; i++)
 			ref[i - 2].setNetString(t[i]);
 		if (!Game.isServer) kills = Integer.parseInt(t[ref.length + 2]);
+		if (!Game.isServer) {
+			int tKillStreak = Integer.parseInt(t[ref.length + 3]);
+			if (killStreak != tKillStreak) {
+				killStreak = tKillStreak;
+				shouldShowKillStreak = true;
+			}
+		}
 		restoreDefaults();
 	}
 
@@ -131,6 +140,7 @@ public class Stats {
 		_life -= a;
 		if (_life <= 0) {
 			pudge.kill();
+			killStreak = 0;
 			return true;
 		}
 		return false;
@@ -144,6 +154,7 @@ public class Stats {
 
 	public void addKill() {
 		kills++;
+		killStreak++;
 	}
 
 	public int getKills() {

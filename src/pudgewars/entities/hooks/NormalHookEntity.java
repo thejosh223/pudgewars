@@ -22,16 +22,16 @@ public class NormalHookEntity extends HookEntity {
 	 * Pudge Hooking
 	 */
 	public void attachHookableEntity(HookableEntity e) {
-		if(owner.controllable) { 
-			if(e instanceof PudgeEntity) SoundEffect.NEIGH.play();
-			else if(e instanceof CowEntity)  SoundEffect.MOO.play();
+		if (owner.controllable) {
+			if (e instanceof PudgeEntity) SoundEffect.NEIGH.play();
+			else if (e instanceof CowEntity) SoundEffect.MOO.play();
 		}
 		e.transform.position = transform.position.clone(); // Set the pudge as this position
 		if (!isTeammate(e)) {
 			if (e instanceof PudgeEntity && ((PudgeEntity) e).stats.subLife(damage)) {
 				// Pudge was Killed!
-				if(Game.isServer){
-					owner.stats.addExp(2);
+				if (Game.isServer) {
+					owner.stats.addExp(6);
 					owner.stats.addKill();
 				}
 				return;
@@ -100,7 +100,7 @@ public class NormalHookEntity extends HookEntity {
 	public void setNetworkString(String s) {
 		wasUpdated = true;
 		String[] t = s.split(":");
-		if(!Game.isServer){
+		if (!Game.isServer) {
 			transform.position.setNetString(t[0]);
 			rigidbody.velocity.setNetString(t[1]);
 		}

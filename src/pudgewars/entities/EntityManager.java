@@ -7,6 +7,8 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JOptionPane;
+
 import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.components.Rigidbody;
@@ -132,6 +134,21 @@ public abstract class EntityManager {
 	}
 
 	public void renderGUI() {
+		// Check for any messages to show
+		for (int i = 0; i < entities.size(); i++) {
+			if (entities.get(i) instanceof PudgeEntity) {
+				PudgeEntity e = (PudgeEntity) entities.get(i);
+				if (e.stats.shouldShowKillStreak) {
+					if (e.stats.killStreak >= 2) {
+						// System.out.println("Killing Spree!");
+						// JOptionPane.showMessageDialog(null, "Killing Spree!");
+					}
+
+					e.stats.shouldShowKillStreak = false;
+				}
+			}
+		}
+
 		for (int i = 0; i < entities.size(); i++)
 			entities.get(i).onGUI();
 		map.onGUI();

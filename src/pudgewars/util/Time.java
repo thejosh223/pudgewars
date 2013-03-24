@@ -10,7 +10,7 @@ public class Time {
 	public static int totalTicks = 0;
 
 	// Time multiplier
-	public static double timeScale = 0.25;
+	public static double timeScale = 1;
 
 	// # of seconds since start of game.
 	// Note: Based off of totalTicks
