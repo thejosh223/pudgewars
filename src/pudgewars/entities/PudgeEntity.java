@@ -219,7 +219,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 				target = null;
 				if(controllable){
 					SoundEffect.GALLOP.stop();
-					// SoundEffect.NASAL.play();
+					SoundEffect.NASAL.play();
 				}
 			} else {
 				if(!SoundEffect.GALLOP.isPlaying() && controllable) SoundEffect.GALLOP.play();
