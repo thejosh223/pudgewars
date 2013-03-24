@@ -67,6 +67,6 @@ public class BaseStat {
 	}
 
 	public void setNetString(String s) {
-		this.level = Integer.parseInt(s);
+		if(Integer.parseInt(s) > this.level) this.level = Integer.parseInt(s);
 	}
 }
