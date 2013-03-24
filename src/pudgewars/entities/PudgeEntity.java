@@ -426,22 +426,20 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			rigidbody.velocity.setNetString(t[3]);
 		}
 		
-		if(Game.isServer){
-			if (t[4].equals("null")) {
-				target = null;
-			} else {
-				target = new Vector2();
-				target.setNetString(t[4]);
-				clickedOnPlayer(target);
-			}
-			
-			if (!t[6].equals("null")) {
-				String[] u = t[6].split(" ");
-				Vector2 hookTarget = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
+		if (t[4].equals("null")) {
+			target = null;
+		} else {
+			target = new Vector2();
+			target.setNetString(t[4]);
+			clickedOnPlayer(target);
+		}
+		
+		if (!t[6].equals("null")) {
+			String[] u = t[6].split(" ");
+			Vector2 hookTarget = new Vector2(Float.parseFloat(u[0]), Float.parseFloat(u[1]));
 
-				int ht = Integer.parseInt(t[7]);
-				setHook(hookTarget, ht);
-			}
+			int ht = Integer.parseInt(t[7]);
+			setHook(hookTarget, ht);
 		}
 
 		this.stats.setNetString(t[8]);
