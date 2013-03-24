@@ -2,7 +2,6 @@ package pudgewars.components;
 
 import java.awt.Image;
 
-import pudgewars.Game;
 import pudgewars.render.GUI;
 import pudgewars.util.ImageHandler;
 
