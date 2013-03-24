@@ -49,6 +49,12 @@ public class Map {
 
 	public Image[] respawnImages;
 	public double respawnInterval = PudgeEntity.RESPAWN_INTERVAL;
+	
+	// Scores
+	int leftTeamScore;
+	int leftTeamCount;
+	int rightTeamScore;
+	int rightTeamCount;
 
 	public Map() {
 		Random r = new Random();
@@ -199,14 +205,27 @@ public class Map {
 		} else {
 			respawnInterval = PudgeEntity.RESPAWN_INTERVAL;
 		}
-
+		
+		/* 
+		 * Win/Lose condition
+		 */
+		Team winningTeam = null;
+		winningTeam = (leftTeamScore >= 10) ? Team.leftTeam : (rightTeamScore >= 10) ? Team.rightTeam : null;
+		
+		if(winningTeam != null){
+			if(Game.entities.player.team == winningTeam) JOptionPane.showMessageDialog(Game.w,"Your team won! Yeeha! " + leftTeamScore + " " + rightTeamScore);
+			else JOptionPane.showMessageDialog(Game.w,"Your team lost. Go kill yourselves." + leftTeamScore + " " + rightTeamScore);
+			System.exit(1);
+		}
+		
 		/*
 		 * Scores
 		 */
-		int leftTeamScore = 3;
-		int leftTeamCount = 0;
-		int rightTeamScore = 7;
-		int rightTeamCount = 0;
+		leftTeamScore = 7;
+		leftTeamCount = 0;
+		rightTeamScore = 7;
+		rightTeamCount = 0;
+		
 		for (int i = 0; i < Game.entities.entities.size(); i++) {
 			if (Game.entities.entities.get(i) instanceof PudgeEntity) {
 				PudgeEntity p = (PudgeEntity) Game.entities.entities.get(i);
@@ -219,15 +238,6 @@ public class Map {
 				}
 				// p.stats.showScore();
 			}
-		}
-
-		Team winningTeam = null;
-		winningTeam = (leftTeamScore >= 10) ? Team.leftTeam : (rightTeamScore >= 10) ? Team.rightTeam : null;
-		
-		if(winningTeam != null){
-			if(Game.entities.player.team == winningTeam) JOptionPane.showMessageDialog(Game.w,"Your team won! Yeeha!");
-			else JOptionPane.showMessageDialog(Game.w,"Your team lost. Go kill yourselves.");
-			System.exit(1);
 		}
 		
 		for (int i = 0; i < Game.entities.respawnEntities.size(); i++) {
@@ -243,7 +253,7 @@ public class Map {
 				// p.stats.showScore();
 			}
 		}
-
+		
 		// GUI.showText("Team 1 Score", TextSize.normal, TextColor.black, 10, 10);
 		// GUI.showText("Team 2 Score", TextSize.normal, TextColor.black, Game.s.width - 82, 10);
 		// GUI.showText("Total " + leftTeamScore, TextSize.normal, TextColor.black, 10, (leftTeamCount + 2) * 10);

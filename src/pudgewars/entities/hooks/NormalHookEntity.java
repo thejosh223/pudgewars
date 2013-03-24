@@ -1,5 +1,6 @@
 package pudgewars.entities.hooks;
 
+import pudgewars.Game;
 import pudgewars.entities.Entity;
 import pudgewars.entities.HookableEntity;
 import pudgewars.entities.PudgeEntity;
@@ -23,8 +24,10 @@ public class NormalHookEntity extends HookEntity {
 		if (!isTeammate(e)) {
 			if (e instanceof PudgeEntity && ((PudgeEntity) e).stats.subLife(damage)) {
 				// Pudge was Killed!
-				owner.stats.addExp(2);
-				owner.stats.addKill();
+				if(Game.isServer){
+					owner.stats.addExp(2);
+					owner.stats.addKill();
+				}
 				return;
 			}
 		}

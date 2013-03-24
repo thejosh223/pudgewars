@@ -100,11 +100,13 @@ public class Stats {
 
 	public void setNetString(String s) {
 		String[] t = s.split("]");
-		experience = Integer.parseInt(t[0]);
-		_life = Integer.parseInt(t[1]);
+		if((Game.isServer && Integer.parseInt(t[0]) < experience) ||
+				(!Game.isServer) && Integer.parseInt(t[0]) > experience) experience = Integer.parseInt(t[0]);
+		if(!Game.isServer) _life = Integer.parseInt(t[1]);
 		for (int i = 2; i < ref.length + 2; i++)
 			ref[i - 2].setNetString(t[i]);
-		kills = Integer.parseInt(t[ref.length + 2]);
+		if(!Game.isServer) kills = Integer.parseInt(t[ref.length + 2]);
+		restoreDefaults();
 	}
 
 	/*
@@ -189,7 +191,7 @@ public class Stats {
 		sx += xInt;
 		// Grapple Cooldown
 		GUI.partialHorizontalBar(grappleCooldownImages, sx, sy, (1 - (pudge.grappleCooldown / PudgeEntity.GRAPPLEHOOK_COOLDOWN)));
-
+		
 		// Draw Active Hook Selection
 		int nx = Game.s.width - (RIGHT_PADDING + hookTypesCount * cW + (hookTypesCount - 1) * BAR_PADDING) + pudge.activeHook * xInt;
 		Game.s.g.drawImage(activeHookSelection, nx, sy, null);

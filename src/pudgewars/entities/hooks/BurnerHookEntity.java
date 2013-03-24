@@ -35,8 +35,10 @@ public class BurnerHookEntity extends NormalHookEntity {
 				dist -= BURN_INTERVAL_DIST;
 				if (hooked instanceof PudgeEntity) {
 					if(((PudgeEntity) hooked).stats.subLife(1)){
-						owner.stats.addExp(2);
-						owner.stats.addKill();
+						if(Game.isServer){
+							owner.stats.addExp(2);
+							owner.stats.addKill();
+						}
 						detachHookableEntity();
 						return;
 					};
