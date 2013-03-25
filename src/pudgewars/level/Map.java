@@ -35,7 +35,7 @@ public class Map {
 	public final static int TILEUPDATES_PERTICK = 32; // # of tiles updated per
 														// tick
 	// Controls
-	public boolean mouseScrollingEnabled = false;
+	public boolean mouseScrollingEnabled = true;
 
 	// Map Data
 	private Tile[][] map = new Tile[MAP_HEIGHT][MAP_WIDTH];

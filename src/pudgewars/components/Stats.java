@@ -102,7 +102,7 @@ public class Stats {
 
 	public void setNetString(String s) {
 		String[] t = s.split("]");
-		if ((Game.isServer && Integer.parseInt(t[0]) < experience) || (!Game.isServer) && Integer.parseInt(t[0]) > experience) experience = Integer.parseInt(t[0]);
+		experience = Integer.parseInt(t[0]);
 		if (!Game.isServer) _life = Integer.parseInt(t[1]);
 		for (int i = 2; i < ref.length + 2; i++)
 			ref[i - 2].setNetString(t[i]);

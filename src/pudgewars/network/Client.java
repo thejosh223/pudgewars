@@ -6,8 +6,11 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.Font;
+import java.awt.Color;
 import java.net.Socket;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
@@ -24,7 +27,7 @@ import pudgewars.Window;
 public class Client {
 	static JTextArea chatWindow, onlineClients1, onlineClients2;
 	static JTextField message, name;
-	static JLabel welcome;
+	static JLabel welcome, background;
 	static JButton readyButton, cancelButton, changeTeamButton;
 	static JComboBox<String> resolution;
 
@@ -33,37 +36,19 @@ public class Client {
 	public JPanel createContentPane() {
 		JPanel pane = new JPanel();
 		pane.setLayout(null);
-
+		
 		welcome = new JLabel("");
-		welcome.setLocation(10, 10);
-		welcome.setSize(280, 30);
+		welcome.setFont(new Font("Century Gothic", Font.BOLD, 30)); 
+		welcome.setForeground(Color.YELLOW);
+		welcome.setLocation(350, 40);
+		welcome.setSize(280, 50);
 		pane.add(welcome);
 
 		String[] scaleResolutions = { "320x240", "640x480", "960x720" };
 		resolution = new JComboBox<String>(scaleResolutions);
-		resolution.setBounds(280, 10, 80, 35);
+		resolution.setBounds(260, 348, 115, 35);
 		resolution.setSelectedIndex(2);
 		pane.add(resolution);
-
-		JLabel label1 = new JLabel("Chat Window");
-		label1.setLocation(10, 50);
-		label1.setSize(100, 30);
-		pane.add(label1);
-
-		JLabel label2 = new JLabel("Online Players");
-		label2.setLocation(380, 50);
-		label2.setSize(100, 30);
-		pane.add(label2);
-
-		JLabel label3 = new JLabel("Team 1");
-		label3.setLocation(380, 70);
-		label3.setSize(50, 30);
-		pane.add(label3);
-
-		JLabel label4 = new JLabel("Team 2");
-		label4.setLocation(380, 190);
-		label4.setSize(50, 30);
-		pane.add(label4);
 
 		chatWindow = new JTextArea();
 		chatWindow.setLineWrap(true);
@@ -72,7 +57,7 @@ public class Client {
 
 		JScrollPane chatWindowScroll = new JScrollPane(chatWindow);
 		chatWindowScroll.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		chatWindowScroll.setBounds(10, 80, 350, 230);
+		chatWindowScroll.setBounds(30, 400, 540, 140);
 		pane.add(chatWindowScroll);
 
 		DefaultCaret caret = (DefaultCaret) chatWindow.getCaret();
@@ -90,12 +75,12 @@ public class Client {
 
 		JScrollPane onlineClientsScroll1 = new JScrollPane(onlineClients1);
 		onlineClientsScroll1.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		onlineClientsScroll1.setBounds(380, 95, 150, 100);
+		onlineClientsScroll1.setBounds(120, 220, 135, 100);
 		pane.add(onlineClientsScroll1);
 
 		JScrollPane onlineClientsScroll2 = new JScrollPane(onlineClients2);
 		onlineClientsScroll2.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		onlineClientsScroll2.setBounds(380, 215, 150, 100);
+		onlineClientsScroll2.setBounds(430, 220, 135, 100);
 		pane.add(onlineClientsScroll2);
 
 		message = new JTextField();
@@ -114,11 +99,11 @@ public class Client {
 			}
 		});
 
-		message.setBounds(10, 320, 350, 35);
+		message.setBounds(30, 545, 540, 25);
 		pane.add(message);
 
 		changeTeamButton = new JButton("Change Team");
-		changeTeamButton.setBounds(380, 10, 150, 35);
+		changeTeamButton.setBounds(70, 348, 120, 35);
 		changeTeamButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				conn.sendMessage("/ct\nEOM");
@@ -127,7 +112,7 @@ public class Client {
 		pane.add(changeTeamButton);
 
 		readyButton = new JButton("Ready");
-		readyButton.setBounds(380, 320, 150, 35);
+		readyButton.setBounds(445, 348, 125, 35);
 
 		cancelButton = new JButton("Cancel");
 		cancelButton.setBounds(380, 320, 150, 35);
@@ -152,6 +137,12 @@ public class Client {
 		});
 		pane.add(readyButton);
 
+		background = new JLabel("");
+		background.setIcon(new ImageIcon(this.getClass().getClassLoader().getResource("gfx/bg/wood.png")));
+		background.setLocation(0, 0);
+		background.setSize(600, 600);
+		pane.add(background);
+		
 		pane.setOpaque(true);
 		return pane;
 	}
@@ -163,7 +154,7 @@ public class Client {
 		frame.setContentPane(chat.createContentPane());
 
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setBounds(400, 100, 550, 390);
+		frame.setBounds(400, 100, 600, 630);
 		frame.setResizable(false);
 		frame.setVisible(true);
 		frame.addWindowListener(new WindowAdapter() {
@@ -195,7 +186,7 @@ public class Client {
 						}
 					} else if (msg.equals("NAME")) {
 						msg = conn.getMessage();
-						welcome.setText("Welcome to Pudge Wars, " + msg + "!");
+						welcome.setText(msg + "!");
 						conn.getMessage();
 					} else if (msg.equals("SERVERERROR")) {
 						msg = conn.getMessage();
