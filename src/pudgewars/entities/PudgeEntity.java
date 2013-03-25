@@ -357,7 +357,7 @@ public class PudgeEntity extends HookableEntity implements LightSource {
 			isHooking = true;
 
 			// Play Hook Sound Effect
-			SoundEffect.LASSO_RELEASE.play();
+			if(controllable) SoundEffect.LASSO_RELEASE.play();
 			return true;
 		}
 		return false;
