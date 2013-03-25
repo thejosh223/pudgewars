@@ -102,7 +102,9 @@ public class Stats {
 
 	public void setNetString(String s) {
 		String[] t = s.split("]");
+
 		experience = Integer.parseInt(t[0]);
+
 		if (!Game.isServer) _life = Integer.parseInt(t[1]);
 		for (int i = 2; i < ref.length + 2; i++)
 			ref[i - 2].setNetString(t[i]);
@@ -176,10 +178,14 @@ public class Stats {
 
 	public void onGUI() {
 		// Draw Life
-		// GUI.partialVerticalBar(lifeImages, LEFT_PADDING, Game.s.height - (BOT_PADDING + lifeImages[0].getHeight(null)), -lifePercentage());
-		// GUI.partialHorizontalBar(lifeImages, (Game.s.width - lifeImages[0].getWidth(null)) / 2, Game.s.height - (BOT_PADDING + barHeight), lifePercentage());
+		// GUI.partialVerticalBar(lifeImages, LEFT_PADDING, Game.s.height -
+		// (BOT_PADDING + lifeImages[0].getHeight(null)), -lifePercentage());
+		// GUI.partialHorizontalBar(lifeImages, (Game.s.width -
+		// lifeImages[0].getWidth(null)) / 2, Game.s.height - (BOT_PADDING +
+		// barHeight), lifePercentage());
 		int lifeIndex = 0;
-		if (lifePercentage() > 0.5) ;
+		if (lifePercentage() > 0.5)
+		;
 		else if (lifePercentage() > 0.25) lifeIndex = 1;
 		else lifeIndex = 2;
 		lifeImages[lifeIndex].renderCenteredAt( //

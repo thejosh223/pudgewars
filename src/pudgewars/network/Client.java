@@ -47,7 +47,8 @@ public class Client {
 		String[] scaleResolutions = { "320x240", "640x480", "960x720" };
 		resolution = new JComboBox<String>(scaleResolutions);
 		resolution.setBounds(260, 348, 115, 35);
-		resolution.setSelectedIndex(2);
+		resolution.setSelectedIndex(1);
+		
 		pane.add(resolution);
 
 		chatWindow = new JTextArea();
@@ -221,7 +222,8 @@ public class Client {
 	}
 
 	public static void main(String args[]) {
-		// String host = JOptionPane.showInputDialog(null, "Enter host:", "127.0.0.1");
+		// String host = JOptionPane.showInputDialog(null, "Enter host:",
+		// "127.0.0.1");
 		String host = "127.0.0.1";
 		createAndShowGUI();
 		chatWindow.setText("Connecting to host: " + host + "...\n");
