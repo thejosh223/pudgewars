@@ -18,7 +18,7 @@ public class Tile implements BBOwner {
 
 	public final static Tile[] GRASS;
 	static {
-		String grassFile = "grass3";
+		String grassFile = "grass2";
 		Image img = ImageHandler.get().getImage(grassFile);
 		int numGrassesX = img.getWidth(null) / 17;
 		// System.out.println("NumGrasses: " + numGrasses);
