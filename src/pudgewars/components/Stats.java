@@ -113,7 +113,7 @@ public class Stats {
 				killStreak = tKillStreak;
 
 				if (killStreak >= 2) {
-					TimedRenderObject tro = new TimedRenderObject(ImageHandler.get().getImage("messages/killingspree"), Game.s.cx, 10, true, false, 2);
+					TimedRenderObject tro = new TimedRenderObject(ImageHandler.get().getImage("messages/killingspree"), Game.s.cx, 10, true, false, 4);
 					Game.entities.screenOverlays.add(tro);
 				}
 			}
@@ -211,7 +211,7 @@ public class Stats {
 		Game.s.g.drawImage(activeHookSelection, nx, sy, null);
 
 		// Draw Experience
-		int ex = LEFT_PADDING + expImages[0].getWidth(null) + BAR_PADDING;
+		int ex = LEFT_PADDING + lifeImages[0].getWidth() + BAR_PADDING;
 		int ey = Game.s.height - (BOT_PADDING + expImages[0].getHeight(null));
 		if (experience < 30) {
 			Image tImg[] = { expImages[(int) (experience / 10)], expImages[(int) (experience / 10) + 1] };

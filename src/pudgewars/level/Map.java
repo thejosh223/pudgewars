@@ -5,8 +5,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import javax.swing.JOptionPane;
-
 import pudgewars.Game;
 import pudgewars.Window;
 import pudgewars.components.Rigidbody;
@@ -20,6 +18,7 @@ import pudgewars.render.GUI;
 import pudgewars.util.CollisionBox;
 import pudgewars.util.ImageHandler;
 import pudgewars.util.Time;
+import pudgewars.util.TimedRenderObject;
 import pudgewars.util.Vector2;
 
 public class Map {
@@ -213,14 +212,23 @@ public class Map {
 		winningTeam = (leftTeamScore >= 10) ? Team.leftTeam : (rightTeamScore >= 10) ? Team.rightTeam : null;
 
 		if (winningTeam != null) {
-			if (Game.entities.player.team == winningTeam) JOptionPane.showMessageDialog(Game.w, "Your team won! Yeeha! " + leftTeamScore + " " + rightTeamScore);
-			else JOptionPane.showMessageDialog(Game.w, "Your team lost. Go kill yourselves." + leftTeamScore + " " + rightTeamScore);
-			System.exit(1);
+			if (Game.entities.player.team == winningTeam) {
+				Game.entities.screenOverlays.add(new TimedRenderObject(ImageHandler.get().getImage("messages/winner"), Game.s.cx, Game.s.cy, true, true, 30));
+			} else {
+				Game.entities.screenOverlays.add(new TimedRenderObject(ImageHandler.get().getImage("messages/loser"), Game.s.cx, Game.s.cy, true, true, 30));
+			}
+
+			// if (Game.entities.player.team == winningTeam) JOptionPane.showMessageDialog(Game.w, "Your team won! Yeeha! " + leftTeamScore + " " + rightTeamScore);
+			// else JOptionPane.showMessageDialog(Game.w, "Your team lost. Go kill yourselves." + leftTeamScore + " " + rightTeamScore);
+			// System.exit(1);
 		}
 
 		/*
 		 * Scores
 		 */
+		int oldLeftTeamScore = leftTeamScore;
+		int oldRightTeamScore = rightTeamScore;
+
 		leftTeamScore = 0;
 		leftTeamCount = 0;
 		rightTeamScore = 0;
@@ -252,6 +260,11 @@ public class Map {
 				}
 				// p.stats.showScore();
 			}
+		}
+
+		if (oldLeftTeamScore + oldRightTeamScore == 0 && leftTeamScore + rightTeamScore > 0) {
+			// First Blood!
+			Game.entities.screenOverlays.add(new TimedRenderObject(ImageHandler.get().getImage("messages/firstblood"), Game.s.cx, 10, true, false, 4));
 		}
 
 		// GUI.showText("Team 1 Score", TextSize.normal, TextColor.black, 10, 10);

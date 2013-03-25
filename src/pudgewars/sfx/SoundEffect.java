@@ -28,7 +28,7 @@ public enum SoundEffect {
 
 	// Nested class for specifying volume
 	public static enum Volume {
-		MUTE, LOW, NORMAL, HIGH
+		MUTE, VLOW, LOW, NORMAL, HIGH, VHIGH
 	}
 
 	public static Volume volume = Volume.LOW;
@@ -61,6 +61,8 @@ public enum SoundEffect {
 		if (volume != Volume.MUTE) {
 			FloatControl vol = (FloatControl) clip.getControl(FloatControl.Type.MASTER_GAIN);
 			switch (volume) {
+				case VLOW:
+					vol.setValue(-20);
 				case LOW:
 					vol.setValue(-10);
 					break;
@@ -69,6 +71,8 @@ public enum SoundEffect {
 					break;
 				case HIGH:
 					vol.setValue(10);
+				case VHIGH:
+					vol.setValue(20);
 			}
 
 			if (clip.isRunning()) clip.stop(); // Stop the player if it is still running
